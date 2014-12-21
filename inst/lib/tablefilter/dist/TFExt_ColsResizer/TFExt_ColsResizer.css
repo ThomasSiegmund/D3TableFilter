@@ -1,0 +1,28 @@
+/*====================================================
+	- HTML Table Filter Generator 
+	- Columns Resizer Extension v1.3
+	- do not hesitate to edit classes below to 
+	change extension appearance
+=====================================================*/
+
+.resizable{
+	border-collapse: collapse;
+	table-layout: fixed;
+}
+
+.resizer{
+	width:2px; cursor:e-resize;
+	border-right:1px dashed #666;
+	position:absolute;
+	top:0; left:0;
+}
+
+table.ellipsis td, 
+table.ellipsis th{ 
+	overflow:hidden;
+	text-overflow:ellipsis;
+}
+table.nowrap td, 
+table.nowrap th{ 
+	white-space:nowrap;
+}

@@ -1,11 +1,14 @@
-library(shiny)
-library(htmlwidgets)
-library(tableFilter)
+library(shiny);
+library(htmlwidgets);
+library(tableFilter);
+library(ggplot2);
 
-data(mtcars)
+data(diamonds)
 
 shinyServer(function(input, output, session) {
-  output$mtcars <- renderTableFilter({
+  output$diamonds <- renderTableFilter({
+    
+    diamonds <- diamonds[1:input$rows, ];
     
     # configuration object listing many of TableFilters paramters.
     # There are more in http://tablefilter.free.fr/doc.php
@@ -31,38 +34,33 @@ shinyServer(function(input, output, session) {
       # sorting
       sort = TRUE,
       sort_config = list(
-        sort_types = c("String", rep("Number", 11))
+        sort_types = c("US","String", "String", "String", rep("US", 6))
       ),
       # paging
-      paging = TRUE,  
-      paging_length = 20,  
+      paging = FALSE,  
+      paging_length = 30,  
       rows_counter = TRUE,  
       rows_counter_text = "Rows:",
-      results_per_page = JS("['Rows per page',[20,40,60]]"),  
+      results_per_page = JS("['Rows per page',[30,100,1000, 10000, 100000]]"),  
       #column visibility
       showHide_cols_text = 'Hide columns:',
       showHide_enable_tick_all = TRUE,
-      col_8 = "checklist",
-      col_9 = "checklist",
-      col_10 = "multiple",
-      col_11 = "multiple",
-      # row counter not supported
-      rows_counter = FALSE
-#       ,  
-#       col_operation = list(   
-#         id = c("table8Tot1","table8Tot2"),  
-#         col = c(2,4),  
-#         operation = c("sum","sum"),  
-#         write_method = c("innerHTML","setValue"),  
-#         exclude_row = nrow(mtcars),  
-#         decimal_precision = c(1,0)  
-#       ), 
-#       rows_always_visible = nrow(mtcars)
+      col_1 = "select",
+      col_2 = "select",
+      col_3 = "select"
     );
-
-    tableFilter(mtcars, table_Props,
-                showRowNames = TRUE,
+    if(input$coloring) {
+      bgColScales <- list(
+        col_7 = "auto:white:red",
+        col_8 = "auto:white:green",
+        col_9 = "auto:white:blue")
+      } else {
+        bgColScales <- list();
+      }
+     
+    tableFilter(diamonds, table_Props,
+                showRowNames = FALSE,
                 extensions = c('ColsVisibility', 'ColumnsResizer', 'FiltersRowVisibility'),
-                rowNamesColumn = "Model");
-  })
+                bgColScales = bgColScales);
+  })  
 })

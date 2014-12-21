@@ -26,7 +26,13 @@ HTMLWidgets.widget({
     var fgColScales = data.fgColScales;
 
     var tableID = data.tableID;
-  
+
+    // remove existing table including table filter objects
+    var table = d3.select(el).select("table").remove();
+    var loader = d3.select(el).selectAll(".loader").remove();
+    var inf = d3.select(el).selectAll(".inf").remove();
+    
+    // create new table
     var table = d3.select(el).append("table").attr("id", tableID)
             thead = table.append("thead"),
             tbody = table.append("tbody");
@@ -58,13 +64,13 @@ HTMLWidgets.widget({
         .text(function(d) { return d.value; })
         .attr('class', function(d, i){ return "col_" + i; });
         
-    
+    // initialize table filter generator
+    var totRowIndex = tf_Tag(tf_Id(tableID),"tr").length; // for row counter, not supported yet
     var tf1 = setFilterGrid(tableID, table_Props); 
 
     // set text or background colour
+    // does nothing if length(bgColScales) == 0 and length(fgColScales) == 0
     colourCells = function() {
-      log("running colourCells");
-
     for (var key in bgColScales) { 
        if (bgColScales.hasOwnProperty(key)) { 
        d3.selectAll('td.' + key).style("background-color", function(d, i){
@@ -86,7 +92,6 @@ HTMLWidgets.widget({
   };
     // set intial color. Has to run again after table sorting. 
     colourCells();
-
     }
 });
 

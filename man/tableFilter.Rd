@@ -31,8 +31,9 @@ scales.
 }
 \section{Configuration}{
  The tableFilter widget can be highly customized. See
-  the website of the JavaScript library  \href{http://tablefilter.free.fr/
-  }{HTML Table Filter Generator} for details. Configuration is passed as a
+  the website of the JavaScript library
+  \href{http://tablefilter.free.fr/}{HTML Table Filter Generator}
+  for details. Configuration is passed as a
   list of key value pairs to the JavaScript engine. A shiny app demonstrating
   many useful features in one table can be found in the inst/examples/feature
   directory of this package.

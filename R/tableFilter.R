@@ -6,8 +6,9 @@
 #' scales.
 #' 
 #' @section Configuration: The tableFilter widget can be highly customized. See 
-#'   the website of the JavaScript library  \href{http://tablefilter.free.fr/ 
-#'   }{HTML Table Filter Generator} for details. Configuration is passed as a
+#'   the website of the JavaScript library
+#'   \href{http://tablefilter.free.fr/}{HTML Table Filter Generator}
+#'   for details. Configuration is passed as a
 #'   list of key value pairs to the JavaScript engine. A shiny app demonstrating
 #'   many useful features in one table can be found in the inst/examples/feature
 #'   directory of this package.
@@ -81,7 +82,7 @@ tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "
 
   # generate a random table id
   id <- paste(sample(LETTERS,8, replace=TRUE), collapse="");
-    
+#    id <- "testTable";
 if(is.null(tableProps$base_path)) {
   tableProps <- c(tableProps, base_path = 'tablefilter-2.5/');
 }
@@ -120,8 +121,9 @@ autoColScale <- function(colScales) {
       clrs <- unlist(strsplit(colScales[[i]], ':', fixed = TRUE));
       startColour <- clrs[2];
       endColour <- clrs[3];
-      minVal <- min(df[, i], na.rm = TRUE);
-      maxVal <- max(df[, i], na.rm = TRUE);
+      currentCol <- as.integer(sub('col\\_', '', cols[i])) + 1;
+      minVal <- min(df[, currentCol], na.rm = TRUE);
+      maxVal <- max(df[, currentCol], na.rm = TRUE);
      scale <- JS(paste0('function colorScale(i){
        var color = d3.scale.linear()
        .domain([', minVal, ', ', maxVal, '])
@@ -134,6 +136,9 @@ autoColScale <- function(colScales) {
   }
   return(colScales);
 }
+
+
+#.interpolate(d3.interpolateHcl)
 
 bgColScales <- autoColScale(bgColScales);
 fgColScales <- autoColScale(fgColScales);

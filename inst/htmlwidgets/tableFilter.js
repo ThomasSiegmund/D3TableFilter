@@ -26,8 +26,8 @@ HTMLWidgets.widget({
     var bgColScales = data.bgColScales;
 
     var fgColScales = data.fgColScales;
-    log("fgColScales");
-    log(fgColScales);
+    log("bgColScales");
+    log(bgColScales);
     var interaction = data.interaction;
 
     var tableID = data.tableID;
@@ -147,36 +147,54 @@ HTMLWidgets.widget({
     Shiny.addCustomMessageHandler("confirmEdit",
         function(message) {
           var cell = d3.select(document.getElementById(message["id"]));
-          log("cell");
-          log(cell);
           var oldColor = cell.attr("oldcolor");
+          var col = cell[0][0].className;
                     cell.transition()
                         .delay(700)
                         .style("color", oldColor)
                         .attr('id', '')
                         .attr('value', message["value"]);
                         log("cell");
-                        log(cell);
                         // todo: check if there is a d3 syntax to do this
                         cell[0][0].__data__.value = message["value"];
-                        debounce(colourCells(), 1000);
-        });
+                        debounce(colourCol(col), 1000);
+      });
     
     // initialize table filter generator
     // var totRowIndex = tf_Tag(tf_Id(tableID),"tr").length; // for row counter, not yet supported
     var tf1 = setFilterGrid(tableID, table_Props); 
+
+    // apply fg and bg colour scales to column
+    colourCol  = function(col) {
+      
+      if (bgColScales.hasOwnProperty(col)) { 
+       d3.selectAll('td.' + col)
+            .transition()
+            .style("background-color", function(d, i){
+            // run the d3 colour scale function defined in the bgColScales list on the R side
+        		return bgColScales[col](d.value);
+  				});
+       }  
+      
+      if (fgColScales.hasOwnProperty(col)) { 
+          d3.selectAll('td.' + col)
+          .transition()
+          .style("background-color", function(d, i){
+            // run the d3 colour scale function defined in the bgColScales list on the R side
+          	return bgColScales[col](d.value);
+  				});
+      }
+
+    }
 
     // set text or background colour
     // does nothing if length(bgColScales) == 0 and length(fgColScales) == 0
     colourCells = function() {
       log("running colourCells");
     for (var key in bgColScales) { 
-//      log(key);
        if (bgColScales.hasOwnProperty(key)) { 
        d3.selectAll('td.' + key).style("background-color", function(d, i){
             // run the d3 colour scale function defined in the bgColScales list on the R side
-//            log("td.key")
-//            log(d);
       			return bgColScales[key](d.value);
   				});
        }  

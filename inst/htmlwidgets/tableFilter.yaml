@@ -1,9 +1,10 @@
 dependencies:
-  - name: tablefilter
-    version: 2.5
-    src: "lib/tablefilter/dist"
-    script: tablefilter_all_min.js
   - name: d3
     version: 3.5.0
     src: "lib/d3/dist"
     script: d3.min.js
+  - name: tablefilter
+    version: 2.5
+    src: "lib/tablefilter/dist"
+    script: tablefilter_all_min.js
+

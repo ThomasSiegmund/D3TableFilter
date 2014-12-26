@@ -6,7 +6,8 @@
 \usage{
 tableFilter(df, tableProps, showRowNames = FALSE,
   rowNamesColumn = "Rownames", extensions = c(), bgColScales = list(),
-  fgColScales = list())
+  fgColScales = list(), interaction = "none", editColor = "blue",
+  errorColor = "red")
 }
 \arguments{
 \item{df}{Data frame or matrix to be displayed as html table}
@@ -22,6 +23,13 @@ tableFilter(df, tableProps, showRowNames = FALSE,
 \item{bgColScales}{List of background colour scales to apply to the columns}
 
 \item{fgColScales}{List of text colour scales to apply to the columns}
+
+\item{interaction}{Mode of interaction, "edit" or "none"}
+
+\item{editColor}{During editing the text color switches briefly to this color
+while input is beeing validated}
+
+\item{errorColor}{Text switches briefly to this color to indicate validation error}
 }
 \description{
 R interface to Max Guglielmi's \href{http://tablefilter.free.fr/ }{HTML Table

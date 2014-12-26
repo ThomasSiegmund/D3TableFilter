@@ -44,6 +44,10 @@
 #' @param extensions Vector of table filter exentsions to load
 #' @param bgColScales List of background colour scales to apply to the columns
 #' @param fgColScales List of text colour scales to apply to the columns
+#' @param interaction Mode of interaction, "edit" or "none"
+#' @param editColor During editing the text color switches briefly to this color
+#' while input is beeing validated
+#' @param errorColor Text switches briefly to this color to indicate validation error
 #' @example inst/examples/basic/server.R
 #' @seealso \code{\link[DT]{datatable}}.
 #' @examples
@@ -69,7 +73,7 @@
 #' @import htmlwidgets
 #' @export JS
 #' @export
-tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "Rownames", extensions = c(), bgColScales = list(), fgColScales = list()) {
+tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "Rownames", extensions = c(), bgColScales = list(), fgColScales = list(), interaction = "none", editColor = "green", errorColor = "red") {
   
   if(is.matrix(df)) {
     df <- as.data.frame(df);
@@ -151,7 +155,11 @@ x <- list(
     tableProps = tableProps,
     tableID = id,
     bgColScales = bgColScales,
-    fgColScales = fgColScales
+    fgColScales = fgColScales,
+    interaction = interaction,
+    showRowNames = showRowNames,
+    editColor = editColor,
+    errorColor  = errorColor
 )
 
   # create the widget

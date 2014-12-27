@@ -125,12 +125,9 @@ autoColScale <- function(colScales) {
       clrs <- unlist(strsplit(colScales[[i]], ':', fixed = TRUE));
       startColour <- clrs[2];
       endColour <- clrs[3];
-      currentCol <- as.integer(sub('col\\_', '', cols[i])) + 1;
-      minVal <- min(df[, currentCol], na.rm = TRUE);
-      maxVal <- max(df[, currentCol], na.rm = TRUE);
      scale <- JS(paste0('function colorScale(i){
        var color = d3.scale.linear()
-       .domain([', minVal, ', ', maxVal, '])
+       .domain(colExtent("', cols[i] ,'"))
        .range(["', startColour, '", "', endColour, '"])
        .interpolate(d3.interpolateHcl);
        return color(i);
@@ -140,7 +137,6 @@ autoColScale <- function(colScales) {
   }
   return(colScales);
 }
-
 
 #.interpolate(d3.interpolateHcl)
 

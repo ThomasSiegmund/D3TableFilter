@@ -110,8 +110,8 @@ HTMLWidgets.widget({
       };
     };
 
-    // this creates a shiny input event, named as the corresponding output element 
-    // + "_edit"
+    // create a shiny input event, named as 
+    //  the corresponding output element + "_edit"
     function shinyInputEvent(d, i, j) {
     	var sel = d3.select(this);
       var editID = inputID + editnumber++;
@@ -150,26 +150,46 @@ HTMLWidgets.widget({
           var oldColor = cell.attr("oldcolor");
           var col = cell[0][0].className;
                     cell.transition()
-                        .delay(700)
+                        .duration(700)
                         .style("color", oldColor)
                         .attr('id', '')
                         .attr('value', message["value"]);
                         log("cell");
                         // todo: check if there is a d3 syntax to do this
                         cell[0][0].__data__.value = message["value"];
-                        debounce(colourCol(col), 1000);
-      });
+                        colourCol(col);
+    });
     
     // initialize table filter generator
     // var totRowIndex = tf_Tag(tf_Id(tableID),"tr").length; // for row counter, not yet supported
     var tf1 = setFilterGrid(tableID, table_Props); 
-
+    
+    // calculate min / max / extent per column. Can be used from R for
+    // dynamic colour scale range  
+    colExtent = function(col) {
+      var colVals = d3.selectAll('td.' + col)
+                      .data();
+      var colExtent = d3.extent(colVals, function(d) { return d.value; })
+      return(colExtent);
+    }
+    colMin = function(col) {
+      var colVals = d3.selectAll('td.' + col)
+                      .data();
+      var colMin = d3.min(colVals, function(d) { return d.value; })
+      return(colMin);
+    }
+    colMax = function(col) {
+      var colVals = d3.selectAll('td.' + col)
+                      .data();
+      var colMax = d3.max(colVals, function(d) { return d.value; })
+      return(colMax);
+    }
+    
     // apply fg and bg colour scales to column
-    colourCol  = function(col) {
-      
+    colourCol  = function(col) {    
       if (bgColScales.hasOwnProperty(col)) { 
        d3.selectAll('td.' + col)
-            .transition()
+//            .transition() // running this transition cancels text colour transition
             .style("background-color", function(d, i){
             // run the d3 colour scale function defined in the bgColScales list on the R side
         		return bgColScales[col](d.value);
@@ -184,10 +204,9 @@ HTMLWidgets.widget({
           	return bgColScales[col](d.value);
   				});
       }
-
     }
 
-    // set text or background colour
+    // set text or background colour for whole table
     // does nothing if length(bgColScales) == 0 and length(fgColScales) == 0
     colourCells = function() {
       log("running colourCells");

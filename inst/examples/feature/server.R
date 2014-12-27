@@ -11,7 +11,7 @@ shinyServer(function(input, output, session) {
     # There are more in http://tablefilter.free.fr/doc.php
     table_Props <- list(
       # appearence
-      alternate_rows = TRUE,
+      alternate_rows = FALSE,
       btn_reset = TRUE,  
       btn_reset_text = "Clear",
       filters_row_index = 1,
@@ -42,22 +42,14 @@ shinyServer(function(input, output, session) {
       #column visibility
       showHide_cols_text = 'Hide columns:',
       showHide_enable_tick_all = TRUE,
+      # filters
+      refresh_filters = TRUE,  
       col_8 = "checklist",
       col_9 = "checklist",
       col_10 = "multiple",
       col_11 = "multiple",
       # row counter not supported
       rows_counter = FALSE
-#       ,  
-#       col_operation = list(   
-#         id = c("table8Tot1","table8Tot2"),  
-#         col = c(2,4),  
-#         operation = c("sum","sum"),  
-#         write_method = c("innerHTML","setValue"),  
-#         exclude_row = nrow(mtcars),  
-#         decimal_precision = c(1,0)  
-#       ), 
-#       rows_always_visible = nrow(mtcars)
     );
 
     tableFilter(mtcars, table_Props,

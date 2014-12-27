@@ -29,11 +29,11 @@ HTMLWidgets.widget({
     log("bgColScales");
     log(bgColScales);
     var interaction = data.interaction;
-
-    var tableID = data.tableID;
     
     var showRowNames = data.showRowNames;
     
+//    var tableID = data.tableID;
+    var tableID = el.id + '_tbl';
     var outputID = el.id;
     var inputID = outputID + '_edit';
     var editnumber = 0;

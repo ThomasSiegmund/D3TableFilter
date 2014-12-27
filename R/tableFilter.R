@@ -84,9 +84,6 @@ tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "
     colnames(df)[1] <- rowNamesColumn;  
   }
 
-  # generate a random table id
-  id <- paste(sample(LETTERS,8, replace=TRUE), collapse="");
-#    id <- "testTable";
 if(is.null(tableProps$base_path)) {
   tableProps <- c(tableProps, base_path = 'tablefilter-2.5/');
 }
@@ -149,7 +146,6 @@ tableProps <- c(tableProps, on_after_sort = list(JS('function(o) {colourCells()}
 x <- list(
     data = df,
     tableProps = tableProps,
-    tableID = id,
     bgColScales = bgColScales,
     fgColScales = fgColScales,
     interaction = interaction,

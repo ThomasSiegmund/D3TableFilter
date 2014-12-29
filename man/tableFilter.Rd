@@ -6,8 +6,8 @@
 \usage{
 tableFilter(df, tableProps, showRowNames = FALSE,
   rowNamesColumn = "Rownames", extensions = c(), bgColScales = list(),
-  fgColScales = list(), interaction = "none", editColor = "blue",
-  errorColor = "red")
+  fgColScales = list(), interaction = "none", editColor = "green",
+  errorColor = "red", filterInput = FALSE)
 }
 \arguments{
 \item{df}{Data frame or matrix to be displayed as html table}
@@ -30,6 +30,9 @@ tableFilter(df, tableProps, showRowNames = FALSE,
 while input is beeing validated}
 
 \item{errorColor}{Text switches briefly to this color to indicate validation error}
+
+\item{filterInput}{Generate an input element named outputid + "_filter" listing
+filter settings and valid rows}
 }
 \description{
 R interface to Max Guglielmi's \href{http://tablefilter.free.fr/ }{HTML Table

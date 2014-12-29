@@ -17,26 +17,36 @@ HTMLWidgets.widget({
 
 //    var $j = jQuery.noConflict();
 
+    // name ouf the output widget
+    var outputID = el.id;
+
     var celldata = HTMLWidgets.dataframeToD3(data.data);
 
     var columns = Object.getOwnPropertyNames(celldata[0]);
     
     var table_Props = data.tableProps;
+    
+    // need to access this from shiny custom message functions
+    // and to have it available for multiple tables in one document
+    window["bgColScales_" + outputID] = data.bgColScales;
+    window["fgColScales_" + outputID] = data.fgColScales;
 
-    var bgColScales = data.bgColScales;
-
-    var fgColScales = data.fgColScales;
-    log("bgColScales");
-    log(bgColScales);
     var interaction = data.interaction;
     
     var showRowNames = data.showRowNames;
     
-//    var tableID = data.tableID;
     var tableID = el.id + '_tbl';
-    var outputID = el.id;
+    var tfName = 'tf_' + el.id;
     var inputID = outputID + '_edit';
     var editnumber = 0;
+
+    //  generate a filter input?
+    var filterInput = data.filterInput;
+    if(filterInput) {
+      table_Props["on_after_filter"] = function(o) {updateFilterInput(o)};
+    }
+
+    log(table_Props);
     
     var editColor = data.editColor;
     var errorColor = data.errorColor;
@@ -129,107 +139,172 @@ HTMLWidgets.widget({
       Shiny.onInputChange(inputID, edit);
     }    
     
-    // server does not accept edit. revert it. signal by transient color 
-    Shiny.addCustomMessageHandler("rejectEdit",
-        function(message) {
-          var cell = d3.select(document.getElementById(message["id"]));
-          var oldColor = cell.attr("oldcolor");
-                    cell.style("color", errorColor)
-                        .transition()
-                        .delay(1500)
-                        .text(message["value"])
-                        .style("color", oldColor)
-                        .attr('id', '');
-    });
-        
+    // server does not accept edit. revert it. signal by transient color
+    try {
+      Shiny.addCustomMessageHandler("rejectEdit",
+          function(message) {
+            var cell = d3.select(document.getElementById(message["id"]));
+            var oldColor = cell.attr("oldcolor");
+                      cell.style("color", errorColor)
+                          .transition()
+                          .delay(1500)
+                          .text(message["value"])
+                          .style("color", oldColor)
+                          .attr('id', '');
+      });
+    } catch (err) {
+      console.log("rejectEdit already installed");
+    }
     // server accepted edit. confirm by switching back to original color
     // recalculate colour scale 
-    Shiny.addCustomMessageHandler("confirmEdit",
-        function(message) {
-          var cell = d3.select(document.getElementById(message["id"]));
-          var oldColor = cell.attr("oldcolor");
-          var col = cell[0][0].className;
-                    cell.transition()
-                        .duration(700)
-                        .style("color", oldColor)
-                        .attr('id', '')
-                        .attr('value', message["value"]);
-                        log("cell");
-                        // todo: check if there is a d3 syntax to do this
-                        cell[0][0].__data__.value = message["value"];
-                        colourCol(col);
-    });
+    try {
+      Shiny.addCustomMessageHandler("confirmEdit",
+          function(message) {
+            log(message)
+            // TODO replace by better selector
+            var cell = d3.select(document.getElementById(message["id"]));
+            var oldColor = cell.attr("oldcolor");
+            var col = cell[0][0].className;
+                      cell.transition()
+                          .duration(700)
+                          .style("color", oldColor)
+                          .attr('value', cell.text());
+                          // todo: check if there is a d3 syntax to do this
+                          cell[0][0].__data__.value = cell.text();
+                          colourCol(message["tbl"], col);
+      });
+    } catch (err) {
+      console.log("confirmEdit already installed");
+    }
     
     // initialize table filter generator
     // var totRowIndex = tf_Tag(tf_Id(tableID),"tr").length; // for row counter, not yet supported
-    var tf1 = setFilterGrid(tableID, table_Props); 
+
+    window[tfName] = setFilterGrid(tableID, table_Props); 
     
     // calculate min / max / extent per column. Can be used from R for
     // dynamic colour scale range  
-    colExtent = function(col) {
-      var colVals = d3.selectAll('td.' + col)
+    colExtent = function(tbl, col) {
+      var colVals = d3.selectAll('#' + tbl)
+                      .selectAll('td.' + col)
                       .data();
-      var colExtent = d3.extent(colVals, function(d) { return d.value; })
+      var colExtent = d3.extent(colVals, function(d) { return d.value; });
       return(colExtent);
     }
-    colMin = function(col) {
-      var colVals = d3.selectAll('td.' + col)
+    colMin = function(tbl, col) {
+      var colVals = d3.selectAll('#' + tbl)
+                      .selectAll('td.' + col)
                       .data();
       var colMin = d3.min(colVals, function(d) { return d.value; })
       return(colMin);
     }
-    colMax = function(col) {
-      var colVals = d3.selectAll('td.' + col)
+    colMax = function(tbl, col) {
+      var colVals = d3.selectAll('#' + tbl)
+                      .selectAll('td.' + col)
                       .data();
       var colMax = d3.max(colVals, function(d) { return d.value; })
       return(colMax);
     }
     
     // apply fg and bg colour scales to column
-    colourCol  = function(col) {    
-      if (bgColScales.hasOwnProperty(col)) { 
-       d3.selectAll('td.' + col)
+    colourCol  = function(tbl, col) {  
+      var bgColScales = window["bgColScales_" + tbl];
+      if (bgColScales.hasOwnProperty(col)) {
+      table = tbl; 
+       var col2Color = d3.selectAll('#' + tbl)
+                         .selectAll('td.' + col)
 //            .transition() // running this transition cancels text colour transition
-            .style("background-color", function(d, i){
-            // run the d3 colour scale function defined in the bgColScales list on the R side
-        		return bgColScales[col](d.value);
+
+          // run the d3 colour scale function defined in the bgColScales list on the R side
+          col2Color.style("background-color", function(d, i){
+        		return bgColScales[col](tbl, d.value);
   				});
-       }  
-      
-      if (fgColScales.hasOwnProperty(col)) { 
-          d3.selectAll('td.' + col)
-          .transition()
-          .style("background-color", function(d, i){
-            // run the d3 colour scale function defined in the bgColScales list on the R side
-          	return bgColScales[col](d.value);
+       } 
+      var fgColScales = window["fgColScales_" + tbl];
+      if (fgColScales.hasOwnProperty(col)) {
+          table = tbl; 
+          d3.selectAll('#' + tbl)
+          .selectAll('td.' + col)
+//          .transition()
+
+        // run the d3 colour scale function defined in the bgColScales list on the R side
+        .style("background-color", function(d, i){
+          	return fgColScales[col](tbl, d.value);
   				});
       }
     }
 
     // set text or background colour for whole table
     // does nothing if length(bgColScales) == 0 and length(fgColScales) == 0
-    colourCells = function() {
-      log("running colourCells");
-    for (var key in bgColScales) { 
+    colourCells = function(tbl) {
+    log("running colourCells");  
+    var bgColScales = window["bgColScales_" + outputID];
+    for (var key in bgColScales) {
        if (bgColScales.hasOwnProperty(key)) { 
-       d3.selectAll('td.' + key).style("background-color", function(d, i){
-            // run the d3 colour scale function defined in the bgColScales list on the R side
-      			return bgColScales[key](d.value);
+         table = tbl; // strange. this makes it accessible inside of the select
+         d3.selectAll('#' + table).selectAll('td.' + key)
+           .style("background-color", function(d, i){
+             // run the d3 colour scale function defined in the bgColScales list on the R side
+      			return bgColScales[key](tbl, d.value);
   				});
        }  
      };
      
+    var fgColScales = window["fgColScales_" + outputID];
     for (var key in fgColScales) { 
        if (fgColScales.hasOwnProperty(key)) { 
-       d3.selectAll('td.' + key).style("color", function(d, i){
+       table = tbl; // strange. this makes it accessible inside of the select
+       d3.selectAll('#' + tbl).selectAll('td.' + key).style("color", function(d, i){
             // run the d3 colour scale function defined in the fgColScales list on the R side
-        		return fgColScales[key](d.value);
+        		return fgColScales[key](tbl, d.value);
   				});
        }  
      };
     };
+    
     // set intial color. Has to run again after table sorting. 
-    colourCells();
+    colourCells(outputID);
+
+
+
+    // generate a shiny input listing the filter settings and
+    // the displayed rows index
+    updateFilterInput = function(tbl) {
+      log("updateFilterInput called");
+      
+      // extract table id from tablefiler object
+      tblID = tbl['id'].replace(/_tbl/, '');
+      tfName = "tf_" + tblID;
+      
+      // get the row index. don't use tablefilter validRows because
+      // it depends on sorting
+      validRows = [];
+      d3.selectAll('#' + tbl['id']).selectAll('tbody').selectAll('tr').each(function(d, i) {
+        if(this.style["display"] !== "none") {
+          // add 1 to match R row numbers
+          validRows.push(Number(this.id) + 1);
+        } 
+      });
+      
+      var filterids = window[tfName].GetFiltersId();
+      
+      var re = /^flt(\d+)/;
+      var filterNumbers = [];
+      filterids.forEach(function(x) { filterNumbers.push(x.match(re)[1]); });
+      
+      var filterSettings = [];
+      filterNumbers.forEach(function(x) {
+        var column = 'col_' + x;
+        var value = window[tfName].GetFilterValue(x);
+        filterSettings.push({column: column, value: value});         
+      });
+      
+      var filterInputID = tblID + '_filter';
+
+      filters = {filterSettings: filterSettings, validRows: validRows};
+      Shiny.onInputChange(filterInputID, filters);
+    }
+    
     
   } // end of renderValue !!
 

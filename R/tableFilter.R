@@ -48,6 +48,8 @@
 #' @param editColor During editing the text color switches briefly to this color
 #' while input is beeing validated
 #' @param errorColor Text switches briefly to this color to indicate validation error
+#' @param filterInput Generate an input element named outputid + "_filter" listing
+#' filter settings and valid rows
 #' @example inst/examples/basic/server.R
 #' @seealso \code{\link[DT]{datatable}}.
 #' @examples
@@ -73,7 +75,7 @@
 #' @import htmlwidgets
 #' @export JS
 #' @export
-tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "Rownames", extensions = c(), bgColScales = list(), fgColScales = list(), interaction = "none", editColor = "green", errorColor = "red") {
+tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "Rownames", extensions = c(), bgColScales = list(), fgColScales = list(), interaction = "none", editColor = "green", errorColor = "red", filterInput = FALSE) {
   
   if(is.matrix(df)) {
     df <- as.data.frame(df);
@@ -122,9 +124,9 @@ autoColScale <- function(colScales) {
       clrs <- unlist(strsplit(colScales[[i]], ':', fixed = TRUE));
       startColour <- clrs[2];
       endColour <- clrs[3];
-     scale <- JS(paste0('function colorScale(i){
+     scale <- JS(paste0('function colorScale(tbl, i){
        var color = d3.scale.linear()
-       .domain(colExtent("', cols[i] ,'"))
+       .domain(colExtent(tbl, "', cols[i] ,'"))
        .range(["', startColour, '", "', endColour, '"])
        .interpolate(d3.interpolateHcl);
        return color(i);
@@ -143,6 +145,10 @@ fgColScales <- autoColScale(fgColScales);
 # need to update colour after table sorting
 tableProps <- c(tableProps, on_after_sort = list(JS('function(o) {colourCells()}')));
 
+# if(filterInput) {
+#   tableProps <- c(tableProps, on_after_filter = list(JS('function(o) {updateFilterInput()}')));
+# }
+
 x <- list(
     data = df,
     tableProps = tableProps,
@@ -151,7 +157,8 @@ x <- list(
     interaction = interaction,
     showRowNames = showRowNames,
     editColor = editColor,
-    errorColor  = errorColor
+    errorColor = errorColor,
+    filterInput = filterInput
 )
 
   # create the widget

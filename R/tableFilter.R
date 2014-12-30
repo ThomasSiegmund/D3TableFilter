@@ -134,17 +134,8 @@ autoColScale <- function(colScales) {
   return(colScales);
 }
 
-#.interpolate(d3.interpolateHcl)
-
 bgColScales <- autoColScale(bgColScales);
 fgColScales <- autoColScale(fgColScales);
-
-# need to update colour after table sorting
-tableProps <- c(tableProps, on_after_sort = list(JS('function(o) {colourCells()}')));
-
-# if(filterInput) {
-#   tableProps <- c(tableProps, on_after_filter = list(JS('function(o) {updateFilterInput()}')));
-# }
 
 x <- list(
     data = df,
@@ -230,4 +221,28 @@ rejectEdit <- function(session, tbl, id, value = NULL, color = "red") {
 #' @export 
 confirmEdit <- function(session, tbl, id, value = NULL, color = "green") {
   session$sendCustomMessage(type = "confirmEdit", list(tbl = tbl, id = id, value = value, color = color));
+}
+
+#' Enable editing of a tableFilter widget
+#' @param Session Shiny session object.
+#' @param tbl Name of the table to be edited.
+#' @param col Enable selecting of column \code{col} only.
+#' 
+#' @examples
+#' enableEdit(session, "mtcars", "col_0")
+#' @export
+enableEdit <- function(session, tbl, col = NULL) {
+  session$sendCustomMessage(type = "enableEdit", list(tbl = tbl, col = col));
+}
+
+#' Disable editing of a tableFilter widget
+#' @param Session Shiny session object.
+#' @param tbl Name of the table to disable editing.
+#' @param col Disable selecting of column \code{col} only.
+#' 
+#' @examples
+#' disableEdit(session, "mtcars", "col_0")
+#' @export 
+disableEdit <- function(session, tbl, col = NULL) {
+  session$sendCustomMessage(type = "disableEdit", list(tbl = tbl, col = col));
 }

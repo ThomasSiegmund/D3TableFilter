@@ -48,6 +48,9 @@ HTMLWidgets.widget({
       table_Props["on_after_filter"] = function(o) {updateFilterInput(o)};
     }
     
+    // need to update colour after table sorting
+    table_Props["on_after_sort"] = function(o) {colourCellsWrapper(o)};
+
     // remove existing table including table filter objects
     var table = d3.select(el).select("table").remove();
     var loader = d3.select(el).selectAll(".loader").remove();
@@ -85,12 +88,6 @@ HTMLWidgets.widget({
         // address columns table filter style
         .attr('class', function(d, i){ return "col_" + i; });
     
-    // mouse click or edit event event
-    if(interaction == "edit") {
-      cells.attr({contenteditable: true})
-        .on("input", debounce(shinyInputEvent, 800));
-    };
-     
     // debounce
     // from Underscore.js
     function debounce(func, wait, immediate) {
@@ -139,9 +136,7 @@ HTMLWidgets.widget({
     try {
       Shiny.addCustomMessageHandler("rejectEdit",
           function(message) {
-            log("reject event");
-            log(message)
-            var cell = d3.select(document.getElementById(message["id"]));
+            var cell = d3.select('#' + message["tbl"]).select('#' + message["id"]);
             // store color in attr so we can reset to it in subsequent edits
             cell.attr("oldcolor", function() {return cell.style("color")});
             var oldColor = cell.attr("oldcolor");
@@ -158,16 +153,15 @@ HTMLWidgets.widget({
             }
       });
     } catch (err) {
-      console.log("rejectEdit already installed");
+      ; // already installed
     }
+    
     // server accepted edit. confirm by switching back to original color
     // recalculate colour scale 
     try {
       Shiny.addCustomMessageHandler("confirmEdit",
           function(message) {
-            log(message)
-            // TODO replace by better selector
-            var cell = d3.select(document.getElementById(message["id"]));
+            var cell = d3.select('#' + message["tbl"]).select('#' + message["id"]);
             if(cell.attr("oldcolor")) {
               // if previous validation failed
               var oldColor = cell.attr("oldcolor");
@@ -187,8 +181,6 @@ HTMLWidgets.widget({
             } else {
               var val = cell.text();
             }
-            log("val")
-            log(val)
             cell.attr('value', val)
                 .text(val);
             // todo: check if there is a d3 syntax to do this
@@ -196,9 +188,43 @@ HTMLWidgets.widget({
             colourCol(message["tbl"], col);
       });
     } catch (err) {
-      console.log("confirmEdit already installed");
+      ; // already installed
     }
-        
+    
+    // enable editing of a table 
+    try {
+      Shiny.addCustomMessageHandler("enableEdit",
+          function(message) {
+              var cells = d3.selectAll('#' + message["tbl"]);
+              if(message["col"] !== null) {
+                cells = cells.selectAll('td.' + message["col"]);
+              } else {
+                cells = cells.selectAll('td');
+              }
+              cells.attr({contenteditable: true})
+                      .on("input", debounce(shinyInputEvent, 800));
+      });
+    } catch (err) {
+       ; // already installed
+    }
+
+    // disable editing of a table
+    try {
+      Shiny.addCustomMessageHandler("disableEdit",
+          function(message) {
+            var cells = d3.selectAll('#' + message["tbl"]);
+              if(message["col"] !== null) {
+                cells = cells.selectAll('td.' + message["col"]);
+              } else {
+                cells = cells.selectAll('td');
+              }
+              cells.attr({contenteditable: false})
+                      .on("input", null);
+      });
+    } catch (err) {
+       ; // already installed
+    }
+    
     
     // calculate min / max / extent per column. Can be used from R for
     // dynamic colour scale range  
@@ -252,12 +278,16 @@ HTMLWidgets.widget({
       }
     }
     
+    // called from TableFilter. get table name from table filter object
+    colourCellsWrapper = function(o) {
+      tbl = o['id'].replace(/_tbl/, '');
+      colourCells(tbl);
+    }
     
-    // set text or background colour for whole table
+    // set text or background color for whole table
     // does nothing if length(bgColScales) == 0 and length(fgColScales) == 0
     colourCells = function(tbl) {
-    log("running colourCells");  
-    var bgColScales = window["bgColScales_" + outputID];
+    var bgColScales = window["bgColScales_" + tbl];
     for (var key in bgColScales) {
        if (bgColScales.hasOwnProperty(key)) { 
          table = tbl; // strange. this makes it accessible inside of the select
@@ -269,7 +299,7 @@ HTMLWidgets.widget({
        }  
      };
      
-    var fgColScales = window["fgColScales_" + outputID];
+    var fgColScales = window["fgColScales_" + tbl];
     for (var key in fgColScales) { 
        if (fgColScales.hasOwnProperty(key)) { 
        table = tbl; // strange. this makes it accessible inside of the select
@@ -319,6 +349,12 @@ HTMLWidgets.widget({
       Shiny.onInputChange(filterInputID, filters);
     }
     
+    // mouse click or edit event event
+    if(interaction == "edit") {
+      cells.attr({contenteditable: true})
+        .on("input", debounce(shinyInputEvent, 800));
+    };
+     
     // initialize table filter generator
     window[tfName] = setFilterGrid(tableID, table_Props); 
 

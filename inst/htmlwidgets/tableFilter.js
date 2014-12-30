@@ -88,11 +88,18 @@ HTMLWidgets.widget({
         // address columns table filter style
         .attr('class', function(d, i){ return "col_" + i; });
     
-    // debounce
-    // from Underscore.js
+    // debounce from Underscore.js
+    // modified to allow rapid editing of multiple cells
+    // if args are different between subsequent calls, 
+    // fire the previous call immediately.
     function debounce(func, wait, immediate) {
-      var timeout, args, context, timestamp, result;
+       var timeout, args, context, timestamp, result;
       return function() {
+        if(args != null && args != arguments) {
+          // called rapidly twice with different args.
+          // execute previous call immediately
+          func.apply(context, args);
+        }
         context = this;
         args = arguments;
         timestamp = new Date();
@@ -102,7 +109,12 @@ HTMLWidgets.widget({
             timeout = setTimeout(later, wait - last);
           } else {
             timeout = null;
-            if (!immediate) result = func.apply(context, args);
+            if (!immediate) {
+              result = func.apply(context, args);
+              // Normal exit after timeout.
+              // Set args null to have a clean start again.
+              args = null;
+            }
           }
         };
         var callNow = immediate && !timeout;

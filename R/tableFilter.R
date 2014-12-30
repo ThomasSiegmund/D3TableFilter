@@ -190,17 +190,17 @@ renderTableFilter <- function(expr, env = parent.frame(), quoted = FALSE) {
 #' ("col") and the new value ("val") of the cell. Row and column numbers are in 
 #' R coordinates. If \code{showRowNames} is \code{TRUE}, the column number of 
 #' the rownames is 0.
-#' @param Session Shiny session object.
+#' @param session Shiny session object.
 #' @param tbl Name of the table beeing edited.
 #' @param id Unique identifier of the edit event, received via the edit input
-#' @param colour Text colour of a failed edit. 
+#' @param color Text colour of a failed edit. 
 #' @param value Reset the input to this value if not null.
 #' @export 
 rejectEdit <- function(session, tbl, id, value = NULL, color = "red") {
         session$sendCustomMessage(type = "rejectEdit", list(tbl = tbl, id = id, value = value, color = color));
 }
 
-#' Give feedback in case of validaton failure.
+#' Give feedback in case of validaton success
 #' 
 #' For each input event in a tableFilter widget a message is sent via a shiny 
 #' input. After input validation \code{confirmEdit} can be used to give visual feedback
@@ -213,10 +213,10 @@ rejectEdit <- function(session, tbl, id, value = NULL, color = "red") {
 #' ("col") and the new value ("val") of the cell. Row and column numbers are in 
 #' R coordinates. If \code{showRowNames} is \code{TRUE}, the column number of 
 #' the rownames is 0.
-#' @param Session Shiny session object.
+#' @param session Shiny session object.
 #' @param tbl Name of the table beeing edited.
 #' @param id Unique identifier of the edit event, received via the edit input
-#' @param colour Transient text colour to indicate success
+#' @param color Transient text colour to indicate success
 #' @param value Value to set text to after confirmation. Can be used to format input.
 #' @export 
 confirmEdit <- function(session, tbl, id, value = NULL, color = "green") {

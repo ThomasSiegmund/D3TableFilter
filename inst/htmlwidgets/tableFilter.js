@@ -31,6 +31,9 @@ HTMLWidgets.widget({
     window["bgColScales_" + outputID] = data.bgColScales;
     window["fgColScales_" + outputID] = data.fgColScales;
 
+    // have a unique id for each edit
+    window["editCounter"] = 0;
+    
     var interaction = data.interaction;
     
     var showRowNames = data.showRowNames;
@@ -38,18 +41,12 @@ HTMLWidgets.widget({
     var tableID = el.id + '_tbl';
     var tfName = 'tf_' + el.id;
     var inputID = outputID + '_edit';
-    var editnumber = 0;
 
     //  generate a filter input?
     var filterInput = data.filterInput;
     if(filterInput) {
       table_Props["on_after_filter"] = function(o) {updateFilterInput(o)};
     }
-
-    log(table_Props);
-    
-    var editColor = data.editColor;
-    var errorColor = data.errorColor;
     
     // remove existing table including table filter objects
     var table = d3.select(el).select("table").remove();
@@ -124,11 +121,8 @@ HTMLWidgets.widget({
     //  the corresponding output element + "_edit"
     function shinyInputEvent(d, i, j) {
     	var sel = d3.select(this);
-      var editID = inputID + editnumber++;
-      sel.attr('id', editID)
-      .attr("oldcolor", function() {return sel.style("color")})
-      .style("color", editColor);
-      editnumber++;
+      var editID = "edit_" + window["editCounter"]++;
+      sel.attr('id', editID);
       var row = j + 1;
       if(showRowNames) {
         var col = i;
@@ -136,21 +130,32 @@ HTMLWidgets.widget({
         var col = i + 1;
       }
       var edit = {id: editID, row: row, col: col, val: sel.text()};
+      log("sending edit event " + editID);
       Shiny.onInputChange(inputID, edit);
     }    
     
-    // server does not accept edit. revert it. signal by transient color
+    // server doesn't accept edit. revert it. indicate by color change, revert if value
+    // is given by server
     try {
       Shiny.addCustomMessageHandler("rejectEdit",
           function(message) {
+            log("reject event");
+            log(message)
             var cell = d3.select(document.getElementById(message["id"]));
+            // store color in attr so we can reset to it in subsequent edits
+            cell.attr("oldcolor", function() {return cell.style("color")});
             var oldColor = cell.attr("oldcolor");
-                      cell.style("color", errorColor)
-                          .transition()
-                          .delay(1500)
-                          .text(message["value"])
-                          .style("color", oldColor)
-                          .attr('id', '');
+            cell.style("color", message["color"]);
+            // if sever sends value, reset input to it and transition
+            // color back to previous
+            if(message["value"] !== null) {
+                cell.transition()
+                .duration(1500)
+                .text(message["value"])
+                .style("color", oldColor)
+                .attr('id', '')
+                .attr('oldcolor', '');
+            }
       });
     } catch (err) {
       console.log("rejectEdit already installed");
@@ -163,24 +168,37 @@ HTMLWidgets.widget({
             log(message)
             // TODO replace by better selector
             var cell = d3.select(document.getElementById(message["id"]));
-            var oldColor = cell.attr("oldcolor");
+            if(cell.attr("oldcolor")) {
+              // if previous validation failed
+              var oldColor = cell.attr("oldcolor");
+            } else {
+              var oldColor = cell.style("color");
+            }
             var col = cell[0][0].className;
-                      cell.transition()
-                          .duration(700)
+            if(message["color"]) {
+                      cell.style("color", message["color"])
+                          .transition()
+                          .duration(1500)
                           .style("color", oldColor)
-                          .attr('value', cell.text());
-                          // todo: check if there is a d3 syntax to do this
-                          cell[0][0].__data__.value = cell.text();
-                          colourCol(message["tbl"], col);
+                          .attr('oldcolor', '');
+            }
+            if(message["value"] !== null) {
+              var val = message["value"];
+            } else {
+              var val = cell.text();
+            }
+            log("val")
+            log(val)
+            cell.attr('value', val)
+                .text(val);
+            // todo: check if there is a d3 syntax to do this
+            cell[0][0].__data__.value = val;
+            colourCol(message["tbl"], col);
       });
     } catch (err) {
       console.log("confirmEdit already installed");
     }
-    
-    // initialize table filter generator
-    // var totRowIndex = tf_Tag(tf_Id(tableID),"tr").length; // for row counter, not yet supported
-
-    window[tfName] = setFilterGrid(tableID, table_Props); 
+        
     
     // calculate min / max / extent per column. Can be used from R for
     // dynamic colour scale range  
@@ -233,7 +251,8 @@ HTMLWidgets.widget({
   				});
       }
     }
-
+    
+    
     // set text or background colour for whole table
     // does nothing if length(bgColScales) == 0 and length(fgColScales) == 0
     colourCells = function(tbl) {
@@ -262,11 +281,6 @@ HTMLWidgets.widget({
      };
     };
     
-    // set intial color. Has to run again after table sorting. 
-    colourCells(outputID);
-
-
-
     // generate a shiny input listing the filter settings and
     // the displayed rows index
     updateFilterInput = function(tbl) {
@@ -305,7 +319,12 @@ HTMLWidgets.widget({
       Shiny.onInputChange(filterInputID, filters);
     }
     
-    
+    // initialize table filter generator
+    window[tfName] = setFilterGrid(tableID, table_Props); 
+
+    // set intial color. Has to run again after table sorting. 
+    colourCells(outputID);
+
   } // end of renderValue !!
 
 }); // end of HTMLWIDGET !!

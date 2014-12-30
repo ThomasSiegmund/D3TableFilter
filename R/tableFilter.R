@@ -45,9 +45,6 @@
 #' @param bgColScales List of background colour scales to apply to the columns
 #' @param fgColScales List of text colour scales to apply to the columns
 #' @param interaction Mode of interaction, "edit" or "none"
-#' @param editColor During editing the text color switches briefly to this color
-#' while input is beeing validated
-#' @param errorColor Text switches briefly to this color to indicate validation error
 #' @param filterInput Generate an input element named outputid + "_filter" listing
 #' filter settings and valid rows
 #' @example inst/examples/basic/server.R
@@ -75,7 +72,7 @@
 #' @import htmlwidgets
 #' @export JS
 #' @export
-tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "Rownames", extensions = c(), bgColScales = list(), fgColScales = list(), interaction = "none", editColor = "green", errorColor = "red", filterInput = FALSE) {
+tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "Rownames", extensions = c(), bgColScales = list(), fgColScales = list(), interaction = "none", filterInput = FALSE) {
   
   if(is.matrix(df)) {
     df <- as.data.frame(df);
@@ -156,8 +153,6 @@ x <- list(
     fgColScales = fgColScales,
     interaction = interaction,
     showRowNames = showRowNames,
-    editColor = editColor,
-    errorColor = errorColor,
     filterInput = filterInput
 )
 
@@ -189,4 +184,50 @@ tableFilterOutput <- function(outputId, width = "100%", height = "400px") {
 renderTableFilter <- function(expr, env = parent.frame(), quoted = FALSE) {
   if (!quoted) { expr <- substitute(expr) } # force quoted
   shinyRenderWidget(expr, tableFilterOutput, env, quoted = TRUE)
+}
+
+#' Give feedback in case of validaton failure.
+#' 
+#' For each input event in a tableFilter widget a message is sent via a shiny 
+#' input. After input validation \code{rejectEdit} can be used to give visual feedback
+#' to the user in case of a validation failure.
+#' 
+#' In edit mode the a tableFilter widget creates a shiny input element. The name
+#' of this input is the name of the corresponding output element followed by 
+#' "_edit". For each edit event in the html table this input receives a list 
+#' giving a unique ID of the edit event ("id"), the row ("row"), the column 
+#' ("col") and the new value ("val") of the cell. Row and column numbers are in 
+#' R coordinates. If \code{showRowNames} is \code{TRUE}, the column number of 
+#' the rownames is 0.
+#' @param Session Shiny session object.
+#' @param tbl Name of the table beeing edited.
+#' @param id Unique identifier of the edit event, received via the edit input
+#' @param colour Text colour of a failed edit. 
+#' @param value Reset the input to this value if not null.
+#' @export 
+rejectEdit <- function(session, tbl, id, value = NULL, color = "red") {
+        session$sendCustomMessage(type = "rejectEdit", list(tbl = tbl, id = id, value = value, color = color));
+}
+
+#' Give feedback in case of validaton failure.
+#' 
+#' For each input event in a tableFilter widget a message is sent via a shiny 
+#' input. After input validation \code{confirmEdit} can be used to give visual feedback
+#' to the user.
+#' 
+#' In edit mode the a tableFilter widget creates a shiny input element. The name
+#' of this input is the name of the corresponding output element followed by 
+#' "_edit". For each edit event in the html table this input receives a list 
+#' giving a unique ID of the edit event ("id"), the row ("row"), the column 
+#' ("col") and the new value ("val") of the cell. Row and column numbers are in 
+#' R coordinates. If \code{showRowNames} is \code{TRUE}, the column number of 
+#' the rownames is 0.
+#' @param Session Shiny session object.
+#' @param tbl Name of the table beeing edited.
+#' @param id Unique identifier of the edit event, received via the edit input
+#' @param colour Transient text colour to indicate success
+#' @param value Value to set text to after confirmation. Can be used to format input.
+#' @export 
+confirmEdit <- function(session, tbl, id, value = NULL, color = "green") {
+  session$sendCustomMessage(type = "confirmEdit", list(tbl = tbl, id = id, value = value, color = color));
 }

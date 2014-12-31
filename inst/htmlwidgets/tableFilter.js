@@ -33,8 +33,7 @@ HTMLWidgets.widget({
 
     // have a unique id for each edit
     window["editCounter"] = 0;
-    
-    var interaction = data.interaction;
+    var edit = data.edit;
     
     var showRowNames = data.showRowNames;
     
@@ -202,16 +201,17 @@ HTMLWidgets.widget({
     } catch (err) {
       ; // already installed
     }
-    
-    // enable editing of a table 
+
+
+// enable editing of a table 
     try {
       Shiny.addCustomMessageHandler("enableEdit",
           function(message) {
               var cells = d3.selectAll('#' + message["tbl"]);
-              if(message["col"] !== null) {
-                cells = cells.selectAll('td.' + message["col"]);
+              if(message["cols"] !== null) {
+                  cells = cells.selectAll(message["cols"]);
               } else {
-                cells = cells.selectAll('td');
+                  cells = cells.selectAll('td');
               }
               cells.attr({contenteditable: true})
                       .on("input", debounce(shinyInputEvent, 800));
@@ -224,11 +224,11 @@ HTMLWidgets.widget({
     try {
       Shiny.addCustomMessageHandler("disableEdit",
           function(message) {
-            var cells = d3.selectAll('#' + message["tbl"]);
-              if(message["col"] !== null) {
-                cells = cells.selectAll('td.' + message["col"]);
+              var cells = d3.selectAll('#' + message["tbl"]);
+              if(message["cols"] !== null) {
+                  cells = cells.selectAll(message["cols"]);
               } else {
-                cells = cells.selectAll('td');
+                  cells = cells.selectAll('td');
               }
               cells.attr({contenteditable: false})
                       .on("input", null);
@@ -361,10 +361,14 @@ HTMLWidgets.widget({
       Shiny.onInputChange(filterInputID, filters);
     }
     
-    // mouse click or edit event event
-    if(interaction == "edit") {
+    // make cells editable
+    if(edit === true) {
       cells.attr({contenteditable: true})
         .on("input", debounce(shinyInputEvent, 800));
+    } else if (typeof(edit) == "string") {
+        rows.selectAll(edit)
+            .attr({contenteditable: true})
+            .on("input", debounce(shinyInputEvent, 800));
     };
      
     // initialize table filter generator

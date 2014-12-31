@@ -44,7 +44,7 @@
 #' @param extensions Vector of table filter exentsions to load
 #' @param bgColScales List of background colour scales to apply to the columns
 #' @param fgColScales List of text colour scales to apply to the columns
-#' @param interaction Mode of interaction, "edit" or "none"
+#' @param edit Set table or columns editable
 #' @param filterInput Generate an input element named outputid + "_filter" listing
 #' filter settings and valid rows
 #' @example inst/examples/basic/server.R
@@ -72,7 +72,7 @@
 #' @import htmlwidgets
 #' @export JS
 #' @export
-tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "Rownames", extensions = c(), bgColScales = list(), fgColScales = list(), interaction = "none", filterInput = FALSE) {
+tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "Rownames", extensions = c(), bgColScales = list(), fgColScales = list(), edit = FALSE, filterInput = FALSE) {
   
   if(is.matrix(df)) {
     df <- as.data.frame(df);
@@ -137,12 +137,18 @@ autoColScale <- function(colScales) {
 bgColScales <- autoColScale(bgColScales);
 fgColScales <- autoColScale(fgColScales);
 
+# make edit a d3 select string
+if (is.character(edit)) {
+  edit <- paste0('.',  edit, collapse = ', ');
+}
+
+
 x <- list(
     data = df,
     tableProps = tableProps,
     bgColScales = bgColScales,
     fgColScales = fgColScales,
-    interaction = interaction,
+    edit = edit,
     showRowNames = showRowNames,
     filterInput = filterInput
 )
@@ -226,23 +232,29 @@ confirmEdit <- function(session, tbl, id, value = NULL, color = "green") {
 #' Enable editing of a tableFilter widget
 #' @param Session Shiny session object.
 #' @param tbl Name of the table to be edited.
-#' @param col Enable selecting of column \code{col} only.
+#' @param cols editing of single column (\code{"col_0"}) or multiple columns (\code{c("col_0", "col_1")}).
 #' 
 #' @examples
-#' enableEdit(session, "mtcars", "col_0")
+#' enableEdit(session, "mtcars", c("col_1", "col_2"))
 #' @export
-enableEdit <- function(session, tbl, col = NULL) {
-  session$sendCustomMessage(type = "enableEdit", list(tbl = tbl, col = col));
+enableEdit <- function(session, tbl, cols = NULL) {
+  if (is.character(cols)) {
+    cols <- paste0('.',  cols, collapse = ', ');
+  }
+  session$sendCustomMessage(type = "enableEdit", list(tbl = tbl, cols = cols));
 }
 
 #' Disable editing of a tableFilter widget
 #' @param Session Shiny session object.
 #' @param tbl Name of the table to disable editing.
-#' @param col Disable selecting of column \code{col} only.
+#' @param cols Disable editing of single column (\code{"col_0"}) or multiple columns (\code{c("col_0", "col_1")}).
 #' 
 #' @examples
-#' disableEdit(session, "mtcars", "col_0")
+#' disableEdit(session, "mtcars", c("col_1", "col_2"))
 #' @export 
-disableEdit <- function(session, tbl, col = NULL) {
-  session$sendCustomMessage(type = "disableEdit", list(tbl = tbl, col = col));
+disableEdit <- function(session, tbl, cols = NULL) {
+  if (is.character(cols)) {
+    cols <- paste0('.',  cols, collapse = ', ');
+  }
+  session$sendCustomMessage(type = "disableEdit", list(tbl = tbl, cols = cols));
 }

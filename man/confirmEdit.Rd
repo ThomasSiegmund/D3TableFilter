@@ -2,7 +2,7 @@
 % Please edit documentation in R/tableFilter.R
 \name{confirmEdit}
 \alias{confirmEdit}
-\title{Give feedback in case of validaton failure.}
+\title{Give feedback in case of validaton success}
 \usage{
 confirmEdit(session, tbl, id, value = NULL, color = "green")
 }

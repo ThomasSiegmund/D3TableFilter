@@ -141,7 +141,7 @@ shinyServer(function(input, output, session) {
     );
 
     tableFilter(mtcars[ , 1:2], tableProps, showRowNames = TRUE,
-                rowNamesColumn = "Model", interaction = "edit",
+                rowNamesColumn = "Model", edit = c("col_1", "col_2"),
                 bgColScales = bgColScales, filterInput = TRUE);
   })
   
@@ -178,7 +178,7 @@ shinyServer(function(input, output, session) {
     )
     tableFilter(iris[1:10 , 1:2], tableProps, showRowNames = FALSE,
                 bgColScales = bgColScales,
-                interaction = "edit",
+                edit = TRUE,
                 filterInput = TRUE);
   })
   

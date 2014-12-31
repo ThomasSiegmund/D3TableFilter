@@ -6,7 +6,7 @@
 \usage{
 tableFilter(df, tableProps, showRowNames = FALSE,
   rowNamesColumn = "Rownames", extensions = c(), bgColScales = list(),
-  fgColScales = list(), interaction = "none", filterInput = FALSE)
+  fgColScales = list(), edit = FALSE, filterInput = FALSE)
 }
 \arguments{
 \item{df}{Data frame or matrix to be displayed as html table}
@@ -23,7 +23,7 @@ tableFilter(df, tableProps, showRowNames = FALSE,
 
 \item{fgColScales}{List of text colour scales to apply to the columns}
 
-\item{interaction}{Mode of interaction, "edit" or "none"}
+\item{edit}{Set table or columns editable}
 
 \item{filterInput}{Generate an input element named outputid + "_filter" listing
 filter settings and valid rows}

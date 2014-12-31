@@ -4,12 +4,12 @@
 \alias{enableEdit}
 \title{Enable editing of a tableFilter widget}
 \usage{
-enableEdit(session, tbl, col = NULL)
+enableEdit(session, tbl, cols = NULL)
 }
 \arguments{
 \item{tbl}{Name of the table to be edited.}
 
-\item{col}{Enable selecting of column \code{col} only.}
+\item{cols}{editing of single column (\code{"col_0"}) or multiple columns (\code{c("col_0", "col_1")}).}
 
 \item{Session}{Shiny session object.}
 }
@@ -17,6 +17,6 @@ enableEdit(session, tbl, col = NULL)
 Enable editing of a tableFilter widget
 }
 \examples{
-enableEdit(session, "mtcars", "col_0")
+enableEdit(session, "mtcars", c("col_1", "col_2"))
 }
 

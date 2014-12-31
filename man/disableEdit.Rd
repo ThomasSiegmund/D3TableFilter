@@ -4,12 +4,12 @@
 \alias{disableEdit}
 \title{Disable editing of a tableFilter widget}
 \usage{
-disableEdit(session, tbl, col = NULL)
+disableEdit(session, tbl, cols = NULL)
 }
 \arguments{
 \item{tbl}{Name of the table to disable editing.}
 
-\item{col}{Disable selecting of column \code{col} only.}
+\item{cols}{Disable editing of single column (\code{"col_0"}) or multiple columns (\code{c("col_0", "col_1")}).}
 
 \item{Session}{Shiny session object.}
 }
@@ -17,6 +17,6 @@ disableEdit(session, tbl, col = NULL)
 Disable editing of a tableFilter widget
 }
 \examples{
-disableEdit(session, "mtcars", "col_0")
+disableEdit(session, "mtcars", c("col_1", "col_2"))
 }
 

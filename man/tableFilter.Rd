@@ -6,10 +6,11 @@
 \usage{
 tableFilter(df, tableProps, showRowNames = FALSE,
   rowNamesColumn = "Rownames", extensions = c(), bgColScales = list(),
-  fgColScales = list(), edit = FALSE, filterInput = FALSE)
+  fgColScales = list(), edit = FALSE, radioButtons = NULL,
+  checkBoxes = NULL, filterInput = FALSE)
 }
 \arguments{
-\item{df}{Data frame or matrix to be displayed as html table}
+\item{df}{Data frame or matrix to display as html table}
 
 \item{tableProps}{A list object describing appearence and function of the table}
 
@@ -23,7 +24,11 @@ tableFilter(df, tableProps, showRowNames = FALSE,
 
 \item{fgColScales}{List of text colour scales to apply to the columns}
 
-\item{edit}{Set table or columns editable}
+\item{edit}{Set whole table (\code{edit = TRUE}) or columns (\code{edit = c("col_0", "col_2")}) editable}
+
+\item{radioButtons}{Turn logical columns into radio buttons (\code{radioButtons = "col_4"}).}
+
+\item{checkBoxes}{Turn logical columns into checkboxes (\code{checkBoxes = "col_3"}).}
 
 \item{filterInput}{Generate an input element named outputid + "_filter" listing
 filter settings and valid rows}

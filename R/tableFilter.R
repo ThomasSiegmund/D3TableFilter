@@ -37,14 +37,16 @@
 #'   interpolation is used. An example shiny app showing various colour scales
 #'   can be found in the inst/examples/colour/ directory of this package.
 #'      
-#' @param df Data frame or matrix to be displayed as html table
+#' @param df Data frame or matrix to display as html table
 #' @param tableProps A list object describing appearence and function of the table
 #' @param showRowNames Add the R row names as first column to the table
 #' @param rowNamesColumn column title for the row names column
 #' @param extensions Vector of table filter exentsions to load
 #' @param bgColScales List of background colour scales to apply to the columns
 #' @param fgColScales List of text colour scales to apply to the columns
-#' @param edit Set table or columns editable
+#' @param edit Set whole table (\code{edit = TRUE}) or columns (\code{edit = c("col_0", "col_2")}) editable
+#' @param radioButtons Turn logical columns into radio buttons (\code{radioButtons = "col_4"}). 
+#' @param checkBoxes Turn logical columns into checkboxes (\code{checkBoxes = "col_3"}). 
 #' @param filterInput Generate an input element named outputid + "_filter" listing
 #' filter settings and valid rows
 #' @example inst/examples/basic/server.R
@@ -72,7 +74,7 @@
 #' @import htmlwidgets
 #' @export JS
 #' @export
-tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "Rownames", extensions = c(), bgColScales = list(), fgColScales = list(), edit = FALSE, filterInput = FALSE) {
+tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "Rownames", extensions = c(), bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, filterInput = FALSE) {
   
   if(is.matrix(df)) {
     df <- as.data.frame(df);
@@ -142,13 +144,14 @@ if (is.character(edit)) {
   edit <- paste0('.',  edit, collapse = ', ');
 }
 
-
 x <- list(
     data = df,
     tableProps = tableProps,
     bgColScales = bgColScales,
     fgColScales = fgColScales,
     edit = edit,
+    radioButtons = radioButtons,
+    checkBoxes = checkBoxes,
     showRowNames = showRowNames,
     filterInput = filterInput
 )

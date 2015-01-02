@@ -6,6 +6,14 @@ library(htmlwidgets)
 library(tableFilter)
 
 data(mtcars);
+mtcars <- mtcars[, 1:2];
+mtcars$candidates <- FALSE;
+mtcars$favorite <- FALSE;
+myFavorite <- sample(nrow(mtcars), 1);
+myCandidates <- sample(nrow(mtcars), 5);
+print(myCandidates)
+mtcars[myFavorite, "favorite"] <- TRUE;
+mtcars[myCandidates, "candidates"] <- TRUE;
 
 edits <- data.frame(Row = c("", ""), Column = (c("", "")), Value = (c("", "")), stringsAsFactors = FALSE);
 rownames(edits) <- c("Fail", "Success");
@@ -17,7 +25,7 @@ shinyServer(function(input, output, session) {
   
   revals <- reactiveValues();
   
-  revals$mtcars <- mtcars[ , 1:2];
+  revals$mtcars <- mtcars;
   revals$edits <- edits;
   revals$filtering <- filtering;
   revals$filters <- NULL;
@@ -41,6 +49,7 @@ shinyServer(function(input, output, session) {
   observe({
     if(is.null(input$mtcars_edit)) return(NULL);
      edit <- input$mtcars_edit;
+    print(str(edit))
     isolate({
       # need isolate, otherwise this observer would run twice
       # for each edit
@@ -50,7 +59,17 @@ shinyServer(function(input, output, session) {
       val <- edit$val;
       
       # validate input 
-      if(col > 0) {
+      if(col == 0) {
+        # rownames
+        oldval <- rownames(mtcars)[row];
+        if(make.names(val) != val) {
+          rejectEdit(session, tbl = "mtcars", id = id, value = oldval);
+          revals$edits["Fail", "Row"] <- row;
+          revals$edits["Fail", "Column"] <- col;
+          revals$edits["Fail", "Value"] <- val;
+          return(NULL);
+        }
+      } else if (col %in% c(1, 2)){
         # numeric columns
         if(is.na(suppressWarnings(as.numeric(val)))) {
           oldval <- revals$mtcars[row, col];
@@ -63,21 +82,20 @@ shinyServer(function(input, output, session) {
           revals$edits["Fail", "Value"] <- val;
           return(NULL);
         } 
-      } else {
-        # rownames
-        oldval <- rownames(mtcars)[row];
-        if(make.names(val) != val) {
-          rejectEdit(session, tbl = "mtcars", id = id, value = oldval);
-          revals$edits["Fail", "Row"] <- row;
-          revals$edits["Fail", "Column"] <- col;
-          revals$edits["Fail", "Value"] <- val;
-          return(NULL);
-        }
+      } else if (col == 3) {
+        ; #nothing to validate for logical columns
       }
-      if(col > 0) {
-        revals$mtcars[row, col] <- val;
-      } else {
+      
+      # accept edits
+      if(col == 0) {
         rownames(revals$mtcars)[row] <- val;
+      } else if (col %in% c(1, 2, 3)) {
+        revals$mtcars[row, col] <- val;
+      } else if (col == 4) {
+        # radio buttons. There is no uncheck event
+        # so we need to set the whole column to FALSE here
+        revals$mtcars[, "favorite"] <- FALSE;
+        revals$mtcars[row, col] <- val;
       }
       confirmEdit(session, tbl = "mtcars", id = id, value = round(as.numeric(val), 1));
       revals$edits["Success", "Row"] <- row;
@@ -140,8 +158,12 @@ shinyServer(function(input, output, session) {
       }')
     );
 
-    tableFilter(mtcars[ , 1:2], tableProps, showRowNames = TRUE,
-                rowNamesColumn = "Model", edit = c("col_1", "col_2"),
+    tableFilter(mtcars, tableProps,
+                showRowNames = TRUE,
+                rowNamesColumn = "Model",
+                edit = c("col_1", "col_2"),
+                checkBoxes = "col_3",
+                radioButtons = "col_4",
                 bgColScales = bgColScales, filterInput = TRUE);
   })
   

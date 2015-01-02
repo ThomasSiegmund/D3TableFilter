@@ -311,7 +311,35 @@ HTMLWidgets.widget({
        ; // already installed
     }
     
+    // set filter
+    try {
+      Shiny.addCustomMessageHandler("setFilter",
+          function(message) {
+            var tfName = 'tf_' + message["tbl"];
+            window[tfName].SetFilterValue(message["col"], message["filterString"]);
+            if(message["doFilter"]) {
+              window[tfName].Filter();
+            }
+
+      });
+    } catch (err) {
+      ; // already installed
+    }
     
+    // clear filters from table
+    try {
+      Shiny.addCustomMessageHandler("clearFilters",
+          function(message) {
+            var tfName = 'tf_' + message["tbl"];
+            window[tfName].ClearFilters();
+            if(message["doFilter"]) {
+              window[tfName].Filter();
+            }
+      });
+    } catch (err) {
+      ; // already installed
+    }
+
     // calculate min / max / extent per column. Can be used from R for
     // dynamic colour scale range  
     colExtent = function(tbl, col) {

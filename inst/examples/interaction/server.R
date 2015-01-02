@@ -9,9 +9,8 @@ data(mtcars);
 mtcars <- mtcars[, 1:2];
 mtcars$candidates <- FALSE;
 mtcars$favorite <- FALSE;
-myFavorite <- sample(nrow(mtcars), 1);
 myCandidates <- sample(nrow(mtcars), 5);
-print(myCandidates)
+myFavorite <- sample(myCandidates, 1);
 mtcars[myFavorite, "favorite"] <- TRUE;
 mtcars[myCandidates, "candidates"] <- TRUE;
 
@@ -138,8 +137,10 @@ shinyServer(function(input, output, session) {
       on_keyup_delay = 800,
       sort_config = list(
         # alphabetic sorting for the row names column, numeric for all other columns
-        sort_types = c("String", rep("Number", ncol(mtcars)))
-      )
+        sort_types = c("String", "Number", "Number", "none", "none")
+      ),
+      col_3 = "none",
+      col_4 = "none"
     );
     
     # columns are addressed in TableFilter as col_0, col_1, ..., coln
@@ -181,6 +182,17 @@ shinyServer(function(input, output, session) {
     } else {
       disableEdit(session, "mtcars", "col_0");
     }
+  })
+  
+  observe({
+      input$dofilter;
+      isolate({
+        setFilter(session, tbl = "mtcars", col = "col_0", filterString = input$filterString, doFilter = TRUE);
+      })
+    })
+  observe({
+    input$clearfilter;
+       clearFilters(session, tbl = "mtcars", doFilter = TRUE);
   })
   
   output$iris <- renderTableFilter({

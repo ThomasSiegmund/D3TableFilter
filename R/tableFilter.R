@@ -261,3 +261,30 @@ disableEdit <- function(session, tbl, cols = NULL) {
   }
   session$sendCustomMessage(type = "disableEdit", list(tbl = tbl, cols = cols));
 }
+
+#' Set filter on a column
+#' @param Session Shiny session object.
+#' @param tbl Name of the table to filter.
+#' @param col Set filter on column (\code{"col_0"}).
+#' @param col Run the filter.
+#' 
+#' @examples
+#' setFilter(session, "mtcars", col = "col_1", filter = ">20")
+#' @export 
+setFilter <- function(session, tbl, col, filterString, doFilter = TRUE) {
+  col <- sub('col_', '', col);
+  message <- list(tbl = tbl, col = col, filterString = filterString, doFilter = doFilter);
+  session$sendCustomMessage(type = "setFilter", message);
+}
+
+#' Clear all filters from a table
+#' @param Session Shiny session object.
+#' @param tbl Name of the table to clear.
+#' 
+#' @examples
+#' clearFilters(session, "mtcars")
+#' @export 
+clearFilters <- function(session, tbl, doFilter = TRUE) {
+  message <- list(tbl = tbl, doFilter = doFilter);
+  session$sendCustomMessage(type = "clearFilters", message);
+}

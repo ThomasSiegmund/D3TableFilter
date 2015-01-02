@@ -6,9 +6,17 @@ shinyUI(fluidPage(
   title = 'Interactive features',
   fluidRow(
     column(width = 2,
+           h4("Functions"),
            wellPanel(
             radioButtons("editing", "Mtcars table editing", choices = c("Enable" = TRUE, "Disable" = FALSE), selected = TRUE),
             radioButtons("editingCol0", "Rownames editing", choices = c("Enable" = TRUE, "Disable" = FALSE), selected = TRUE)
+           ),
+           wellPanel(
+             textInput("filterString", "Filter rownames", value = "rgx:^D"),
+             actionButton("dofilter", "Set filter")
+           ),
+           wellPanel(
+             actionButton("clearfilter", "Clear filters")
            )
     ),
     column(width = 5, 

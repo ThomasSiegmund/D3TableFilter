@@ -11,6 +11,7 @@ shinyServer(function(input, output, session) {
     tbl$LogScale <- rep(c(1, 2, 3, 10, 20, 30, 100, 200, 300, 1000, 2000, 3000, 10000, 20000, 30000), 2);
     tbl$Divergent <- round(seq(0, 14, length.out = 30), 1);
     tbl$OrdinalScale <- sample(LETTERS[1:10], nrow(tbl), replace = TRUE);
+    tbl$ColorBrewer.Set3 <- sample(LETTERS[1:9], nrow(tbl), replace = TRUE);
     
     table_Props <- list(
       # appearence
@@ -67,6 +68,12 @@ shinyServer(function(input, output, session) {
       col_5 = JS('function colorScale(tbl, i){
         var color = d3.scale.category10()
         .domain(["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]);
+        return color(i);
+      }'),
+      col_6 = JS('function colorScale(tbl, i){
+        var color = d3.scale.ordinal()
+        .domain(["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"])
+        .range(colorbrewer.Set3[9]);
         return color(i);
       }')
     );

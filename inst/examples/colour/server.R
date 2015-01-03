@@ -38,13 +38,13 @@ shinyServer(function(input, output, session) {
     # columns are addressed in TableFilter as col_0, col_1, ..., coln
     bgColScales <- list(
       col_0 = "auto:white:green",
-      col_1 = JS('function colorScale(i){
+      col_1 = JS('function colorScale(tbl, i){
         var color = d3.scale.linear()
         .domain([0, 200])
         .range(["white", "blue"]);
         return color(i);
       }'),
-      col_2 = JS('function colorScale(i){
+      col_2 = JS('function colorScale(tbl, i){
         var color = d3.scale.linear()
         .domain([0, 200])
         .range(["white", "blue"])
@@ -52,19 +52,19 @@ shinyServer(function(input, output, session) {
         return color(i);
       }'),
       # don't include 0 in the range of a log scale
-      col_3 = JS('function colorScale(i){
+      col_3 = JS('function colorScale(tbl, i){
         var color = d3.scale.log()
         .domain([1, 35000])
         .range(["white", "orangered"]);
         return color(i);
       }'),
-      col_4 = JS('function colorScale(i){
+      col_4 = JS('function colorScale(tbl, i){
         var color = d3.scale.linear()
         .domain([0, 7, 14])
         .range(["#f8766d", "white", "#00bfc4"]);
         return color(i);
       }'),
-      col_5 = JS('function colorScale(i){
+      col_5 = JS('function colorScale(tbl, i){
         var color = d3.scale.category10()
         .domain(["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]);
         return color(i);
@@ -74,13 +74,13 @@ shinyServer(function(input, output, session) {
     # invert font colour at a certain threshold
     # to make it readable on darker background colour
     fgColScales <- list(
-      col_1 = JS('function colorScale(i){
+      col_1 = JS('function colorScale(tbl, i){
         var color = d3.scale.threshold()
         .domain([130, 130, 200.1])
         .range(["black", "black", "white"]);
         return color(i);
       }'),
-      col_2 = JS('function colorScale(i){
+      col_2 = JS('function colorScale(tbl, i){
         var color = d3.scale.threshold()
         .domain([130, 130, 200.1])
         .range(["black", "black", "white"]);

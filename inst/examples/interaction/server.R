@@ -152,11 +152,13 @@ shinyServer(function(input, output, session) {
       col_1 = "auto:white:green"
     );
 
-    # apply arbitrary javascript functions to a table column
+    # apply D3.js functions to a column,
+    # turning cell values into scaled SVG graphics
     cellFunctions <- list(
       col_2 = JS('function makeGraph(selection){
         // remove text
         selection.text(null)
+
         // create svg element
         var svg = selection.append("svg")
               .attr("width", 24)
@@ -206,6 +208,7 @@ shinyServer(function(input, output, session) {
         setFilter(session, tbl = "mtcars", col = "col_0", filterString = input$filterString, doFilter = TRUE);
       })
     })
+  
   observe({
     input$clearfilter;
        clearFilters(session, tbl = "mtcars", doFilter = TRUE);

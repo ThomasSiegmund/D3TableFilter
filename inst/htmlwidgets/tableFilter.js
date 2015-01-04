@@ -181,8 +181,7 @@ HTMLWidgets.widget({
                         { if(this.checked) { 
                              var regex = /row_(\d+)/;
                              row = Number(regex.exec(this.className)[1]);
-                             d.value = true;
-                             log(row);                                                 
+                             d.value = true;                                            
                             } else {
                               d.value = false;
                             }
@@ -232,8 +231,6 @@ HTMLWidgets.widget({
     try {
       Shiny.addCustomMessageHandler("confirmEdit",
           function(message) {
-            log("message received")
-            log(message)
             
             var cell = d3.select('#' + message["tbl"]).select('#' + message["id"]);
             
@@ -251,8 +248,6 @@ HTMLWidgets.widget({
               cell
 //              .style("box-shadow", "0 0 5px 0px " + message["color"] + " inset")
               .style("background",  message["color"]);
-              log("cell")
-              log(cell)
             }
 
             if(message["color"]) {

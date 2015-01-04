@@ -180,7 +180,7 @@ shinyServer(function(input, output, session) {
               .attr("y", 12)
               .attr("dy", ".35em")
               .attr("text-anchor", "middle")
-              .text(function (d) { console.log(d); return d.value; });
+              .text(function (d) { return d.value; });
       }')
     );
       

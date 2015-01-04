@@ -35,6 +35,7 @@ HTMLWidgets.widget({
     // and to have it available for multiple tables in one document
     window["bgColScales_" + outputID] = data.bgColScales;
     window["fgColScales_" + outputID] = data.fgColScales;
+    window["cellFunctions_" + outputID] = data.cellFunctions;
 
     // have a unique id for each edit
     window["editCounter"] = 0;
@@ -495,13 +496,9 @@ HTMLWidgets.widget({
      if (typeof(checkBoxes) == "string") {
        checkBoxes = [checkBoxes];
      }
-       log("checkBoxes")
-       log(checkBoxes)
      if (typeof(checkBoxes) == "object" && checkBoxes != null) {
-       log("checkBoxes")
-       log(checkBoxes)
        checkBoxes.forEach(function(col) {
-       var btns = rows.selectAll('.' + checkBoxes)
+       var btns = rows.selectAll('.' + col)
               .text("")
               .append("input")
               .attr("type", "checkbox")
@@ -510,8 +507,23 @@ HTMLWidgets.widget({
               .on("change", shinyInputEvent);
         })
      }
-         
-    // initialize table filter generator
+
+     
+    // turn cell content in graphics
+    runCellFunctions = function(tbl) {
+      var cellFunctions = window["cellFunctions_" + tbl];
+      for (var key in cellFunctions) {
+         if (cellFunctions.hasOwnProperty(key)) { 
+           table = tbl; // strange. this makes it accessible inside of the select
+           var cells = d3.selectAll('#' + table).selectAll('td.' + key);
+               cells.call(cellFunctions[key]);
+    				};
+       }  
+     };
+    
+    runCellFunctions(outputID);
+    
+// initialize table filter generator
     window[tfName] = setFilterGrid(tableID, table_Props); 
 
     // set intial color. Has to run again after table sorting. 

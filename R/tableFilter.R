@@ -47,6 +47,7 @@
 #' @param edit Set whole table (\code{edit = TRUE}) or columns (\code{edit = c("col_0", "col_2")}) editable
 #' @param radioButtons Turn logical columns into radio buttons (\code{radioButtons = "col_4"}). 
 #' @param checkBoxes Turn logical columns into checkboxes (\code{checkBoxes = "col_3"}). 
+#' @param cellFunctions Run D3 functions to format a cell. Can be used to generate graphics.
 #' @param filterInput Generate an input element named outputid + "_filter" listing
 #' filter settings and valid rows
 #' @example inst/examples/basic/server.R
@@ -74,7 +75,7 @@
 #' @import htmlwidgets
 #' @export JS
 #' @export
-tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "Rownames", extensions = c(), bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, filterInput = FALSE) {
+tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "Rownames", extensions = c(), bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE) {
   
   if(is.matrix(df)) {
     df <- as.data.frame(df);
@@ -149,6 +150,7 @@ x <- list(
     tableProps = tableProps,
     bgColScales = bgColScales,
     fgColScales = fgColScales,
+    cellFunctions = cellFunctions,
     edit = edit,
     radioButtons = radioButtons,
     checkBoxes = checkBoxes,

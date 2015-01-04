@@ -7,7 +7,7 @@
 tableFilter(df, tableProps, showRowNames = FALSE,
   rowNamesColumn = "Rownames", extensions = c(), bgColScales = list(),
   fgColScales = list(), edit = FALSE, radioButtons = NULL,
-  checkBoxes = NULL, filterInput = FALSE)
+  checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE)
 }
 \arguments{
 \item{df}{Data frame or matrix to display as html table}
@@ -29,6 +29,8 @@ tableFilter(df, tableProps, showRowNames = FALSE,
 \item{radioButtons}{Turn logical columns into radio buttons (\code{radioButtons = "col_4"}).}
 
 \item{checkBoxes}{Turn logical columns into checkboxes (\code{checkBoxes = "col_3"}).}
+
+\item{cellFunctions}{Run D3 functions to format a cell. Can be used to generate graphics.}
 
 \item{filterInput}{Generate an input element named outputid + "_filter" listing
 filter settings and valid rows}

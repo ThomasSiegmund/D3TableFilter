@@ -149,33 +149,49 @@ shinyServer(function(input, output, session) {
     # you can use the "colMin", "colMax", or "colExtent" functions,
     # e.g .domain(colExtent("col_1")) or .domain([0, colMax(col_1)])
     bgColScales <- list(
-      col_1 = "auto:white:green",
-      col_2 = JS('function colorScale(tbl, i){
-        var color = d3.scale.linear()
-        .domain([0, colMax(tbl, "col_2")])
-        .range(["white", "orangered"])
-        .interpolate(d3.interpolateHcl);
-        return color(i);
-      }')
+      col_1 = "auto:white:green"
     );
 
+    # apply arbitrary javascript functions to a table column
+    cellFunctions <- list(
+      col_2 = JS('function makeGraph(selection){
+        // remove text
+        selection.text(null)
+        // create svg element
+        var svg = selection.append("svg")
+              .attr("width", 24)
+              .attr("height", 24);
+              
+              // creat a circle with a radius ("r") scaled to the 
+              // value of the cell ("d.value")
+              svg.append("circle")
+              .attr("cx", 12)
+              .attr("cy", 12)
+              .attr("r", function(d) { return Math.sqrt(d.value) * 4.242641; })
+              .style("fill", "orange")
+              .attr("stroke","none");
+              
+              // place the text within the circle
+              svg.append("text")
+              .style("fill", "black")
+              .attr("x", 12)
+              .attr("y", 12)
+              .attr("dy", ".35em")
+              .attr("text-anchor", "middle")
+              .text(function (d) { console.log(d); return d.value; });
+      }')
+    );
+      
     tableFilter(mtcars, tableProps,
                 showRowNames = TRUE,
                 rowNamesColumn = "Model",
-                edit = c("col_1", "col_2"),
+                edit = c("col_1"),
                 checkBoxes = "col_3",
                 radioButtons = "col_4",
+                cellFunctions = cellFunctions,
                 bgColScales = bgColScales, filterInput = TRUE);
   })
-  
-  observe({
-    if(input$editing) {
-      enableEdit(session, "mtcars");
-    } else {
-      disableEdit(session, "mtcars");
-    }
-  })
-  
+    
   observe({
     if(input$editingCol0) {
       enableEdit(session, "mtcars", "col_0");

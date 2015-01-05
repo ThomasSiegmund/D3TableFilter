@@ -51,6 +51,7 @@ HTMLWidgets.widget({
     if(filterInput) {
       table_Props["on_after_filter"] = function(o) {updateFilterInput(o)};
     }
+    var initialFilters = data.initialFilters;
     
     // need to update colour after table sorting
     table_Props["on_after_sort"] = function(o) {colourCellsWrapper(o)};
@@ -517,9 +518,18 @@ HTMLWidgets.widget({
     
     runCellFunctions(outputID);
     
-// initialize table filter generator
-    window[tfName] = setFilterGrid(tableID, table_Props); 
-
+    // initialize table filter generator
+    window[tfName] = setFilterGrid(tableID, table_Props);
+    
+    // initial filter settings
+    for (var key in initialFilters) {
+         if (initialFilters.hasOwnProperty(key)) {
+            var col = Number(key.replace(/col_/, ''));
+            window[tfName].SetFilterValue(col, initialFilters[key]);
+          };
+    };
+    window[tfName].Filter();
+    
     // set intial color. Has to run again after table sorting. 
     colourCells(outputID);
 

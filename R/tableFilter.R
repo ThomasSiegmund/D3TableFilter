@@ -41,7 +41,7 @@
 #' @param tableProps A list object describing appearence and function of the table
 #' @param showRowNames Add the R row names as first column to the table
 #' @param rowNamesColumn column title for the row names column
-#' @param extensions Vector of table filter exentsions to load
+#' @param extensions Vector of table filter extensions to load
 #' @param bgColScales List of background colour scales to apply to the columns
 #' @param fgColScales List of text colour scales to apply to the columns
 #' @param edit Set whole table (\code{edit = TRUE}) or columns (\code{edit = c("col_0", "col_2")}) editable
@@ -49,6 +49,8 @@
 #' @param checkBoxes Turn logical columns into checkboxes (\code{checkBoxes = "col_3"}). 
 #' @param cellFunctions Run D3 functions to format a cell. Can be used to generate graphics.
 #' @param filterInput Generate an input element named outputid + "_filter" listing
+#' filter settings and valid rows
+#' @param initialFilters List of initial filter settings
 #' filter settings and valid rows
 #' @example inst/examples/basic/server.R
 #' @seealso \code{\link[DT]{datatable}}.
@@ -75,7 +77,7 @@
 #' @import htmlwidgets
 #' @export JS
 #' @export
-tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "Rownames", extensions = c(), bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE) {
+tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "Rownames", extensions = c(), bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list()) {
   
   if(is.matrix(df)) {
     df <- as.data.frame(df);
@@ -155,7 +157,8 @@ x <- list(
     radioButtons = radioButtons,
     checkBoxes = checkBoxes,
     showRowNames = showRowNames,
-    filterInput = filterInput
+    filterInput = filterInput,
+    initialFilters = initialFilters
 )
 
   # create the widget

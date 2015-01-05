@@ -7,7 +7,8 @@
 tableFilter(df, tableProps, showRowNames = FALSE,
   rowNamesColumn = "Rownames", extensions = c(), bgColScales = list(),
   fgColScales = list(), edit = FALSE, radioButtons = NULL,
-  checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE)
+  checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE,
+  initialFilters = list())
 }
 \arguments{
 \item{df}{Data frame or matrix to display as html table}
@@ -18,7 +19,7 @@ tableFilter(df, tableProps, showRowNames = FALSE,
 
 \item{rowNamesColumn}{column title for the row names column}
 
-\item{extensions}{Vector of table filter exentsions to load}
+\item{extensions}{Vector of table filter extensions to load}
 
 \item{bgColScales}{List of background colour scales to apply to the columns}
 
@@ -33,6 +34,9 @@ tableFilter(df, tableProps, showRowNames = FALSE,
 \item{cellFunctions}{Run D3 functions to format a cell. Can be used to generate graphics.}
 
 \item{filterInput}{Generate an input element named outputid + "_filter" listing
+filter settings and valid rows}
+
+\item{initialFilters}{List of initial filter settings
 filter settings and valid rows}
 }
 \description{

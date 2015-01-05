@@ -185,6 +185,8 @@ shinyServer(function(input, output, session) {
       }')
     );
       
+    initialFilters = list(col_1 = ">20");
+    
     tableFilter(mtcars, tableProps,
                 showRowNames = TRUE,
                 rowNamesColumn = "Model",
@@ -192,7 +194,9 @@ shinyServer(function(input, output, session) {
                 checkBoxes = "col_3",
                 radioButtons = "col_4",
                 cellFunctions = cellFunctions,
-                bgColScales = bgColScales, filterInput = TRUE);
+                bgColScales = bgColScales,
+                filterInput = TRUE,
+                initialFilters = initialFilters);
   })
     
   observe({

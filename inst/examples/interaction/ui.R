@@ -8,7 +8,7 @@ shinyUI(fluidPage(
     column(width = 2,
            h4("Functions"),
            wellPanel(
-            radioButtons("editingCol0", "Rownames editing", choices = c("Enable" = TRUE, "Disable" = FALSE), selected = TRUE)
+            radioButtons("editingCol0", "Rownames editing", choices = c("Enable" = TRUE, "Disable" = FALSE), selected = FALSE)
            ),
            wellPanel(
              textInput("filterString", "Filter rownames", value = "rgx:^D"),

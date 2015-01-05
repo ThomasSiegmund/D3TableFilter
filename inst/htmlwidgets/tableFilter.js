@@ -15,8 +15,6 @@ HTMLWidgets.widget({
 
     var $el = $(el);
 
-//    var $j = jQuery.noConflict();
-
     // name ouf the output widget
     var outputID = el.id;
 
@@ -101,7 +99,8 @@ HTMLWidgets.widget({
     function debounce(func, wait, immediate) {
        var timeout, args, context, timestamp, result;
       return function() {
-        if(args != null && args != arguments) {
+        // simply testing args != arguments doesnt work (timestamp in args[0]?)
+        if(args != null && (args[1] != arguments[1] || args[2] != arguments[2])) {
           // called rapidly twice with different args.
           // execute previous call immediately
           func.apply(context, args);
@@ -144,7 +143,7 @@ HTMLWidgets.widget({
       var inputID = tbl + '_edit';
       var editID = "edit_" + tbl + '_' + window["editCounter"]++;
       sel.attr('id', editID);
-      var row = j + 1;
+      var row = i + 1;
       if(showRowNames) {
         col = col;
       } else {

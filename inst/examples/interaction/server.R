@@ -48,7 +48,7 @@ shinyServer(function(input, output, session) {
   observe({
     if(is.null(input$mtcars_edit)) return(NULL);
      edit <- input$mtcars_edit;
-    print(str(edit))
+    print(edit)
     isolate({
       # need isolate, otherwise this observer would run twice
       # for each edit
@@ -61,7 +61,7 @@ shinyServer(function(input, output, session) {
       if(col == 0) {
         # rownames
         oldval <- rownames(mtcars)[row];
-        if(make.names(val) != val) {
+        if(grepl('^\\d', val)) {
           rejectEdit(session, tbl = "mtcars", id = id, value = oldval);
           revals$edits["Fail", "Row"] <- row;
           revals$edits["Fail", "Column"] <- col;
@@ -90,13 +90,14 @@ shinyServer(function(input, output, session) {
         rownames(revals$mtcars)[row] <- val;
       } else if (col %in% c(1, 2, 3)) {
         revals$mtcars[row, col] <- val;
+        val = round(as.numeric(val), 1)
       } else if (col == 4) {
         # radio buttons. There is no uncheck event
         # so we need to set the whole column to FALSE here
         revals$mtcars[, "favorite"] <- FALSE;
         revals$mtcars[row, col] <- val;
       }
-      confirmEdit(session, tbl = "mtcars", id = id, value = round(as.numeric(val), 1));
+      confirmEdit(session, tbl = "mtcars", id = id, value = val);
       revals$edits["Success", "Row"] <- row;
       revals$edits["Success", "Column"] <- col;
       revals$edits["Success", "Value"] <- val;

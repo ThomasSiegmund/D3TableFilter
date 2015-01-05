@@ -11,11 +11,11 @@ shinyUI(fluidPage(
             radioButtons("editingCol0", "Rownames editing", choices = c("Enable" = TRUE, "Disable" = FALSE), selected = FALSE)
            ),
            wellPanel(
-             textInput("filterString", "Filter rownames", value = "rgx:^D"),
-             actionButton("dofilter", "Set filter")
+             actionButton("clearfilter", "Clear filters")
            ),
            wellPanel(
-             actionButton("clearfilter", "Clear filters")
+             textInput("filterString", "Filter rownames", value = "rgx:^D"),
+             actionButton("dofilter", "Set filter")
            )
     ),
     column(width = 5, 

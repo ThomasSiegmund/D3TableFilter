@@ -165,7 +165,7 @@ shinyServer(function(input, output, session) {
               .attr("width", 24)
               .attr("height", 24);
               
-              // creat a circle with a radius ("r") scaled to the 
+              // create a circle with a radius ("r") scaled to the 
               // value of the cell ("d.value")
               svg.append("circle")
               .attr("cx", 12)

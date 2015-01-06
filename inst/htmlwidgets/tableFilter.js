@@ -214,7 +214,7 @@ HTMLWidgets.widget({
             // if sever sends value, reset input to it and transition
             // color back to previous
             if(message["value"] !== null) {
-                cell.transition()
+                cell.transition("textcolor")
                 .duration(1500)
                 .text(message["value"])
                 .style("color", oldColor)
@@ -252,7 +252,7 @@ HTMLWidgets.widget({
 
             if(message["color"]) {
                       cell.style("color", message["color"])
-                          .transition()
+                          .transition("textcolor")
                           .duration(1500)
                           .style("color", oldColor)
                           .attr('oldcolor', '');
@@ -367,7 +367,7 @@ HTMLWidgets.widget({
       table = tbl; 
        var col2Color = d3.selectAll('#' + tbl)
                          .selectAll('td.' + col)
-//            .transition() // running this transition cancels text colour transition
+                         .transition("bgcolor") 
 
           // run the d3 colour scale function defined in the bgColScales list on the R side
           col2Color.style("background-color", function(d, i){

@@ -142,7 +142,7 @@ shinyServer(function(input, output, session) {
       ),
       col_3 = "none",
       col_4 = "none"
-    );
+      );
     
     # columns are addressed in TableFilter as col_0, col_1, ..., coln
     # the "auto" scales recalculate the data range after each edit
@@ -186,7 +186,7 @@ shinyServer(function(input, output, session) {
     );
       
     initialFilters = list(col_1 = ">20");
-    
+
     tableFilter(mtcars, tableProps,
                 showRowNames = TRUE,
                 rowNamesColumn = "Model",
@@ -196,7 +196,7 @@ shinyServer(function(input, output, session) {
                 cellFunctions = cellFunctions,
                 bgColScales = bgColScales,
                 filterInput = TRUE,
-                initialFilters = initialFilters);
+                initialFilters = initialFilters, height = 100);
   })
     
   observe({
@@ -226,9 +226,13 @@ shinyServer(function(input, output, session) {
     tableProps <- list(
       alternate_rows = TRUE,
       btn_reset = TRUE,
-      sort = FALSE,
+      sort = TRUE,
       on_keyup = TRUE,  
-      on_keyup_delay = 800
+      on_keyup_delay = 800,
+      sort_config = list(
+        sort_types = c("Number", "Number")
+      ),
+      filters_row_index = 1
     );
     bgColScales <- list(
       col_0 = "auto:white:green",

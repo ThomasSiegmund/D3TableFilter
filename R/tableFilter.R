@@ -77,7 +77,7 @@
 #' @import htmlwidgets
 #' @export JS
 #' @export
-tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "Rownames", extensions = c(), bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list()) {
+tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "Rownames", extensions = c(), bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), width = NULL, height = NULL) {
   
   if(is.matrix(df)) {
     df <- as.data.frame(df);
@@ -91,6 +91,11 @@ tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "
 if(is.null(tableProps$base_path)) {
   tableProps <- c(tableProps, base_path = 'tablefilter-2.5/');
 }
+
+if(!is.null(height)) {
+  tableProps <- c(tableProps, grid_height = paste0(height, 'px' ), fixed_headers = TRUE);
+}
+
 
 if(length(extensions) > 0) {
   ext <- list(name = list(), src = list(), description = list(), initialize = list());
@@ -162,7 +167,12 @@ x <- list(
 )
 
   # create the widget
-  htmlwidgets::createWidget("tableFilter", x)
+  htmlwidgets::createWidget("tableFilter", x, width = width, 
+                            height = height, sizingPolicy = htmlwidgets::sizingPolicy(
+                              viewer.padding = 0,
+                              viewer.paneHeight = 500,
+                              browser.fill = TRUE
+                            ))
 }
 
 #' Shiny bindings for tableFilter

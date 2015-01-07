@@ -27,7 +27,9 @@ HTMLWidgets.widget({
       allCols.push('col_' + i);
     }
     
-    var table_Props = data.tableProps;
+    window["table_Props_" + outputID] = data.tableProps;
+    log(outputID)
+    log(window["table_Props_" + outputID])
     
     // need to access this from shiny custom message functions
     // and to have it available for multiple tables in one document
@@ -49,12 +51,12 @@ HTMLWidgets.widget({
     //  generate a filter input?
     var filterInput = data.filterInput;
     if(filterInput) {
-      table_Props["on_after_filter"] = function(o) {updateFilterInput(o)};
+      window["table_Props_" + outputID]["on_after_filter"] = function(o) {updateFilterInput(o)};
     }
     var initialFilters = data.initialFilters;
     
     // need to update colour after table sorting
-    table_Props["on_after_sort"] = function(o) {colourCellsWrapper(o)};
+    window["table_Props_" + outputID]["on_after_sort"] = function(o) {colourCellsWrapper(o)};
 
     // remove existing table including table filter objects
     var table = d3.select(el).select("table").remove();
@@ -519,7 +521,7 @@ HTMLWidgets.widget({
     runCellFunctions(outputID);
     
     // initialize table filter generator
-    window[tfName] = setFilterGrid(tableID, table_Props);
+    window[tfName] = setFilterGrid(tableID, window["table_Props_" + outputID]);
     
     // initial filter settings
     for (var key in initialFilters) {

@@ -20,7 +20,8 @@ shinyUI(fluidPage(
     ),
     column(width = 5, 
            h4("mtcars"),
-           tableFilterOutput('mtcars')),
+           tableFilterOutput('mtcars', height = "800px")
+           ),
    column(width = 5,
           h4("Last edits"),
           tableOutput("edits"),
@@ -30,8 +31,9 @@ shinyUI(fluidPage(
           tableOutput("filtering"),
           h4("mtcars after filtering and editing"),
           tableOutput("filteredMtcars")
-         ,
-         h4("test second table"), 
-         tableFilterOutput('iris')
+          ,
+          h4("test second table"), 
+          tableFilterOutput('iris')
+          
   )
 )))

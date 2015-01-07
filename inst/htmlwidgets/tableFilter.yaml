@@ -11,4 +11,12 @@ dependencies:
     version: 2.5
     src: "lib/tablefilter/dist"
     script: tablefilter_all_min.js
+  - name: sortable
+    version: 2.5
+    src: "lib/tablefilter/dist"
+    script: sortabletable.js
+  - name: tfAdapter.sortabletable
+    version: 2.5
+    src: "lib/tablefilter/dist"
+    script: tfAdapter.sortabletable.js
 

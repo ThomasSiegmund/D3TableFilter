@@ -29,7 +29,6 @@ HTMLWidgets.widget({
     
     window["table_Props_" + outputID] = data.tableProps;
     log(outputID)
-    log(window["table_Props_" + outputID])
     
     // need to access this from shiny custom message functions
     // and to have it available for multiple tables in one document
@@ -40,6 +39,8 @@ HTMLWidgets.widget({
     // have a unique id for each edit
     window["editCounter"] = 0;
     var edit = data.edit;
+    var select = data.select;
+    
     var radioButtons = data.radioButtons;
     var checkBoxes = data.checkBoxes;
     window["showRowNames_" + outputID] = data.showRowNames;
@@ -64,10 +65,14 @@ HTMLWidgets.widget({
     var inf = d3.select(el).selectAll(".inf").remove();
     
     // create new table
-    var table = d3.select(el).append("table").attr("id", tableID)
+    var table = d3.select(el)
+                  .append("table")
+                  .attr("id", tableID)
+                  .classed({'table': true})
+
             thead = table.append("thead"),
             tbody = table.append("tbody");
-
+            
      thead.append("tr")
             .selectAll("th")
             .data(columns)
@@ -80,7 +85,8 @@ HTMLWidgets.widget({
         .data(celldata)
         .enter()
         .append("tr")
-        .attr('id', function(d, i) {return i});
+        .attr('id', function(d, i) {return i})
+        .attr('class', 'tbl_' + outputID);
 
     // create a cell in each row for each column
     var cells = rows.selectAll("td")
@@ -133,6 +139,7 @@ HTMLWidgets.widget({
         return result;
       };
     };
+
 
     // create a shiny input event, named as 
     //  the corresponding output element + "_edit"
@@ -459,6 +466,47 @@ HTMLWidgets.widget({
       Shiny.onInputChange(filterInputID, filters);
     }
     
+    // make table rows clickable
+    if(select == "rows") {
+      log("make clickable")
+      table.classed({'table': true,  'table-hover': true})
+      rows.attr({clickable: true})
+        .on("click", shinyRowClickEvent);
+    }
+    
+    // handler for seletableRows
+    // create a shiny input event, named like 
+    //  the corresponding output element + "_select"
+    function shinyRowClickEvent(d, i, j) {
+      log()
+      var regex = /tbl_(\w+)/;
+      
+      var tbl = regex.exec(this.className)[1];
+      var rows = d3.selectAll('#' + tbl)
+                  .selectAll('tbody')
+                  .selectAll('tr');
+      
+      var inputID = tbl + '_select';
+      log(inputID)
+      var sel = d3.select(this);
+     if (!d3.event.ctrlKey) {
+          rows.classed("info", false);
+      }
+      if($(this).hasClass("info")) {
+        sel.classed("info", false);
+      } else {
+        sel.classed("info", true);
+      }
+      
+      var selected = [];
+      rows.each(function(d, i) {
+        if($(this).hasClass("info")) {
+          selected.push(Number(this.id) + 1);
+        }
+      })
+      Shiny.onInputChange(inputID, selected);
+    }
+
     // make cells editable
     if(edit === true) {
       cells.attr({contenteditable: true})
@@ -468,7 +516,6 @@ HTMLWidgets.widget({
             .attr({contenteditable: true})
             .on("input", debounce(shinyInputEvent, 800));
     };
-    
     
      // create radio buttons
      if (typeof(radioButtons) == "string") {

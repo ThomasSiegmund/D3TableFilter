@@ -131,7 +131,7 @@ shinyServer(function(input, output, session) {
     # define table properties. See http://tablefilter.free.fr/doc.php
     # for a complete reference
     tableProps <- list(
-      alternate_rows = TRUE,
+      alternate_rows = FALSE,
       btn_reset = TRUE,
       sort = TRUE,
       on_keyup = TRUE,  
@@ -219,12 +219,11 @@ shinyServer(function(input, output, session) {
        clearFilters(session, tbl = "mtcars", doFilter = TRUE);
   })
   
-  output$iris <- renderTableFilter({
+  output$mtcars2 <- renderTableFilter({
     
     # define table properties. See http://tablefilter.free.fr/doc.php
     # for a complete reference
     tableProps <- list(
-      alternate_rows = TRUE,
       btn_reset = TRUE,
       sort = TRUE,
       on_keyup = TRUE,  
@@ -234,37 +233,20 @@ shinyServer(function(input, output, session) {
       ),
       filters_row_index = 1
     );
-    bgColScales <- list(
-      col_0 = "auto:white:green",
-      col_1 = "auto:blue:red"
-    )
-    tableFilter(iris[1:10 , 1:2], tableProps, showRowNames = FALSE,
-                bgColScales = bgColScales,
-                edit = TRUE,
+
+    tableFilter(mtcars[ , 1:2],
+                tableProps, showRowNames = TRUE, 
+                select = "rows",
                 filterInput = TRUE);
   })
   
-  # for a output object "iris" tableFilter generates an input
-  # "iris_edit". dont use the values
-  observe({
-    if(is.null(input$iris_edit)) return(NULL);
-    edit <- input$iris_edit;
-    id <- edit$id;
-    row <- as.integer(edit$row);
-    col <- as.integer(edit$col);
-    val <- edit$val;
-    
-    # validate input 
-    if(is.na(suppressWarnings(as.numeric(val)))) {
-      oldval <- iris[row, col];
-      # reset to the old value
-      # input will turn red briefly, than fade to previous color while
-      # text returns to previous value
-      rejectEdit(session, tbl = "iris", id = id);
-      return(NULL);
-    }
-    confirmEdit(session, tbl = "iris", id = id);
-    
+  # for a output object "mtcars2" tableFilter generates an input
+  # "mtcars2_edit". 
+  output$mtcars2Output <- renderTable({
+    if(is.null(input$mtcars2_select)) return(NULL);
+    mtcars[input$mtcars2_select, 1:2];
   })
+  
+  
   
 })

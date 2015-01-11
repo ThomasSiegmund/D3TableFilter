@@ -4,21 +4,23 @@ library(tableFilter)
 
 shinyUI(fluidPage(
   title = 'Interactive features',
-  fluidRow(
-    column(width = 2,
-           h4("Functions"),
-           wellPanel(
-            radioButtons("editingCol0", "Rownames editing", choices = c("Enable" = TRUE, "Disable" = FALSE), selected = FALSE)
-           ),
-           wellPanel(
-             actionButton("clearfilter", "Clear filters")
-           ),
-           wellPanel(
-             textInput("filterString", "Filter rownames", value = "rgx:^D"),
-             actionButton("dofilter", "Set filter")
-           )
-    ),
-    column(width = 5, 
+         tabsetPanel(
+           tabPanel("Editing and filtering",
+            fluidRow(
+              column(width = 2,
+                     h4("Functions"),
+                     wellPanel(
+                       radioButtons("editingCol0", "Rownames editing", choices = c("Enable" = TRUE, "Disable" = FALSE), selected = FALSE)
+                     ),
+                     wellPanel(
+                       actionButton("clearfilter", "Clear filters")
+                     ),
+                     wellPanel(
+                       textInput("filterString", "Filter rownames", value = "rgx:^D"),
+                       actionButton("dofilter", "Set filter")
+                     )
+              ),
+  column(width = 5, 
            h4("mtcars"),
            tableFilterOutput('mtcars', height = "800px")
            ),
@@ -31,9 +33,24 @@ shinyUI(fluidPage(
           tableOutput("filtering"),
           h4("mtcars after filtering and editing"),
           tableOutput("filteredMtcars")
-          ,
-          h4("test second table"), 
-          tableFilterOutput('iris')
-          
-  )
+        ) # column
+      ) # fluidRow 
+    ), # tabPanel
+    tabPanel("Row selection",
+      fluidRow(column(width = 12, h4("Row selection"))),
+      fluidRow(
+        column(width = 2,
+               
+               HTML("Click on the table to select a row. <code>Ctrl</code>  click for multiple selection.")
+        ),
+        column(width = 5,
+               tableFilterOutput('mtcars2')
+        ),
+        column(width = 5,
+               tableOutput("mtcars2Output")
+        )
+
+    )
+  ) # tabset panel
 )))
+

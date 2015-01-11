@@ -39,7 +39,7 @@ HTMLWidgets.widget({
     // have a unique id for each edit
     window["editCounter"] = 0;
     var edit = data.edit;
-    var selectableRows = data.selectableRows;
+    window["selectableRows_" + outputID] = data.selectableRows;
     
     var radioButtons = data.radioButtons;
     var checkBoxes = data.checkBoxes;
@@ -85,7 +85,7 @@ HTMLWidgets.widget({
         .data(celldata)
         .enter()
         .append("tr")
-        .attr('id', function(d, i) {return i})
+        .attr('id', function(d, i) {return 'r' + i})
         .attr('class', 'tbl_' + outputID);
 
     // create a cell in each row for each column
@@ -331,6 +331,81 @@ HTMLWidgets.widget({
       ; // already installed
     }
     
+    // highlight a table row
+    try {
+      Shiny.addCustomMessageHandler("rowClass",
+          function(message) {
+            log("message")
+            var clss = message["class"];
+            var tbl = message["tbl"];
+            
+            var rows = d3.selectAll('#' + tbl)
+                  .selectAll('tbody')
+                  .selectAll('tr');
+                  
+            // radio button behavior: clear info from all rows
+            if (window["selectableRows_" + tbl] == "single" && clss == "info" ) {
+                rows.classed("info", false);
+            }
+            
+            // current row
+            var row = d3.selectAll('#' +  tbl)
+                        .select('#r' + (Number(message["row"]) - 1));
+                row.classed({"active": false,  "success": false, "info": false, "warning": false, "danger": false});
+            if(clss != "none") {
+              row.classed(clss, true);
+            }
+            
+            // now update selected rows input
+            var selected = [];
+            rows.each(function(d, i) {
+              if($(this).hasClass("info")) {
+                selected.push(Number(this.id.replace('r', '')) + 1);
+              }
+            })
+            var inputID = tbl + '_select';
+            Shiny.onInputChange(inputID, selected);
+
+});
+    } catch (err) {
+      ; // already installed
+    }
+
+    // handler for selectableRows
+    // create a shiny input event, named like 
+    //  the corresponding output element + "_select"
+    function shinyRowClickEvent(d, i, j) {
+      var regex = /tbl_(\w+)/;
+      
+      var tbl = regex.exec(this.className)[1];
+      var rows = d3.selectAll('#' + tbl)
+                  .selectAll('tbody')
+                  .selectAll('tr');
+      
+      var inputID = tbl + '_select';
+      var sel = d3.select(this);
+     if (!d3.event.ctrlKey || window["selectableRows_" + tbl] == "single" ) {
+          rows.classed("info", false);
+      }
+      if($(this).hasClass("info")) {
+        sel.classed("info", false);
+      } else {
+        sel.classed("info", true);
+      }
+      
+      var selected = [];
+      rows.each(function(d, i) {
+        if($(this).hasClass("info")) {
+          selected.push(Number(this.id.replace('r', '')) + 1);
+        }
+      })
+      Shiny.onInputChange(inputID, selected);
+    }
+
+
+
+
+
     // clear filters from table
     try {
       Shiny.addCustomMessageHandler("clearFilters",
@@ -344,6 +419,7 @@ HTMLWidgets.widget({
     } catch (err) {
       ; // already installed
     }
+
 
     // calculate min / max / extent per column. Can be used from R for
     // dynamic colour scale range  
@@ -466,46 +542,13 @@ HTMLWidgets.widget({
       Shiny.onInputChange(filterInputID, filters);
     }
     
-    // make table rows clickable
-    if(selectableRows == "single" || selectableRows == "multi") {
-      log("make clickable")
+    // make table rows selectable
+    if(window["selectableRows_" + outputID] == "single" || window["selectableRows_" + outputID] == "multi") {
       table.classed({'table': true,  'table-hover': true})
       rows.attr({clickable: true})
         .on("click", shinyRowClickEvent);
     }
     
-    // handler for seletableRows
-    // create a shiny input event, named like 
-    //  the corresponding output element + "_select"
-    function shinyRowClickEvent(d, i, j) {
-      log()
-      var regex = /tbl_(\w+)/;
-      
-      var tbl = regex.exec(this.className)[1];
-      var rows = d3.selectAll('#' + tbl)
-                  .selectAll('tbody')
-                  .selectAll('tr');
-      
-      var inputID = tbl + '_select';
-      log(inputID)
-      var sel = d3.select(this);
-     if (!d3.event.ctrlKey || selectableRows == "single" ) {
-          rows.classed("info", false);
-      }
-      if($(this).hasClass("info")) {
-        sel.classed("info", false);
-      } else {
-        sel.classed("info", true);
-      }
-      
-      var selected = [];
-      rows.each(function(d, i) {
-        if($(this).hasClass("info")) {
-          selected.push(Number(this.id) + 1);
-        }
-      })
-      Shiny.onInputChange(inputID, selected);
-    }
 
     // make cells editable
     if(edit === true) {

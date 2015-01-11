@@ -219,6 +219,9 @@ shinyServer(function(input, output, session) {
        clearFilters(session, tbl = "mtcars", doFilter = TRUE);
   })
   
+  observe({
+    setRowClass(session, tbl = "mtcars2", row = 18, class = input$fiatClass);
+  })
   
   ## demonstrate selectable rows interface
   output$mtcars2 <- renderTableFilter({

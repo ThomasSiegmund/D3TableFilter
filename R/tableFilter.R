@@ -316,4 +316,17 @@ clearFilters <- function(session, tbl, doFilter = TRUE) {
   session$sendCustomMessage(type = "clearFilters", message);
 }
 
+#' Highlight a row using bootstrap classes
+#' @param Session Shiny session object.
+#' @param tbl Name of the table.
+#' @param row Number of the row to color.
+#' @param class Bootstrap contextual class (\code{"active"}, \code{"info"}, \code{"success"}, \code{"warning"}, or \code{"danger"}). \code{"none"} removes the highlighting. \code{"info"} is reserved for selected rows.
+#' 
+#' @examples
+#' setRowClass(session, "mtcars", 3, "success")
+#' @export 
+setRowClass <- function(session, tbl, row, class) {
+  message <- list(tbl = tbl, row = row, class = class);
+  session$sendCustomMessage(type = "rowClass", message);
+}
 

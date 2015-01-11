@@ -24,6 +24,13 @@
 #' basic configuration of the extensions. For further customization use the
 #' tableProps object.
 #'
+#' @section Editing: The whole table (\code{edit = TRUE}) or selected columns
+#'   (\code{edit = c("col_1", "col_3")}) can set to be editible. An editible
+#'   table provides an input element named like the corresponding output element
+#'   + "_edit". Here each (debounced) edit event in a table cell is visible as a
+#'   list of row (\code{row}), column (\code{col}) and new value (\code{val}). See
+#'   examples/interaction for a Shiny app demonstrating this feature.
+#'   
 #' @section Colouring: Table columns can be colored based on their cells value 
 #'   using D3.js colour scales. Table background and foreground (text) can be 
 #'   coloured independently. Colour definitions are passed to the JavaScript 
@@ -34,17 +41,21 @@
 #'   value range of a column can be defined as \code{col_n = 
 #'   "auto:startcolour:endcolour"} (n is the column number, starting with 0).
 #'   For better mapping from numeric values to perceived intensity a HCL colour
-#'   interpolation is used. An example shiny app showing various colour scales
+#'   interpolation is used. An example Shiny app showing various colour scales
 #'   can be found in the inst/examples/colour/ directory of this package.
 #'      
 #' @param df Data frame or matrix to display as html table
 #' @param tableProps A list object describing appearence and function of the table
 #' @param showRowNames Add the R row names as first column to the table
 #' @param rowNamesColumn column title for the row names column
-#' @param extensions Vector of table filter extensions to load
+#' @param extensions Vector of table filter extensions to load. See  
+#' @param selectableRows Enable row selection on (\code{cltr-}) mouse click. If
+#'   \code{"multi"} multiple rows will be selectable using (\code{cltr click}),
+#'   if  \code{"single"}  only a single line will be selectable. selectableRows
+#'   creates a shiny input named outputid + "_filter".
 #' @param bgColScales List of background colour scales to apply to the columns
 #' @param fgColScales List of text colour scales to apply to the columns
-#' @param edit Set whole table (\code{edit = TRUE}) or columns (\code{edit = c("col_0", "col_2")}) editable
+#' @param edit Set whole table or selected columns editable. See details.
 #' @param radioButtons Turn logical columns into radio buttons (\code{radioButtons = "col_4"}). 
 #' @param checkBoxes Turn logical columns into checkboxes (\code{checkBoxes = "col_3"}). 
 #' @param cellFunctions Run D3 functions to format a cell. Can be used to generate graphics.
@@ -77,7 +88,7 @@
 #' @import htmlwidgets
 #' @export JS
 #' @export
-tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "Rownames", extensions = c(), select = NULL,  bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), width = NULL, height = NULL) {
+tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "Rownames", extensions = c(), selectableRows = NULL,  bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), width = NULL, height = NULL) {
   
   if(is.matrix(df)) {
     df <- as.data.frame(df);
@@ -155,7 +166,7 @@ if (is.character(edit)) {
 x <- list(
     data = df,
     tableProps = tableProps,
-    select = select,
+    selectableRows = selectableRows,
     bgColScales = bgColScales,
     fgColScales = fgColScales,
     cellFunctions = cellFunctions,
@@ -304,3 +315,5 @@ clearFilters <- function(session, tbl, doFilter = TRUE) {
   message <- list(tbl = tbl, doFilter = doFilter);
   session$sendCustomMessage(type = "clearFilters", message);
 }
+
+

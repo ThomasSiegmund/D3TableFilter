@@ -219,6 +219,8 @@ shinyServer(function(input, output, session) {
        clearFilters(session, tbl = "mtcars", doFilter = TRUE);
   })
   
+  
+  ## demonstrate selectable rows interface
   output$mtcars2 <- renderTableFilter({
     
     # define table properties. See http://tablefilter.free.fr/doc.php
@@ -236,7 +238,7 @@ shinyServer(function(input, output, session) {
 
     tableFilter(mtcars[ , 1:2],
                 tableProps, showRowNames = TRUE, 
-                select = "rows",
+                selectableRows = "multi",
                 filterInput = TRUE);
   })
   

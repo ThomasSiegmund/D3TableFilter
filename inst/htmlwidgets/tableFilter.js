@@ -39,7 +39,7 @@ HTMLWidgets.widget({
     // have a unique id for each edit
     window["editCounter"] = 0;
     var edit = data.edit;
-    var select = data.select;
+    var selectableRows = data.selectableRows;
     
     var radioButtons = data.radioButtons;
     var checkBoxes = data.checkBoxes;
@@ -467,7 +467,7 @@ HTMLWidgets.widget({
     }
     
     // make table rows clickable
-    if(select == "rows") {
+    if(selectableRows == "single" || selectableRows == "multi") {
       log("make clickable")
       table.classed({'table': true,  'table-hover': true})
       rows.attr({clickable: true})
@@ -489,7 +489,7 @@ HTMLWidgets.widget({
       var inputID = tbl + '_select';
       log(inputID)
       var sel = d3.select(this);
-     if (!d3.event.ctrlKey) {
+     if (!d3.event.ctrlKey || selectableRows == "single" ) {
           rows.classed("info", false);
       }
       if($(this).hasClass("info")) {

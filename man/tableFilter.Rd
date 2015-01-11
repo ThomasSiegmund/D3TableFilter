@@ -5,10 +5,11 @@
 \title{tableFilter Generate a HTML table widget with advanced filtering, sorting and colouring.}
 \usage{
 tableFilter(df, tableProps, showRowNames = FALSE,
-  rowNamesColumn = "Rownames", extensions = c(), bgColScales = list(),
-  fgColScales = list(), edit = FALSE, radioButtons = NULL,
-  checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE,
-  initialFilters = list())
+  rowNamesColumn = "Rownames", extensions = c(), selectableRows = NULL,
+  bgColScales = list(), fgColScales = list(), edit = FALSE,
+  radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(),
+  filterInput = FALSE, initialFilters = list(), width = NULL,
+  height = NULL)
 }
 \arguments{
 \item{df}{Data frame or matrix to display as html table}
@@ -19,13 +20,18 @@ tableFilter(df, tableProps, showRowNames = FALSE,
 
 \item{rowNamesColumn}{column title for the row names column}
 
-\item{extensions}{Vector of table filter extensions to load}
+\item{extensions}{Vector of table filter extensions to load. See}
+
+\item{selectableRows}{Enable row selection on (\code{cltr-}) mouse click. If
+\code{"multi"} multiple rows will be selectable using (\code{cltr click}),
+if  \code{"single"}  only a single line will be selectable. selectableRows
+creates a shiny input named outputid + "_filter".}
 
 \item{bgColScales}{List of background colour scales to apply to the columns}
 
 \item{fgColScales}{List of text colour scales to apply to the columns}
 
-\item{edit}{Set whole table (\code{edit = TRUE}) or columns (\code{edit = c("col_0", "col_2")}) editable}
+\item{edit}{Set whole table or selected columns editable. See details.}
 
 \item{radioButtons}{Turn logical columns into radio buttons (\code{radioButtons = "col_4"}).}
 
@@ -68,6 +74,15 @@ basic configuration of the extensions. For further customization use the
 tableProps object.
 }
 
+\section{Editing}{
+ The whole table (\code{edit = TRUE}) or selected columns
+  (\code{edit = c("col_1", "col_3")}) can set to be editible. An editible
+  table provides an input element named like the corresponding output element
+  + "_edit". Here each (debounced) edit event in a table cell is visible as a
+  list of row (\code{row}), column (\code{col}) and new value (\code{val}). See
+  examples/interaction for a Shiny app demonstrating this feature.
+}
+
 \section{Colouring}{
  Table columns can be colored based on their cells value
   using D3.js colour scales. Table background and foreground (text) can be
@@ -79,7 +94,7 @@ tableProps object.
   value range of a column can be defined as \code{col_n =
   "auto:startcolour:endcolour"} (n is the column number, starting with 0).
   For better mapping from numeric values to perceived intensity a HCL colour
-  interpolation is used. An example shiny app showing various colour scales
+  interpolation is used. An example Shiny app showing various colour scales
   can be found in the inst/examples/colour/ directory of this package.
 }
 \examples{

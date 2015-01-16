@@ -1,7 +1,7 @@
-library(shiny)
-library(htmlwidgets)
-library(tableFilter)
-
+# ------------------------------------------------------
+# Minimal shiny app demonstrating the tableFilter widget
+# ui.R
+# ------------------------------------------------------
 shinyUI(fluidPage(
   title = 'Basic usage of TableFilter in Shiny',
   fluidRow(

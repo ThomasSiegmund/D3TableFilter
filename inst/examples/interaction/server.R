@@ -48,7 +48,6 @@ shinyServer(function(input, output, session) {
   observe({
     if(is.null(input$mtcars_edit)) return(NULL);
      edit <- input$mtcars_edit;
-    print(edit)
     isolate({
       # need isolate, otherwise this observer would run twice
       # for each edit
@@ -121,7 +120,7 @@ shinyServer(function(input, output, session) {
     });
   
   output$filteredMtcars <- renderTable({
-      if(is.null(revals$rowIndex)) return(invisible());
+      if(is.null(revals$rowIndex)) return(invisible());    
       if(is.null(revals$mtcars)) return(invisible());
       revals$mtcars[revals$rowIndex, ];
     });
@@ -196,7 +195,7 @@ shinyServer(function(input, output, session) {
                 cellFunctions = cellFunctions,
                 bgColScales = bgColScales,
                 filterInput = TRUE,
-                initialFilters = initialFilters, height = 100);
+                initialFilters = initialFilters, height = 2000);
   })
     
   observe({
@@ -220,7 +219,7 @@ shinyServer(function(input, output, session) {
   })
   
   observe({
-    setRowClass(session, tbl = "mtcars2", row = 18, class = input$fiatClass);
+    setRowClass(session, tbl = "mtcars2", row = 5, class = input$hornetClass);
   })
   
   ## demonstrate selectable rows interface
@@ -242,7 +241,8 @@ shinyServer(function(input, output, session) {
     tableFilter(mtcars[ , 1:2],
                 tableProps, showRowNames = TRUE, 
                 selectableRows = "multi",
-                filterInput = TRUE);
+                selectableRowsClass = "success",
+                filterInput = TRUE, height = 500);
   })
   
   # for a output object "mtcars2" tableFilter generates an input

@@ -11,7 +11,6 @@ HTMLWidgets.widget({
           	console.log(message);
         	}
         }
-        
 
     var $el = $(el);
 
@@ -40,6 +39,7 @@ HTMLWidgets.widget({
     window["editCounter"] = 0;
     var edit = data.edit;
     window["selectableRows_" + outputID] = data.selectableRows;
+    window["selectableRowsClass_" + outputID] = data.selectableRowsClass;
     
     var radioButtons = data.radioButtons;
     var checkBoxes = data.checkBoxes;
@@ -147,13 +147,14 @@ HTMLWidgets.widget({
       var sel = d3.select(this);
       var regex = /col_(\d+)/;
       var col = Number(regex.exec(this.className)[1]);
+      var regex = /row_(\d+)/;
+      var row = Number(regex.exec(this.className)[1]) + 1;
       var regex = /tbl_(\w+)/;
       var tbl = regex.exec(this.className)[1];
       var showRowNames = window["showRowNames_" + tbl];
       var inputID = tbl + '_edit';
       var editID = "edit_" + tbl + '_' + window["editCounter"]++;
       sel.attr('id', editID);
-      var row = i + 1;
       if(showRowNames) {
         col = col;
       } else {
@@ -335,7 +336,6 @@ HTMLWidgets.widget({
     try {
       Shiny.addCustomMessageHandler("rowClass",
           function(message) {
-            log("message")
             var clss = message["class"];
             var tbl = message["tbl"];
             
@@ -343,9 +343,9 @@ HTMLWidgets.widget({
                   .selectAll('tbody')
                   .selectAll('tr');
                   
-            // radio button behavior: clear info from all rows
-            if (window["selectableRows_" + tbl] == "single" && clss == "info" ) {
-                rows.classed("info", false);
+            // radio button behavior: clear selectableRowsClass from all rows
+            if (window["selectableRows_" + tbl] == "single" && clss == window["selectableRowsClass_" + tbl] ) {
+                rows.classed(window["selectableRowsClass_" + tbl], false);
             }
             
             // current row
@@ -359,7 +359,7 @@ HTMLWidgets.widget({
             // now update selected rows input
             var selected = [];
             rows.each(function(d, i) {
-              if($(this).hasClass("info")) {
+              if($(this).hasClass(window["selectableRowsClass_" + tbl])) {
                 selected.push(Number(this.id.replace('r', '')) + 1);
               }
             })
@@ -385,25 +385,22 @@ HTMLWidgets.widget({
       var inputID = tbl + '_select';
       var sel = d3.select(this);
      if (!d3.event.ctrlKey || window["selectableRows_" + tbl] == "single" ) {
-          rows.classed("info", false);
+          rows.classed(window["selectableRowsClass_" + tbl], false);
       }
-      if($(this).hasClass("info")) {
-        sel.classed("info", false);
+      if($(this).hasClass(window["selectableRowsClass_" + tbl])) {
+        sel.classed(window["selectableRowsClass_" + tbl], false);
       } else {
-        sel.classed("info", true);
+        sel.classed(window["selectableRowsClass_" + tbl], true);
       }
       
       var selected = [];
       rows.each(function(d, i) {
-        if($(this).hasClass("info")) {
+        if($(this).hasClass(window["selectableRowsClass_" + tbl])) {
           selected.push(Number(this.id.replace('r', '')) + 1);
         }
       })
       Shiny.onInputChange(inputID, selected);
     }
-
-
-
 
 
     // clear filters from table
@@ -519,10 +516,9 @@ HTMLWidgets.widget({
       d3.selectAll('#' + tbl['id']).selectAll('tbody').selectAll('tr').each(function(d, i) {
         if(this.style["display"] !== "none") {
           // add 1 to match R row numbers
-          validRows.push(Number(this.id) + 1);
+          validRows.push(Number(this.id.replace('r','')) + 1);
         } 
       });
-      
       var filterids = window[tfName].GetFiltersId();
       
       var re = /^flt(\d+)/;

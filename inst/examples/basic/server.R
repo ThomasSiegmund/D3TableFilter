@@ -1,5 +1,6 @@
 # ------------------------------------------------------
 # Minimal shiny app demonstrating the tableFilter widget
+# server.R
 # ------------------------------------------------------
 library(shiny)
 library(htmlwidgets)
@@ -10,7 +11,7 @@ data(mtcars);
 shinyServer(function(input, output, session) {
   output$mtcars <- renderTableFilter({
     
-    # define table properties. See http://tablefilter.free.fr/doc.php
+    # Define table properties. See http://tablefilter.free.fr/doc.php
     # for a complete reference
     tableProps <- list(
       alternate_rows = TRUE,
@@ -21,6 +22,7 @@ shinyServer(function(input, output, session) {
         sort_types = c("String", rep("Number", ncol(mtcars)))
       )
     );
+    
     tableFilter(mtcars, tableProps, showRowNames = TRUE, rowNamesColumn = "Model");
   })
 })

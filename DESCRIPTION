@@ -1,10 +1,17 @@
 Package: tableFilter
-Title: A table widget based on Max Guglielmi's "HTML Table Filter Generator" and D3.js
+Title: A table widget based on Max Guglielmi's "HTML Table Filter Generator"
+    and D3.js
 Version: 0.1
-Authors@R: person("Thomas", "Siegmund", email = "thomas.siegmund@gmail.com", role = c("aut", "cre"))
-Description: tableFilter provides a powerful and flexible HTML table widget for use with the htmlwidgets R library. It allows R users to create HTML tables with functions for advanced filtering and sorting. It also allows for the colouring of table cells based on their values.
-Depends: R (>= 3.1.0)
-Imports: htmlwidgets (>= 0.3)
+Authors@R: person("Thomas", "Siegmund", email = "thomas.siegmund@gmail.com",
+    role = c("aut", "cre"))
+Description: tableFilter provides a powerful and flexible HTML table widget for
+    use with the htmlwidgets R library. It allows R users to create HTML tables
+    with functions for advanced filtering and sorting. It also allows for the
+    colouring of table cells based on their values.
+Depends:
+    R (>= 3.1.0)
+Imports:
+    htmlwidgets (>= 0.3)
 License: MIT + file LICENSE
 LazyData: true
 Enhances: rmarkdown (>= 0.3.3), shiny (>= 0.10.2.1)

@@ -16,13 +16,13 @@
 #' @section Extensions: Some of the TableFilter functions are beeing provided as
 #'   extensions, in particular \itemize{ \item ColsVisibility: Visibility of
 #'   columns can be adjusted by configuration or interactively \item
-#'   ColumnsResizer: Interactive resizing of columnd width \item
+#'   ColumnsResizer: Interactive resizing of column width \item
 #'   FiltersRowVisibility: Interactively show or hide the filter row. }
 #' To activate these extensions simply define them as a character vector in the 
 #' extensions parameter, e.g. \code{extensions = c("ColsVisibility", 
 #' "ColumnsResizer", "FiltersRowVisibility")}. This takes care of enabling and 
 #' basic configuration of the extensions. For further customization use the
-#' tableProps object.
+#' tableProps parameter.
 #'
 #' @section Editing: The whole table (\code{edit = TRUE}) or selected columns
 #'   (\code{edit = c("col_1", "col_3")}) can set to be editible. An editible
@@ -39,26 +39,39 @@
 #'   \href{https://github.com/mbostock/d3/wiki/Scales}{D3 scale documentation} 
 #'   and examples below for details. As a shortcut a linear scale over the full 
 #'   value range of a column can be defined as \code{col_n = 
-#'   "auto:startcolour:endcolour"} (n is the column number, starting with 0).
-#'   For better mapping from numeric values to perceived intensity a HCL colour
-#'   interpolation is used. An example Shiny app showing various colour scales
-#'   can be found in the inst/examples/colour/ directory of this package.
-#'      
+#' "auto:startcolour:endcolour"} (n is the column number, starting with 0). For
+#' better mapping from numeric values to perceived intensity a HCL colour 
+#' interpolation is used. An example Shiny app showing various colour scales can
+#' be found in the inst/examples/colour/ directory of this package.
+#' 
+#' @section Row selection: If \code{selectableRows} is set to \code{"single"} or
+#'   to \code{"multi"}, the widget provides a shiny input named outputid + 
+#'   "_select". On (\code{ctrl-}) mouse click the input delivers an array of 1 
+#'   based row coordinates. Selected rows are highligthed using the "info"
+#'   Bootstrap class. \code{setRowClass} can be used to set or to unset this
+#'   class from the server. See the "interaction" shiny app in the
+#'   inst/examples/ directory of this package for an example.
+#'   
 #' @param df Data frame or matrix to display as html table
-#' @param tableProps A list object describing appearence and function of the table
+#' @param tableProps A list object describing appearence and function of the 
+#' table
 #' @param showRowNames Add the R row names as first column to the table
 #' @param rowNamesColumn column title for the row names column
-#' @param extensions Vector of table filter extensions to load. See  
-#' @param selectableRows Enable row selection on (\code{cltr-}) mouse click. If
-#'   \code{"multi"} multiple rows will be selectable using (\code{cltr click}),
-#'   if  \code{"single"}  only a single line will be selectable. selectableRows
-#'   creates a shiny input named outputid + "_filter".
+#' @param extensions Vector of table filter extensions to load. See
+#' @param selectableRows Enable row selection on (\code{cltr-}) mouse click. If 
+#'   \code{"multi"} multiple rows will be selectable using (\code{cltr click}), 
+#'   if  \code{"single"}  only a single line will be selectable.
+#' @param selectableRowsClass CSS class of selected row. Could be "active", 
+#'   "success", "info", "warning", or "danger" from Bootstrap3. Default: "info."
 #' @param bgColScales List of background colour scales to apply to the columns
 #' @param fgColScales List of text colour scales to apply to the columns
 #' @param edit Set whole table or selected columns editable. See details.
-#' @param radioButtons Turn logical columns into radio buttons (\code{radioButtons = "col_4"}). 
-#' @param checkBoxes Turn logical columns into checkboxes (\code{checkBoxes = "col_3"}). 
-#' @param cellFunctions Run D3 functions to format a cell. Can be used to generate graphics.
+#' @param radioButtons Turn logical columns into radio buttons
+#'   (\code{radioButtons = "col_4"}).
+#' @param checkBoxes Turn logical columns into checkboxes (\code{checkBoxes =
+#'   "col_3"}).
+#' @param cellFunctions Run D3 functions to format a cell. Can be used to
+#'   generate D3 graphics in cells.
 #' @param filterInput Generate an input element named outputid + "_filter" listing
 #' filter settings and valid rows
 #' @param initialFilters List of initial filter settings
@@ -88,7 +101,7 @@
 #' @import htmlwidgets
 #' @export JS
 #' @export
-tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "Rownames", extensions = c(), selectableRows = NULL,  bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), width = NULL, height = NULL) {
+tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "Rownames", extensions = c(), selectableRows = NULL, selectableRowsClass = "info", bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), width = NULL, height = NULL) {
   
   if(is.matrix(df)) {
     df <- as.data.frame(df);
@@ -167,6 +180,7 @@ x <- list(
     data = df,
     tableProps = tableProps,
     selectableRows = selectableRows,
+    selectableRowsClass = selectableRowsClass,
     bgColScales = bgColScales,
     fgColScales = fgColScales,
     cellFunctions = cellFunctions,
@@ -182,7 +196,7 @@ x <- list(
   htmlwidgets::createWidget("tableFilter", x, width = width, 
                             height = height, sizingPolicy = htmlwidgets::sizingPolicy(
                               viewer.padding = 0,
-                              viewer.paneHeight = 500,
+                              viewer.paneHeight = 800,
                               browser.fill = TRUE
                             ))
 }
@@ -293,7 +307,7 @@ disableEdit <- function(session, tbl, cols = NULL) {
 #' @param Session Shiny session object.
 #' @param tbl Name of the table to filter.
 #' @param col Set filter on column (\code{"col_0"}).
-#' @param col Run the filter.
+#' @param doFilter Activate the filter after setting it.
 #' 
 #' @examples
 #' setFilter(session, "mtcars", col = "col_1", filter = ">20")
@@ -307,7 +321,8 @@ setFilter <- function(session, tbl, col, filterString, doFilter = TRUE) {
 #' Clear all filters from a table
 #' @param Session Shiny session object.
 #' @param tbl Name of the table to clear.
-#' 
+#' @param doFilter Unfilter the table after clearing the filter strings.
+#'  
 #' @examples
 #' clearFilters(session, "mtcars")
 #' @export 

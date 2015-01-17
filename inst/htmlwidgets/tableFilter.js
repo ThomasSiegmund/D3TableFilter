@@ -68,7 +68,7 @@ HTMLWidgets.widget({
     var table = d3.select(el)
                   .append("table")
                   .attr("id", tableID)
-                  .classed({'table': true})
+                  .classed({'table': true, 'table-condensed': true})
 
             thead = table.append("thead"),
             tbody = table.append("tbody");
@@ -277,13 +277,75 @@ HTMLWidgets.widget({
             // todo: check if there is a d3 syntax to do this
             cell[0][0].__data__.value = val;
             colourCol(message["tbl"], col);
+            runCellFunctions(message["tbl"], col);
+
       });
     } catch (err) {
       ; // already installed
     }
 
+    // server wants to change cell value
+    try {
+      Shiny.addCustomMessageHandler("setCellValue",
+          function(message) {
+            
+            var row = 'row_' + (Number(message["row"]) - 1);
+            var col = 'col_' + message["col"];
+            var tbl = message["tbl"];
+            var selector = '.' + row + '.' + col;
+            var cell = d3.select('#' + tbl)
+            .select(selector);
 
-// enable editing of a table 
+             if(cell[0][0].type == "radio") {
+              cell
+//              .style("box-shadow", "0 0 5px 0px " + message["color"] + " inset")
+              .style("background",  message["color"]);
+            }
+
+            var val = message["value"];
+            cell.attr('value', val)
+                .text(val);
+            // todo: check if there is a d3 syntax to do this
+            cell[0][0].__data__.value = val;
+            colourCol(tbl, col);
+            runCellFunctions(tbl, col);
+            
+            // send confirmation back to server
+            var editID = "edit_" + tbl + '_' + window["editCounter"]++;
+            var inputID = tbl + '_edit';
+
+            cell.attr('id', editID);
+
+            var edit = {id: editID, row: message["row"], col:  message["col"], val: val};
+            log(edit)
+            Shiny.onInputChange(inputID, edit);
+      });
+    } catch (err) {
+      ; // already installed
+    }
+
+    // turn cell content in graphics
+    runCellFunctions = function(tbl, col) {
+      var cellFunctions = window["cellFunctions_" + tbl];
+      log(cellFunctions)
+      if(col == null) {
+        // check whole table
+        for (var key in cellFunctions) {
+           if (cellFunctions.hasOwnProperty(key)) { 
+             table = tbl; // strange. this makes it accessible inside of the select
+             var cells = d3.selectAll('#' + table).selectAll('td.' + key);
+                 cells.call(cellFunctions[key]);
+        			};
+        }
+      } else {
+        // only selected column
+        var cells = d3.selectAll('#' + table).selectAll('td.' + col);
+                 cells.call(cellFunctions[col]);
+      }
+    };
+
+
+    // enable editing of a table 
     try {
       Shiny.addCustomMessageHandler("enableEdit",
           function(message) {
@@ -590,21 +652,12 @@ HTMLWidgets.widget({
               .on("change", shinyInputEvent);
         })
      }
-
-     
-    // turn cell content in graphics
-    runCellFunctions = function(tbl) {
-      var cellFunctions = window["cellFunctions_" + tbl];
-      for (var key in cellFunctions) {
-         if (cellFunctions.hasOwnProperty(key)) { 
-           table = tbl; // strange. this makes it accessible inside of the select
-           var cells = d3.selectAll('#' + table).selectAll('td.' + key);
-               cells.call(cellFunctions[key]);
-    				};
-       }  
-     };
     
+    // turn cell values into graphics
     runCellFunctions(outputID);
+    
+    // set intial color. Has to run again after table sorting. 
+    colourCells(outputID);
     
     // initialize table filter generator
     window[tfName] = setFilterGrid(tableID, window["table_Props_" + outputID]);
@@ -618,9 +671,6 @@ HTMLWidgets.widget({
     };
     window[tfName].Filter();
     
-    // set intial color. Has to run again after table sorting. 
-    colourCells(outputID);
-
   } // end of renderValue !!
 
 }); // end of HTMLWIDGET !!

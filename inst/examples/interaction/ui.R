@@ -18,7 +18,11 @@ shinyUI(fluidPage(
                      wellPanel(
                        textInput("filterString", "Filter rownames", value = "rgx:^D"),
                        actionButton("dofilter", "Set filter")
-                     )
+                     ),
+                     wellPanel(
+                       selectInput("cellVal", label = "Merc 240D cylinders", choice = c(4, 6, 8, 10, 12), selected = 4, multiple = FALSE)
+                      ) 
+                     
               ),
   column(width = 5, 
            h4("mtcars"),

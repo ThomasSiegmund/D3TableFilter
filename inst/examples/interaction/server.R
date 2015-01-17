@@ -48,6 +48,7 @@ shinyServer(function(input, output, session) {
   observe({
     if(is.null(input$mtcars_edit)) return(NULL);
      edit <- input$mtcars_edit;
+    print(edit);
     isolate({
       # need isolate, otherwise this observer would run twice
       # for each edit
@@ -156,32 +157,49 @@ shinyServer(function(input, output, session) {
     # turning cell values into scaled SVG graphics
     cellFunctions <- list(
       col_2 = JS('function makeGraph(selection){
-        // remove text
+      
+        // find out wich table and column
+        var regex = /(col_\\d+)/;
+        var col = regex.exec(this[0][0].className)[0];
+        var regex = /tbl_(\\w+)/;
+        var tbl = regex.exec(this[0][0].className)[1];
+  
+        // create a scaling function
+        var domain = colExtent(tbl, col);
+        var rScale = d3.scale.sqrt()
+                       .domain(domain)
+                       .range([8, 14]);
+
+        // remove text. will be added later within the svg
         selection.text(null)
 
         // create svg element
         var svg = selection.append("svg")
-              .attr("width", 24)
-              .attr("height", 24);
+              .attr("width", 28)
+              .attr("height", 28);
               
-              // create a circle with a radius ("r") scaled to the 
-              // value of the cell ("d.value")
-              svg.append("circle")
-              .attr("cx", 12)
-              .attr("cy", 12)
-              .attr("r", function(d) { return Math.sqrt(d.value) * 4.242641; })
+        // create a circle with a radius ("r") scaled to the 
+        // value of the cell ("d.value")
+        var circle = svg.append("g")
+              .append("circle").attr("class", "circle")
+              .attr("cx", 14)
+              .attr("cy", 14)
               .style("fill", "orange")
-              .attr("stroke","none");
-              
-              // place the text within the circle
-              svg.append("text")
+              .attr("stroke","none").attr("r", domain[0])
+              .transition().duration(300)
+              .attr("r", function(d) { return rScale(d.value); }); 
+
+        // place the text within the circle
+        var text = svg.append("g")
+              .append("text").attr("class", "text")
               .style("fill", "black")
-              .attr("x", 12)
-              .attr("y", 12)
+              .attr("x", 14)
+              .attr("y", 14)
               .attr("dy", ".35em")
               .attr("text-anchor", "middle")
               .text(function (d) { return d.value; });
-      }')
+      }
+      ')
     );
       
     initialFilters = list(col_1 = ">20");
@@ -216,6 +234,13 @@ shinyServer(function(input, output, session) {
   observe({
     input$clearfilter;
        clearFilters(session, tbl = "mtcars", doFilter = TRUE);
+  })
+  
+  observe({
+    # Row address is based on the complete, unfiltered and unsorted table
+    # Column address is one based. In this case showRowNames is TRUE,
+    # rownames column is col 0, "cylinders" is col 2.
+    setCellValue(session, tbl = "mtcars", row = 8, col = 2, value = input$cellVal);
   })
   
   observe({

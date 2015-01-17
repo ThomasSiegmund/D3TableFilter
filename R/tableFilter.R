@@ -345,3 +345,17 @@ setRowClass <- function(session, tbl, row, class) {
   session$sendCustomMessage(type = "rowClass", message);
 }
 
+#' Set cell value
+#' @param Session Shiny session object.
+#' @param tbl Name of the table.
+#' @param row Row number (one-based).
+#' @param col Column number (one-based). If \code{showRowNames == TRUE}, the rownames column is number zero.
+#' @param val Cell value to set.
+#' 
+#' @examples
+#' setCellValue(session, "mtcars", row = 8, col = 3, val = 8)
+#' @export 
+setCellValue <- function(session, tbl, row, col, value) {
+  message <- list(tbl = tbl, row = row, col = col, value = value);
+  session$sendCustomMessage(type = "setCellValue", message);
+}

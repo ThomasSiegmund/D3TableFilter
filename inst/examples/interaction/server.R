@@ -6,7 +6,7 @@ library(htmlwidgets)
 library(tableFilter)
 
 data(mtcars);
-mtcars <- mtcars[, 1:2];
+mtcars <- mtcars[, 1:3];
 mtcars$candidates <- FALSE;
 mtcars$favorite <- FALSE;
 myCandidates <- sample(nrow(mtcars), 5);
@@ -138,12 +138,13 @@ shinyServer(function(input, output, session) {
       sort = TRUE,
       on_keyup = TRUE,  
       on_keyup_delay = 800,
+      col_number_format= c(NULL, "US", "US", "US", NULL, NULL), 
       sort_config = list(
         # alphabetic sorting for the row names column, numeric for all other columns
-        sort_types = c("String", "Number", "Number", "none", "none")
+        sort_types = c("String", "Number", "Number", "Number", "none", "none")
       ),
-      col_3 = "none",
-      col_4 = "none"
+      col_4 = "none",
+      col_5 = "none"
       );
     
     # columns are addressed in TableFilter as col_0, col_1, ..., coln
@@ -156,7 +157,7 @@ shinyServer(function(input, output, session) {
     );
 
     # apply D3.js functions to a column,
-    # turning cell values into scaled SVG graphics
+    # e.g. to turn cell values into scaled SVG graphics
     cellFunctions <- list(
       col_2 = JS('function makeGraph(selection){
       
@@ -187,7 +188,8 @@ shinyServer(function(input, output, session) {
               .attr("cx", 14)
               .attr("cy", 14)
               .style("fill", "orange")
-              .attr("stroke","none").attr("r", domain[0])
+              .attr("stroke","none")
+              .attr("r", domain[0])
               .transition().duration(300)
               .attr("r", function(d) { return rScale(d.value); }); 
 
@@ -200,18 +202,66 @@ shinyServer(function(input, output, session) {
               .attr("dy", ".35em")
               .attr("text-anchor", "middle")
               .text(function (d) { return d.value; });
-      }
-      ')
+      }'),
+      col_3 = JS('function makeGraph(selection){
+
+        // find out wich table and column
+        var regex = /(col_\\d+)/;
+        var col = regex.exec(this[0][0].className)[0];
+        var regex = /tbl_(\\w+)/;
+        var tbl = regex.exec(this[0][0].className)[1];
+        var innerWidth = 117;
+        var innerHeight = 34;
+
+        // create a scaling function
+        var max = colMax(tbl, col);
+        var min = colMin(tbl, col);
+        var wScale = d3.scale.linear()
+                       .domain([0, max])
+                       .range([0, innerWidth]);
+
+        // remove text. will be added back later
+        selection.text(null);
+        
+        // right align cell content
+        //this.style("padding", 0);
+
+        var div = selection.append("div");
+
+        var svg = div.append("svg")
+              .style("position",  "absolute")
+              .attr("width", innerWidth)
+              .attr("height", innerHeight);
+
+        var box = svg.append("rect")
+                     .style("fill", "lightblue")
+                     .attr("stroke","none")
+                     .attr("height", innerHeight)
+                     .attr("width", min)
+                     .transition().duration(300)
+                     .attr("width", function(d) { return wScale(d.value); });
+
+        // format number and add text back
+        var format = d3.format(".1f");
+        var textdiv = div.append("div");
+                          textdiv.style("position",  "relative")
+                                 .attr("align", "right");
+
+        textdiv.append("text")
+                 .text(function(d) { return format(d.value); });
+
+      }')
     );
       
     initialFilters = list(col_1 = ">20");
 
+    # the mtcars table output
     tableFilter(mtcars, tableProps,
                 showRowNames = TRUE,
                 rowNamesColumn = "Model",
-                edit = c("col_1"),
-                checkBoxes = "col_3",
-                radioButtons = "col_4",
+                edit = c("col_1", "col_3"),
+                checkBoxes = "col_4",
+                radioButtons = "col_5",
                 cellFunctions = cellFunctions,
                 bgColScales = bgColScales,
                 filterInput = TRUE,
@@ -262,13 +312,13 @@ shinyServer(function(input, output, session) {
     } else {
       candidate = input$candidate;
     }
-    setCellValue(session, tbl = "mtcars", row = 3, col = 3, value = candidate, feedback = TRUE);
+    setCellValue(session, tbl = "mtcars", row = 3, col = 4, value = candidate, feedback = TRUE);
   })
   
   # server side editing of radio button
   observe({
     input$favorite;
-    setCellValue(session, tbl = "mtcars", row = 3, col = 4, value = TRUE, feedback = TRUE);
+    setCellValue(session, tbl = "mtcars", row = 3, col = 5, value = TRUE, feedback = TRUE);
   })
   
   ## demonstrate selectable rows interface

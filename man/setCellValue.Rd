@@ -4,7 +4,7 @@
 \alias{setCellValue}
 \title{Set cell value}
 \usage{
-setCellValue(session, tbl, row, col, value)
+setCellValue(session, tbl, row, col, value, feedback = FALSE)
 }
 \arguments{
 \item{tbl}{Name of the table.}
@@ -13,14 +13,16 @@ setCellValue(session, tbl, row, col, value)
 
 \item{col}{Column number (one-based). If \code{showRowNames == TRUE}, the rownames column is number zero.}
 
-\item{Session}{Shiny session object.}
+\item{value}{Cell value to set.}
 
-\item{val}{Cell value to set.}
+\item{feedback}{Send edit event back to server.}
+
+\item{Session}{Shiny session object.}
 }
 \description{
 Set cell value
 }
 \examples{
-setCellValue(session, "mtcars", 3, "success")
+setCellValue(session, "mtcars", row = 8, col = 3, val = 8)
 }
 

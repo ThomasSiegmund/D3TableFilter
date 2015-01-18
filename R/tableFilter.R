@@ -350,12 +350,13 @@ setRowClass <- function(session, tbl, row, class) {
 #' @param tbl Name of the table.
 #' @param row Row number (one-based).
 #' @param col Column number (one-based). If \code{showRowNames == TRUE}, the rownames column is number zero.
-#' @param val Cell value to set.
+#' @param value Cell value to set.
+#' @param feedback Send edit event back to server.
 #' 
 #' @examples
 #' setCellValue(session, "mtcars", row = 8, col = 3, val = 8)
 #' @export 
-setCellValue <- function(session, tbl, row, col, value) {
-  message <- list(tbl = tbl, row = row, col = col, value = value);
+setCellValue <- function(session, tbl, row, col, value, feedback = FALSE) {
+  message <- list(tbl = tbl, row = row, col = col, value = value, feedback = feedback);
   session$sendCustomMessage(type = "setCellValue", message);
 }

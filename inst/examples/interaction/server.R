@@ -48,7 +48,6 @@ shinyServer(function(input, output, session) {
   observe({
     if(is.null(input$mtcars_edit)) return(NULL);
      edit <- input$mtcars_edit;
-    print(edit);
     isolate({
       # need isolate, otherwise this observer would run twice
       # for each edit
@@ -81,7 +80,7 @@ shinyServer(function(input, output, session) {
           revals$edits["Fail", "Value"] <- val;
           return(NULL);
         } 
-      } else if (col == 3) {
+      } else if (col %in% c(3, 4)) {
         ; #nothing to validate for logical columns
       }
       
@@ -97,7 +96,10 @@ shinyServer(function(input, output, session) {
         revals$mtcars[, "favorite"] <- FALSE;
         revals$mtcars[row, col] <- val;
       }
-      confirmEdit(session, tbl = "mtcars", id = id, value = val);
+      # confirm edits (for text input only)
+      if(col %in% c(0, 1)) {
+        confirmEdit(session, tbl = "mtcars", id = id, value = val);
+      }
       revals$edits["Success", "Row"] <- row;
       revals$edits["Success", "Column"] <- col;
       revals$edits["Success", "Value"] <- val;
@@ -236,15 +238,37 @@ shinyServer(function(input, output, session) {
        clearFilters(session, tbl = "mtcars", doFilter = TRUE);
   })
   
+  # server side editing of a cell value
   observe({
     # Row address is based on the complete, unfiltered and unsorted table
     # Column address is one based. In this case showRowNames is TRUE,
     # rownames column is col 0, "cylinders" is col 2.
-    setCellValue(session, tbl = "mtcars", row = 8, col = 2, value = input$cellVal);
+    setCellValue(session, tbl = "mtcars", row = 8, col = 2, value = input$cellVal, feedback = TRUE);
   })
   
+  # server side editing of checkbox
+  output$candidateUi <- renderUI({
+    radioButtons("candidate", "Make Datsun candidate", choices = c("yes" = TRUE, "no" = FALSE, selected = mtcars["Datsun 710", "candidate"]))
+  })
+  
+  # server side editing of checkbox
   observe({
-    setRowClass(session, tbl = "mtcars2", row = 5, class = input$hornetClass);
+    if(is.null(input$candidate)) return(NULL);
+    # why do I get string values and not logicals here? Shiny bug?
+    if(input$candidate == "TRUE") {
+      candidate = TRUE;
+    } else if (input$candidate == "FALSE") {
+      candidate = FALSE;
+    } else {
+      candidate = input$candidate;
+    }
+    setCellValue(session, tbl = "mtcars", row = 3, col = 3, value = candidate, feedback = TRUE);
+  })
+  
+  # server side editing of radio button
+  observe({
+    input$favorite;
+    setCellValue(session, tbl = "mtcars", row = 3, col = 4, value = TRUE, feedback = TRUE);
   })
   
   ## demonstrate selectable rows interface
@@ -270,11 +294,17 @@ shinyServer(function(input, output, session) {
                 filterInput = TRUE, height = 500);
   })
   
+  
   # for a output object "mtcars2" tableFilter generates an input
   # "mtcars2_edit". 
   output$mtcars2Output <- renderTable({
     if(is.null(input$mtcars2_select)) return(NULL);
     mtcars[input$mtcars2_select, 1:2];
+  })
+  
+  # set class on a row
+  observe({
+    setRowClass(session, tbl = "mtcars2", row = 5, class = input$hornetClass);
   })
   
   

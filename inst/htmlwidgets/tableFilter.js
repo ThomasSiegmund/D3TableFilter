@@ -27,7 +27,6 @@ HTMLWidgets.widget({
     }
     
     window["table_Props_" + outputID] = data.tableProps;
-    log(outputID)
     
     // need to access this from shiny custom message functions
     // and to have it available for multiple tables in one document
@@ -178,7 +177,7 @@ HTMLWidgets.widget({
     // get event from button group, need to find out which
     // button is selected
     checkRadio = function(name) {
-      var tbl = name.replace(/_.*/g, '');
+       var tbl = name.replace(/_.*/g, '');
       var col = name.replace(/.*_col/, 'col');
       var editID = "edit_" + window["editCounter"]++;;
       var inputID = tbl + '_edit';
@@ -241,7 +240,7 @@ HTMLWidgets.widget({
     try {
       Shiny.addCustomMessageHandler("confirmEdit",
           function(message) {
-            
+
             var cell = d3.select('#' + message["tbl"]).select('#' + message["id"]);
             
             if(cell.attr("oldcolor")) {
@@ -255,9 +254,7 @@ HTMLWidgets.widget({
             var col = regex.exec(cell[0][0].className)[0];
             
              if(cell[0][0].type == "radio") {
-              cell
-//              .style("box-shadow", "0 0 5px 0px " + message["color"] + " inset")
-              .style("background",  message["color"]);
+              cell.style("background",  message["color"]);
             }
 
             if(message["color"]) {
@@ -288,7 +285,6 @@ HTMLWidgets.widget({
     try {
       Shiny.addCustomMessageHandler("setCellValue",
           function(message) {
-            
             var row = 'row_' + (Number(message["row"]) - 1);
             var col = 'col_' + message["col"];
             var tbl = message["tbl"];
@@ -296,29 +292,38 @@ HTMLWidgets.widget({
             var cell = d3.select('#' + tbl)
             .select(selector);
 
-             if(cell[0][0].type == "radio") {
-              cell
-//              .style("box-shadow", "0 0 5px 0px " + message["color"] + " inset")
-              .style("background",  message["color"]);
-            }
-
             var val = message["value"];
-            cell.attr('value', val)
-                .text(val);
             // todo: check if there is a d3 syntax to do this
             cell[0][0].__data__.value = val;
-            colourCol(tbl, col);
-            runCellFunctions(tbl, col);
+            
+            if(cell[0][0].firstChild.type == "radio") {
+              // uncheck other buttons in group
+              var radio = d3.selectAll('#' + tbl)
+                       .selectAll('td.' + col)
+                       .selectAll("input")
+                       .property("checked", false);
+            }
+            
+            if(cell[0][0].firstChild.type == "checkbox" || cell[0][0].firstChild.type == "radio") {
+              cell.selectAll("input").property("checked", val);
+            } else {
+              cell.attr('value', val)
+                  .text(val);
+              colourCol(tbl, col);
+              runCellFunctions(tbl, col);
+            }
             
             // send confirmation back to server
-            var editID = "edit_" + tbl + '_' + window["editCounter"]++;
-            var inputID = tbl + '_edit';
-
-            cell.attr('id', editID);
-
-            var edit = {id: editID, row: message["row"], col:  message["col"], val: val};
-            log(edit)
-            Shiny.onInputChange(inputID, edit);
+            // cell gets labeled with a unique edit id. 
+            // this way a confirmation or reject from the server will find
+            // only the most recent edit
+            if(message["feedback"]) {
+              var editID = "edit_" + tbl + '_' + window["editCounter"]++;
+              var inputID = tbl + '_edit';
+              cell.attr('id', editID);
+              var edit = {id: editID, row: message["row"], col:  message["col"], val: val};
+              Shiny.onInputChange(inputID, edit);
+            }
       });
     } catch (err) {
       ; // already installed
@@ -327,7 +332,6 @@ HTMLWidgets.widget({
     // turn cell content in graphics
     runCellFunctions = function(tbl, col) {
       var cellFunctions = window["cellFunctions_" + tbl];
-      log(cellFunctions)
       if(col == null) {
         // check whole table
         for (var key in cellFunctions) {

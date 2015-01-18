@@ -21,8 +21,11 @@ shinyUI(fluidPage(
                      ),
                      wellPanel(
                        selectInput("cellVal", label = "Merc 240D cylinders", choice = c(4, 6, 8, 10, 12), selected = 4, multiple = FALSE)
-                      ) 
-                     
+                      ),
+                     wellPanel(
+                       uiOutput("candidateUi"),
+                       actionButton("favorite", label = "Make Datsun favorite")
+                     )
               ),
   column(width = 5, 
            h4("mtcars"),

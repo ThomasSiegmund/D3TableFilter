@@ -177,7 +177,7 @@ HTMLWidgets.widget({
     // get event from button group, need to find out which
     // button is selected
     checkRadio = function(name) {
-       var tbl = name.replace(/_.*/g, '');
+      var tbl = name.replace(/_.*/g, '');
       var col = name.replace(/.*_col/, 'col');
       var editID = "edit_" + window["editCounter"]++;;
       var inputID = tbl + '_edit';
@@ -209,89 +209,67 @@ HTMLWidgets.widget({
       Shiny.onInputChange(inputID, edit);
      }
 
-    
-    // server doesn't accept edit. revert it. indicate by color change, revert if value
-    // is given by server
-    try {
-      Shiny.addCustomMessageHandler("rejectEdit",
-          function(message) {
-            var cell = d3.select('#' + message["tbl"]).select('#' + message["id"]);
-            // store color in attr so we can reset to it in subsequent edits
-            cell.attr("oldcolor", function() {return cell.style("color")});
-            var oldColor = cell.attr("oldcolor");
-            cell.style("color", message["color"]);
-            // if sever sends value, reset input to it and transition
-            // color back to previous
-            if(message["value"] !== null) {
-                cell.transition("textcolor")
-                .duration(1500)
-                .text(message["value"])
-                .style("color", oldColor)
-                .attr('id', '')
-                .attr('oldcolor', '');
-            }
-      });
-    } catch (err) {
-      ; // already installed
-    }
-    
-    // server accepted edit. confirm by switching back to original color
-    // recalculate colour scale 
-    try {
-      Shiny.addCustomMessageHandler("confirmEdit",
-          function(message) {
 
-            var cell = d3.select('#' + message["tbl"]).select('#' + message["id"]);
-            
-            if(cell.attr("oldcolor")) {
-              // previous validation failed
-              var oldColor = cell.attr("oldcolor");
-            } else {
-              var oldColor = cell.style("color");
-            }
-            
-            var regex = /(col_\d+)/;
-            var col = regex.exec(cell[0][0].className)[0];
-            
-             if(cell[0][0].type == "radio") {
-              cell.style("background",  message["color"]);
-            }
-
-            if(message["color"]) {
-                      cell.style("color", message["color"])
-                          .transition("textcolor")
-                          .duration(1500)
-                          .style("color", oldColor)
-                          .attr('oldcolor', '');
-            }
-            if(message["value"] !== null) {
-              var val = message["value"];
-            } else {
-              var val = cell.text();
-            }
-            cell.attr('value', val)
-                .text(val);
-            // todo: check if there is a d3 syntax to do this
-            cell[0][0].__data__.value = val;
-            colourCol(message["tbl"], col);
-            runCellFunctions(message["tbl"], col);
-
-      });
-    } catch (err) {
-      ; // already installed
-    }
-
-    // server wants to change cell value
+    // server side edit, confirm or reject
     try {
       Shiny.addCustomMessageHandler("setCellValue",
           function(message) {
+            log(message)
             var row = 'row_' + (Number(message["row"]) - 1);
             var col = 'col_' + message["col"];
             var tbl = message["tbl"];
             var selector = '.' + row + '.' + col;
             var cell = d3.select('#' + tbl)
-            .select(selector);
+                         .select(selector);
+            
+            if(message["action"] == "confirm" || message["action"] == "reject") {
 
+              // only do something if cell id matches message
+              cell = cell.filter('#' + message["id"]);
+              if(cell.empty()) {
+                log("wrong cell, returning");
+                return(null);
+              }
+              
+              // signal reject by transient text colour change
+              if(message["action"] == "reject") {
+                // store color in attr so we can reset to it in subsequent edits
+                cell.attr("oldcolor", function() {return cell.style("color")});
+                var oldColor = cell.attr("oldcolor");
+                cell.style("color", message["color"]);
+                // if sever sends value, reset input to it and transition
+                // color back to previous
+                if(message["value"] !== null) {
+                    cell.transition("textcolor")
+                    .duration(1500)
+                    .style("color", oldColor)
+                    .attr('id', '')
+                    .attr('oldcolor', '');
+                }
+              } else if (message["action"] == "confirm") {
+                // confirm edit by transient colour change
+                if(cell.attr("oldcolor")) {
+                // previous validation failed
+                var oldColor = cell.attr("oldcolor");
+                } else {
+                  var oldColor = cell.style("color");
+                }
+                if(message["color"]) {
+                  cell.style("color", message["color"])
+                      .transition("textcolor")
+                      .duration(1500)
+                      .style("color", oldColor)
+                      .attr('oldcolor', '');
+                }
+              }
+              
+            } // confirm or reject
+            
+            // no new value, no further action
+            if(message["value"] === null) {
+              return(null)
+            }
+            
             var val = message["value"];
             // todo: check if there is a d3 syntax to do this
             cell[0][0].__data__.value = val;
@@ -343,8 +321,14 @@ HTMLWidgets.widget({
         }
       } else {
         // only selected column
-        var cells = d3.selectAll('#' + table).selectAll('td.' + col);
-                 cells.call(cellFunctions[col]);
+        log("in runcellfunctions")
+        log(tbl)
+        log(col)
+        if (cellFunctions.hasOwnProperty(col)) {
+          log("col is in cellfunctions")
+          var cells = d3.selectAll('#' + tbl).selectAll('td.' + col);
+                   cells.call(cellFunctions[col]);
+        }
       }
     };
 

@@ -242,12 +242,15 @@ renderTableFilter <- function(expr, env = parent.frame(), quoted = FALSE) {
 #' the rownames is 0.
 #' @param session Shiny session object.
 #' @param tbl Name of the table beeing edited.
+#' @param row Row number as received via edit input.
+#' @param col Column number as received via edit input.
 #' @param id Unique identifier of the edit event, received via the edit input
 #' @param color Text colour of a failed edit. 
 #' @param value Reset the input to this value if not null.
 #' @export 
-rejectEdit <- function(session, tbl, id, value = NULL, color = "red") {
-        session$sendCustomMessage(type = "rejectEdit", list(tbl = tbl, id = id, value = value, color = color));
+rejectEdit <- function(session, tbl, row, col, id, value = NULL, color = "red") {
+        message <- list(tbl = tbl, row = row, col = col, action = "reject", id = id, value = value, color = color, feedback = FALSE);
+        session$sendCustomMessage(type = "setCellValue", message);
 }
 
 #' Give feedback in case of validaton success
@@ -265,12 +268,31 @@ rejectEdit <- function(session, tbl, id, value = NULL, color = "red") {
 #' the rownames is 0.
 #' @param session Shiny session object.
 #' @param tbl Name of the table beeing edited.
+#' @param row Row number as received via edit input.
+#' @param col Column number as received via edit input.
 #' @param id Unique identifier of the edit event, received via the edit input
 #' @param color Transient text colour to indicate success
 #' @param value Value to set text to after confirmation. Can be used to format input.
 #' @export 
-confirmEdit <- function(session, tbl, id, value = NULL, color = "green") {
-  session$sendCustomMessage(type = "confirmEdit", list(tbl = tbl, id = id, value = value, color = color));
+confirmEdit <- function(session, tbl, row, col, id, value = NULL, color = "green") {
+  message <- list(tbl = tbl, row = row, col = col, action = "confirm", id = id, value = value, color = color, feedback = FALSE);
+  session$sendCustomMessage(type = "setCellValue", message);
+}
+
+#' Set cell value
+#' @param Session Shiny session object.
+#' @param tbl Name of the table.
+#' @param row Row number (one-based).
+#' @param col Column number (one-based). If \code{showRowNames == TRUE}, the rownames column is number zero.
+#' @param value Cell value to set.
+#' @param feedback Send edit event back to server.
+#' 
+#' @examples
+#' setCellValue(session, "mtcars", row = 8, col = 3, val = 8)
+#' @export 
+setCellValue <- function(session, tbl, row, col, value, feedback = FALSE) {
+  message <- list(tbl = tbl, row = row, col = col, action = "edit", value = value, feedback = feedback);
+  session$sendCustomMessage(type = "setCellValue", message);
 }
 
 #' Enable editing of a tableFilter widget
@@ -343,20 +365,4 @@ clearFilters <- function(session, tbl, doFilter = TRUE) {
 setRowClass <- function(session, tbl, row, class) {
   message <- list(tbl = tbl, row = row, class = class);
   session$sendCustomMessage(type = "rowClass", message);
-}
-
-#' Set cell value
-#' @param Session Shiny session object.
-#' @param tbl Name of the table.
-#' @param row Row number (one-based).
-#' @param col Column number (one-based). If \code{showRowNames == TRUE}, the rownames column is number zero.
-#' @param value Cell value to set.
-#' @param feedback Send edit event back to server.
-#' 
-#' @examples
-#' setCellValue(session, "mtcars", row = 8, col = 3, val = 8)
-#' @export 
-setCellValue <- function(session, tbl, row, col, value, feedback = FALSE) {
-  message <- list(tbl = tbl, row = row, col = col, value = value, feedback = feedback);
-  session$sendCustomMessage(type = "setCellValue", message);
 }

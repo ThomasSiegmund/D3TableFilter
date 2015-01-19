@@ -48,6 +48,7 @@ shinyServer(function(input, output, session) {
   observe({
     if(is.null(input$mtcars_edit)) return(NULL);
      edit <- input$mtcars_edit;
+    print(edit);
     isolate({
       # need isolate, otherwise this observer would run twice
       # for each edit
@@ -61,26 +62,26 @@ shinyServer(function(input, output, session) {
         # rownames
         oldval <- rownames(mtcars)[row];
         if(grepl('^\\d', val)) {
-          rejectEdit(session, tbl = "mtcars", id = id, value = oldval);
+          rejectEdit(session, tbl = "mtcars", row = row, col = col,  id = id, value = oldval);
           revals$edits["Fail", "Row"] <- row;
           revals$edits["Fail", "Column"] <- col;
           revals$edits["Fail", "Value"] <- val;
           return(NULL);
         }
-      } else if (col %in% c(1, 2)){
+      } else if (col %in% c(1, 2, 3)){
         # numeric columns
         if(is.na(suppressWarnings(as.numeric(val)))) {
           oldval <- revals$mtcars[row, col];
           # reset to the old value
           # input will turn red briefly, than fade to previous color while
           # text returns to previous value
-          rejectEdit(session, tbl = "mtcars", id = id, value = oldval);
+          rejectEdit(session, tbl = "mtcars", row = row, col = col, id = id, value = oldval);
           revals$edits["Fail", "Row"] <- row;
           revals$edits["Fail", "Column"] <- col;
           revals$edits["Fail", "Value"] <- val;
           return(NULL);
         } 
-      } else if (col %in% c(3, 4)) {
+      } else if (col %in% c(4, 5)) {
         ; #nothing to validate for logical columns
       }
       
@@ -96,10 +97,9 @@ shinyServer(function(input, output, session) {
         revals$mtcars[, "favorite"] <- FALSE;
         revals$mtcars[row, col] <- val;
       }
-      # confirm edits (for text input only)
-      if(col %in% c(0, 1)) {
-        confirmEdit(session, tbl = "mtcars", id = id, value = val);
-      }
+      # confirm edits
+      confirmEdit(session, tbl = "mtcars", row = row, col = col, id = id, value = val);
+
       revals$edits["Success", "Row"] <- row;
       revals$edits["Success", "Column"] <- col;
       revals$edits["Success", "Value"] <- val;
@@ -212,6 +212,9 @@ shinyServer(function(input, output, session) {
         var tbl = regex.exec(this[0][0].className)[1];
         var innerWidth = 117;
         var innerHeight = 34;
+        
+        console.log("selection");
+        console.log(selection);
 
         // create a scaling function
         var max = colMax(tbl, col);
@@ -294,6 +297,12 @@ shinyServer(function(input, output, session) {
     # Column address is one based. In this case showRowNames is TRUE,
     # rownames column is col 0, "cylinders" is col 2.
     setCellValue(session, tbl = "mtcars", row = 8, col = 2, value = input$cellVal, feedback = TRUE);
+  })
+  observe({
+    # Row address is based on the complete, unfiltered and unsorted table
+    # Column address is one based. In this case showRowNames is TRUE,
+    # rownames column is col 0, "cylinders" is col 2.
+    setCellValue(session, tbl = "mtcars", row = 8, col = 3, value = input$cellVal2, feedback = TRUE);
   })
   
   # server side editing of checkbox

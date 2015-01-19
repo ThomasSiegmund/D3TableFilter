@@ -20,7 +20,8 @@ shinyUI(fluidPage(
                        actionButton("dofilter", "Set filter")
                      ),
                      wellPanel(
-                       selectInput("cellVal", label = "Merc 240D cylinders", choice = c(4, 6, 8, 10, 12), selected = 4, multiple = FALSE)
+                       selectInput("cellVal", label = "Merc 240D cylinders", choice = c(4, 6, 8, 10, 12), selected = 4, multiple = FALSE),
+                       selectInput("cellVal2", label = "Merc 240D disp", choice = c(100, 200, 300, 400, 400), selected = 4, multiple = FALSE)
                       ),
                      wellPanel(
                        uiOutput("candidateUi"),

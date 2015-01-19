@@ -4,12 +4,16 @@
 \alias{rejectEdit}
 \title{Give feedback in case of validaton failure.}
 \usage{
-rejectEdit(session, tbl, id, value = NULL, color = "red")
+rejectEdit(session, tbl, row, col, id, value = NULL, color = "red")
 }
 \arguments{
 \item{session}{Shiny session object.}
 
 \item{tbl}{Name of the table beeing edited.}
+
+\item{row}{Row number as received via edit input.}
+
+\item{col}{Column number as received via edit input.}
 
 \item{id}{Unique identifier of the edit event, received via the edit input}
 

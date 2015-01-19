@@ -4,12 +4,16 @@
 \alias{confirmEdit}
 \title{Give feedback in case of validaton success}
 \usage{
-confirmEdit(session, tbl, id, value = NULL, color = "green")
+confirmEdit(session, tbl, row, col, id, value = NULL, color = "green")
 }
 \arguments{
 \item{session}{Shiny session object.}
 
 \item{tbl}{Name of the table beeing edited.}
+
+\item{row}{Row number as received via edit input.}
+
+\item{col}{Column number as received via edit input.}
 
 \item{id}{Unique identifier of the edit event, received via the edit input}
 

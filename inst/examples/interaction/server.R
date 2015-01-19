@@ -48,7 +48,7 @@ shinyServer(function(input, output, session) {
   observe({
     if(is.null(input$mtcars_edit)) return(NULL);
      edit <- input$mtcars_edit;
-    print(edit);
+
     isolate({
       # need isolate, otherwise this observer would run twice
       # for each edit
@@ -173,6 +173,15 @@ shinyServer(function(input, output, session) {
                        .domain(domain)
                        .range([8, 14]);
 
+        // column has been initialized before, update function
+        if(tbl + "_" + col + "_init" in window) {
+            var sel = selection.selectAll("svg")
+                     .selectAll("circle")
+                     .transition().duration(500)
+                     .attr("r", function(d) { return rScale(d.value)});
+                     return(null);
+        }
+
         // remove text. will be added later within the svg
         selection.text(null)
 
@@ -190,7 +199,7 @@ shinyServer(function(input, output, session) {
               .style("fill", "orange")
               .attr("stroke","none")
               .attr("r", domain[0])
-              .transition().duration(300)
+              .transition().duration(400)
               .attr("r", function(d) { return rScale(d.value); }); 
 
         // place the text within the circle
@@ -202,6 +211,8 @@ shinyServer(function(input, output, session) {
               .attr("dy", ".35em")
               .attr("text-anchor", "middle")
               .text(function (d) { return d.value; });
+        window[tbl + "_" + col + "_init"] = true;
+
       }'),
       col_3 = JS('function makeGraph(selection){
 
@@ -213,9 +224,6 @@ shinyServer(function(input, output, session) {
         var innerWidth = 117;
         var innerHeight = 34;
         
-        console.log("selection");
-        console.log(selection);
-
         // create a scaling function
         var max = colMax(tbl, col);
         var min = colMin(tbl, col);
@@ -223,12 +231,18 @@ shinyServer(function(input, output, session) {
                        .domain([0, max])
                        .range([0, innerWidth]);
 
+        // column has been initialized before, update function
+        if(tbl + "_" + col + "_init" in window) {
+            var sel = selection.selectAll("svg")
+                     .selectAll("rect")
+                     .transition().duration(500)
+                     .attr("width", function(d) { return wScale(d.value)});
+                     return(null);
+        }
+
         // remove text. will be added back later
         selection.text(null);
         
-        // right align cell content
-        //this.style("padding", 0);
-
         var div = selection.append("div");
 
         var svg = div.append("svg")
@@ -241,7 +255,7 @@ shinyServer(function(input, output, session) {
                      .attr("stroke","none")
                      .attr("height", innerHeight)
                      .attr("width", min)
-                     .transition().duration(300)
+                     .transition().duration(500)
                      .attr("width", function(d) { return wScale(d.value); });
 
         // format number and add text back
@@ -252,7 +266,7 @@ shinyServer(function(input, output, session) {
 
         textdiv.append("text")
                  .text(function(d) { return format(d.value); });
-
+        window[tbl + "_" + col + "_init"] = true;
       }')
     );
       

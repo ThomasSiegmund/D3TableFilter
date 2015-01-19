@@ -214,7 +214,6 @@ HTMLWidgets.widget({
     try {
       Shiny.addCustomMessageHandler("setCellValue",
           function(message) {
-            log(message)
             var row = 'row_' + (Number(message["row"]) - 1);
             var col = 'col_' + message["col"];
             var tbl = message["tbl"];
@@ -227,7 +226,6 @@ HTMLWidgets.widget({
               // only do something if cell id matches message
               cell = cell.filter('#' + message["id"]);
               if(cell.empty()) {
-                log("wrong cell, returning");
                 return(null);
               }
               
@@ -285,8 +283,8 @@ HTMLWidgets.widget({
             if(cell[0][0].firstChild.type == "checkbox" || cell[0][0].firstChild.type == "radio") {
               cell.selectAll("input").property("checked", val);
             } else {
-              cell.attr('value', val)
-                  .text(val);
+              cell.attr('value', val);
+                 cell.selectAll("text").text(val);
               colourCol(tbl, col);
               runCellFunctions(tbl, col);
             }

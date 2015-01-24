@@ -34,27 +34,65 @@ shinyServer(function(input, output, session) {
         sort_types = c("String", rep("Number", 11))
       ),
       # paging
-      paging = TRUE,  
-      paging_length = 20,  
+      paging = FALSE,  # paging is incompatible with col_operations, at least here
+      paging_length = 30,  
       rows_counter = TRUE,  
       rows_counter_text = "Rows:",
-      results_per_page = JS("['Rows per page',[20,40,60]]"),  
+      results_per_page = JS("['Rows per page',[30, 60]]"),  
       #column visibility
       showHide_cols_text = 'Hide columns:',
       showHide_enable_tick_all = TRUE,
       # filters
-      refresh_filters = TRUE,  
+      refresh_filters = FALSE,  # refresh filters is incompatible with col_operations, at least here
       col_8 = "checklist",
       col_9 = "checklist",
       col_10 = "multiple",
       col_11 = "multiple",
       # row counter not supported
-      rows_counter = FALSE
+      rows_counter = FALSE,
+      # adding a summary row, showing the column means
+      rows_always_visible = list(nrow(mtcars) + 2, nrow(mtcars) + 3),
+      col_operation = list( 
+        id = list("frow_0_fcol_1_tbl_mtcars",
+                  "frow_0_fcol_2_tbl_mtcars",
+                  "frow_0_fcol_3_tbl_mtcars",
+                  "frow_0_fcol_4_tbl_mtcars",
+                  "frow_0_fcol_5_tbl_mtcars",
+                  "frow_0_fcol_6_tbl_mtcars",
+                  "frow_0_fcol_7_tbl_mtcars",
+                  "frow_0_fcol_8_tbl_mtcars",
+                  "frow_0_fcol_9_tbl_mtcars",
+                  "frow_0_fcol_10_tbl_mtcars",
+                  "frow_0_fcol_11_tbl_mtcars",
+                  "frow_1_fcol_1_tbl_mtcars",
+                  "frow_1_fcol_2_tbl_mtcars",
+                  "frow_1_fcol_3_tbl_mtcars",
+                  "frow_1_fcol_4_tbl_mtcars",
+                  "frow_1_fcol_5_tbl_mtcars",
+                  "frow_1_fcol_6_tbl_mtcars",
+                  "frow_1_fcol_7_tbl_mtcars",
+                  "frow_1_fcol_8_tbl_mtcars",
+                  "frow_1_fcol_9_tbl_mtcars",
+                  "frow_1_fcol_10_tbl_mtcars",
+                  "frow_1_fcol_11_tbl_mtcars"
+        ),    
+        col = as.list(c(1:11, 1:11)),
+        operation = as.list(c(rep("mean",11), rep("median", 11))),
+        write_method = as.list(rep("innerhtml", 22)),
+        exclude_row = list(nrow(mtcars) + 2, nrow(mtcars) + 3),  
+        decimal_precision = as.list(rep(1, 22)),
+        tot_row_index =list(nrow(mtcars) + 2, nrow(mtcars) + 3)
+      )
     );
-
+    
+    # add a summary row. Can be used to set values statically, but also to 
+    # make use of TableFilters "col_operation"
+    footData <- data.frame(Model = c("Mean", "Median"), mpg = 0, cyl = 0, disp = 0, hp = 0,  drat = 0, wt = 0, qsec = 0, vs = 0, am = 0, gear = 0, carb = 0);
+    
     tableFilter(mtcars, table_Props,
                 showRowNames = TRUE,
                 extensions = c('ColsVisibility', 'ColumnsResizer', 'FiltersRowVisibility'),
+                footData = footData,
                 rowNamesColumn = "Model");
   })
 })

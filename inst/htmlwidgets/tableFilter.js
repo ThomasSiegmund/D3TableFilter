@@ -18,7 +18,9 @@ HTMLWidgets.widget({
     var outputID = el.id;
 
     var celldata = HTMLWidgets.dataframeToD3(data.data);
-
+    
+    var footdata = HTMLWidgets.dataframeToD3(data.footData);
+    
     var columns = Object.getOwnPropertyNames(celldata[0]);
     var allCols = [];
     var i;
@@ -67,10 +69,10 @@ HTMLWidgets.widget({
     var table = d3.select(el)
                   .append("table")
                   .attr("id", tableID)
-                  .classed({'table': true, 'table-condensed': true})
+                  .classed({'table-condensed': true});
 
-            thead = table.append("thead"),
-            tbody = table.append("tbody");
+    var  thead = table.append("thead");
+    var  tbody = table.append("tbody");
             
      thead.append("tr")
             .selectAll("th")
@@ -99,7 +101,33 @@ HTMLWidgets.widget({
         .text(function(d) { return d.value; })
         // address columns table filter style
         .attr('class', function(d, i, j){ return "col_" + i + ' ' + 'row_' + j + ' ' + 'tbl_' + outputID; });
-        
+    
+    // create a table footer 
+    var  tfoot = table.append("tfoot");
+    
+    // create a row for each object in the data
+    var footrows = tfoot.selectAll("tr")
+        .data(footdata)
+        .enter()
+        .append("tr")
+        .attr('id', function(d, i) {return 'fr' + i})
+        .attr('class', 'tbl_' + outputID);
+    
+    console.log(footdata)
+    
+    // create a cell in each row for each column of the footer
+    var footcells = footrows.selectAll("td")
+        .data(function(row) {
+            return columns.map(function(column) {
+               return {column: column, value: row[column]};
+            });
+        })
+        .enter()
+        .append("td")
+        .text(function(d) { return d.value; })
+        // set an id to use for tablefilter "col_operations"
+        .attr('id', function(d, i, j){ return 'frow_' + j + '_fcol_' + i + '_' +  'tbl_' + outputID; });
+
     // debounce from Underscore.js
     // modified to allow rapid editing of multiple cells
     // if args are different between subsequent calls, 
@@ -319,11 +347,7 @@ HTMLWidgets.widget({
         }
       } else {
         // only selected column
-        log("in runcellfunctions")
-        log(tbl)
-        log(col)
         if (cellFunctions.hasOwnProperty(col)) {
-          log("col is in cellfunctions")
           var cells = d3.selectAll('#' + tbl).selectAll('td.' + col);
                    cells.call(cellFunctions[col]);
         }

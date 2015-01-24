@@ -144,9 +144,23 @@ shinyServer(function(input, output, session) {
         sort_types = c("String", "Number", "Number", "Number", "none", "none")
       ),
       col_4 = "none",
-      col_5 = "none"
+      col_5 = "none",
+      # adding a summary row, showing the column means
+      rows_always_visible = list(nrow(mtcars) + 2),
+      col_operation = list( 
+        id = list("frow_0_fcol_1_tbl_mtcars","frow_0_fcol_2_tbl_mtcars", "frow_0_fcol_3_tbl_mtcars"),    
+        col = list(1, 2, 3),    
+        operation = list("mean","mean", "mean"),
+        write_method = list("innerhtml", 'innerhtml', 'innerhtml'),  
+        exclude_row = list(nrow(mtcars) + 2),  
+        decimal_precision = list(1, 1, 1)
+      )
       );
     
+    # add a summary row. Can be used to set values statically, but also to 
+    # make use of TableFilters "col_operation"
+    footData <- data.frame(Model = "Mean", mpgx = 0, cyl = 0, disp = 0);
+
     # columns are addressed in TableFilter as col_0, col_1, ..., coln
     # the "auto" scales recalculate the data range after each edit
     # to get the same behaviour with manually defined colour scales
@@ -222,7 +236,7 @@ shinyServer(function(input, output, session) {
         var regex = /tbl_(\\w+)/;
         var tbl = regex.exec(this[0][0].className)[1];
         var innerWidth = 117;
-        var innerHeight = 34;
+        var innerHeight = 14;
         
         // create a scaling function
         var max = colMax(tbl, col);
@@ -231,21 +245,28 @@ shinyServer(function(input, output, session) {
                        .domain([0, max])
                        .range([0, innerWidth]);
 
+        // text formatting function
+        var textformat = d3.format(".1f");
+
         // column has been initialized before, update function
         if(tbl + "_" + col + "_init" in window) {
             var sel = selection.selectAll("svg")
                      .selectAll("rect")
                      .transition().duration(500)
                      .attr("width", function(d) { return wScale(d.value)});
-                     return(null);
+            var txt = selection
+                        .selectAll("text")
+                        .text(function(d) { return textformat(d.value); });
+           return(null);
         }
+        
+        // can remove padding here, but still cant fill whole cell with svg 
+        this.style("padding", "0px 5px 0px 5px");
 
         // remove text. will be added back later
         selection.text(null);
-        
-        var div = selection.append("div");
 
-        var svg = div.append("svg")
+        var svg = selection.append("svg")
               .style("position",  "absolute")
               .attr("width", innerWidth)
               .attr("height", innerHeight);
@@ -259,13 +280,12 @@ shinyServer(function(input, output, session) {
                      .attr("width", function(d) { return wScale(d.value); });
 
         // format number and add text back
-        var format = d3.format(".1f");
-        var textdiv = div.append("div");
+        var textdiv = selection.append("div");
                           textdiv.style("position",  "relative")
                                  .attr("align", "right");
 
         textdiv.append("text")
-                 .text(function(d) { return format(d.value); });
+                 .text(function(d) { return textformat(d.value); });
         window[tbl + "_" + col + "_init"] = true;
       }')
     );
@@ -282,7 +302,9 @@ shinyServer(function(input, output, session) {
                 cellFunctions = cellFunctions,
                 bgColScales = bgColScales,
                 filterInput = TRUE,
-                initialFilters = initialFilters, height = 2000);
+                initialFilters = initialFilters,
+                footData = footData,
+                height = 2000);
   })
     
   observe({
@@ -357,14 +379,30 @@ shinyServer(function(input, output, session) {
       sort_config = list(
         sort_types = c("Number", "Number")
       ),
-      filters_row_index = 1
+      filters_row_index = 1,
+      # adding a summary row, showing the column means
+      rows_always_visible = list(nrow(mtcars) + 2),
+      col_operation = list( 
+        id = list("frow_0_fcol_1_tbl_mtcars2","frow_0_fcol_2_tbl_mtcars2"),    
+        col = list(1,2),    
+        operation = list("mean","mean"),
+        write_method = list("innerhtml",'innerhtml'),  
+        exclude_row = list(nrow(mtcars) + 2),  
+        decimal_precision = list(1, 1)
+      )
     );
-
+    
+    # add a summary row. Can be used to set values statically, but also to 
+    # make use of TableFilters "col_operation"
+    footData <- data.frame(Rownames = "Mean", mpg = 0, cyl = 0);
+    
     tableFilter(mtcars[ , 1:2],
                 tableProps, showRowNames = TRUE, 
                 selectableRows = "multi",
-                selectableRowsClass = "success",
-                filterInput = TRUE, height = 500);
+                selectableRowsClass = "info",
+                filterInput = TRUE,
+                footData = footData,
+                height = 500);
   })
   
   

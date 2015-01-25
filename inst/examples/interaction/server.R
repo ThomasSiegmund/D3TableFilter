@@ -315,7 +315,7 @@ shinyServer(function(input, output, session) {
             }'),
       col_3 = JS('function makeGraph(selection){
                 // text formatting function
-                var textformat = d3.format(".0f");
+                var textformat = d3.format(".1f");
                 // make cell text right aligned
                 this.classed("text-right", true);
                 selection.style("font-weight", "bold")

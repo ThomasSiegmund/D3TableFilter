@@ -312,10 +312,10 @@ HTMLWidgets.widget({
                        .selectAll('td.' + col)
                        .selectAll("input")
                        .property("checked", false);
-            } else if(cell[0][0].firstChild.type == "checkbox" || cell[0][0].firstChild.type == "radio") {
+            } 
+            if(cell[0][0].firstChild.type == "checkbox" || cell[0][0].firstChild.type == "radio") {
               cell.selectAll("input").property("checked", val);
             } else {
-              
               if(cell.selectAll("text").empty()) {
                 // simple cell, update text directly
               cell = cell.attr('value', val)

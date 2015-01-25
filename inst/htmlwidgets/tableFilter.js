@@ -113,8 +113,6 @@ HTMLWidgets.widget({
         .attr('id', function(d, i) {return 'fr' + i})
         .attr('class', 'tbl_' + outputID);
     
-    console.log(footdata)
-    
     // create a cell in each row for each column of the footer
     var footcells = footrows.selectAll("td")
         .data(function(row) {
@@ -126,7 +124,8 @@ HTMLWidgets.widget({
         .append("td")
         .text(function(d) { return d.value; })
         // set an id to use for tablefilter "col_operations"
-        .attr('id', function(d, i, j){ return 'frow_' + j + '_fcol_' + i + '_' +  'tbl_' + outputID; });
+        .attr('id', function(d, i, j){ return 'frow_' + j + '_fcol_' + i + '_' +  'tbl_' + outputID; })
+        .attr('class', function(d, i, j){ return "col_" + i + ' ' + 'row_' + j + ' ' + 'tbl_' + outputID; });
 
     // debounce from Underscore.js
     // modified to allow rapid editing of multiple cells
@@ -246,9 +245,16 @@ HTMLWidgets.widget({
             var col = 'col_' + message["col"];
             var tbl = message["tbl"];
             var selector = '.' + row + '.' + col;
-            var cell = d3.select('#' + tbl)
-                         .select(selector);
-            
+            if(message["foot"]) {
+              var cell = d3.select('#' + tbl)
+                           .selectAll('tfoot')
+                           .select(selector);
+            } else {
+              var cell = d3.select('#' + tbl)
+                           .selectAll('tbody')
+                           .select(selector);
+            }
+
             if(message["action"] == "confirm" || message["action"] == "reject") {
 
               // only do something if cell id matches message
@@ -296,6 +302,7 @@ HTMLWidgets.widget({
               return(null)
             }
             
+
             var val = message["value"];
             // todo: check if there is a d3 syntax to do this
             cell[0][0].__data__.value = val;
@@ -306,13 +313,20 @@ HTMLWidgets.widget({
                        .selectAll('td.' + col)
                        .selectAll("input")
                        .property("checked", false);
-            }
-            
-            if(cell[0][0].firstChild.type == "checkbox" || cell[0][0].firstChild.type == "radio") {
+            } else if(cell[0][0].firstChild.type == "checkbox" || cell[0][0].firstChild.type == "radio") {
               cell.selectAll("input").property("checked", val);
             } else {
-              cell.attr('value', val);
-                 cell.selectAll("text").text(val);
+              
+              if(cell.selectAll("text").empty()) {
+                // simple cell, update text directly
+              cell = cell.attr('value', val)
+                         .text(val);
+              } else {
+                // cell styled using cellfunctions, look for text element within
+              cell = cell.attr('value', val)
+                  .selectAll("text").text(val);
+              }
+
               colourCol(tbl, col);
               runCellFunctions(tbl, col);
             }
@@ -341,15 +355,19 @@ HTMLWidgets.widget({
         for (var key in cellFunctions) {
            if (cellFunctions.hasOwnProperty(key)) { 
              table = tbl; // strange. this makes it accessible inside of the select
-             var cells = d3.selectAll('#' + table).selectAll('td.' + key);
+             var cells = d3.selectAll('#' + table)
+                           .selectAll('tbody')
+                           .selectAll('td.' + key);
                  cells.call(cellFunctions[key]);
         			};
         }
       } else {
         // only selected column
         if (cellFunctions.hasOwnProperty(col)) {
-          var cells = d3.selectAll('#' + tbl).selectAll('td.' + col);
-                   cells.call(cellFunctions[col]);
+          var cells = d3.selectAll('#' + tbl)
+                        .selectAll('tbody')
+                        .selectAll('td.' + col);
+              cells.call(cellFunctions[col]);
         }
       }
     };
@@ -359,7 +377,8 @@ HTMLWidgets.widget({
     try {
       Shiny.addCustomMessageHandler("enableEdit",
           function(message) {
-              var cells = d3.selectAll('#' + message["tbl"]);
+              var cells = d3.selectAll('#' + message["tbl"])
+                            .selectAll('tbody');
               if(message["cols"] !== null) {
                   cells = cells.selectAll(message["cols"]);
               } else {
@@ -376,7 +395,8 @@ HTMLWidgets.widget({
     try {
       Shiny.addCustomMessageHandler("disableEdit",
           function(message) {
-              var cells = d3.selectAll('#' + message["tbl"]);
+              var cells = d3.selectAll('#' + message["tbl"])
+                            .selectAll('tbody');
               if(message["cols"] !== null) {
                   cells = cells.selectAll(message["cols"]);
               } else {
@@ -437,8 +457,7 @@ HTMLWidgets.widget({
             })
             var inputID = tbl + '_select';
             Shiny.onInputChange(inputID, selected);
-
-});
+        });
     } catch (err) {
       ; // already installed
     }
@@ -474,7 +493,6 @@ HTMLWidgets.widget({
       Shiny.onInputChange(inputID, selected);
     }
 
-
     // clear filters from table
     try {
       Shiny.addCustomMessageHandler("clearFilters",
@@ -489,11 +507,11 @@ HTMLWidgets.widget({
       ; // already installed
     }
 
-
     // calculate min / max / extent per column. Can be used from R for
     // dynamic colour scale range  
     colExtent = function(tbl, col) {
       var colVals = d3.selectAll('#' + tbl)
+                      .selectAll("tbody")
                       .selectAll('td.' + col)
                       .data();
       var colExtent = d3.extent(colVals, function(d) { return d.value; });
@@ -501,6 +519,7 @@ HTMLWidgets.widget({
     }
     colMin = function(tbl, col) {
       var colVals = d3.selectAll('#' + tbl)
+                      .selectAll("tbody")
                       .selectAll('td.' + col)
                       .data();
       var colMin = d3.min(colVals, function(d) { return d.value; })
@@ -508,6 +527,7 @@ HTMLWidgets.widget({
     }
     colMax = function(tbl, col) {
       var colVals = d3.selectAll('#' + tbl)
+                      .selectAll("tbody")
                       .selectAll('td.' + col)
                       .data();
       var colMax = d3.max(colVals, function(d) { return d.value; })
@@ -520,6 +540,7 @@ HTMLWidgets.widget({
       if (bgColScales.hasOwnProperty(col)) {
       table = tbl; 
        var col2Color = d3.selectAll('#' + tbl)
+                         .selectAll("tbody")
                          .selectAll('td.' + col)
                          .transition("bgcolor") 
 
@@ -532,7 +553,8 @@ HTMLWidgets.widget({
       if (fgColScales.hasOwnProperty(col)) {
           table = tbl; 
           d3.selectAll('#' + tbl)
-          .selectAll('td.' + col)
+            .selectAll("tbody")
+            .selectAll('td.' + col)
 //          .transition()
 
         // run the d3 colour scale function defined in the bgColScales list on the R side
@@ -548,26 +570,32 @@ HTMLWidgets.widget({
       colourCells(tbl);
     }
     
-    // set text or background color for whole table
+    // set background color for whole table
     // does nothing if length(bgColScales) == 0 and length(fgColScales) == 0
     colourCells = function(tbl) {
     var bgColScales = window["bgColScales_" + tbl];
     for (var key in bgColScales) {
        if (bgColScales.hasOwnProperty(key)) { 
          table = tbl; // strange. this makes it accessible inside of the select
-         d3.selectAll('#' + table).selectAll('td.' + key)
+         d3.selectAll('#' + table)
+           .selectAll('tbody')
+           .selectAll('td.' + key)
            .style("background-color", function(d, i){
              // run the d3 colour scale function defined in the bgColScales list on the R side
       			return bgColScales[key](tbl, d.value);
   				});
        }  
      };
-     
+
+    // set text color for whole table
     var fgColScales = window["fgColScales_" + tbl];
     for (var key in fgColScales) { 
        if (fgColScales.hasOwnProperty(key)) { 
        table = tbl; // strange. this makes it accessible inside of the select
-       d3.selectAll('#' + tbl).selectAll('td.' + key).style("color", function(d, i){
+       d3.selectAll('#' + tbl)
+         .selectAll('tbody')
+         .selectAll('td.' + key)
+         .style("color", function(d, i){
             // run the d3 colour scale function defined in the fgColScales list on the R side
         		return fgColScales[key](tbl, d.value);
   				});
@@ -585,7 +613,10 @@ HTMLWidgets.widget({
       // get the row index. don't use tablefilter validRows because
       // it depends on sorting
       validRows = [];
-      d3.selectAll('#' + tbl['id']).selectAll('tbody').selectAll('tr').each(function(d, i) {
+      d3.selectAll('#' + tbl['id'])
+        .selectAll('tbody')
+        .selectAll('tr')
+        .each(function(d, i) {
         if(this.style["display"] !== "none") {
           // add 1 to match R row numbers
           validRows.push(Number(this.id.replace('r','')) + 1);
@@ -617,7 +648,6 @@ HTMLWidgets.widget({
         .on("click", shinyRowClickEvent);
     }
     
-
     // make cells editable
     if(edit === true) {
       cells.attr({contenteditable: true})

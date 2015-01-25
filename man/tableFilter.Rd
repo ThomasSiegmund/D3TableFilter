@@ -9,7 +9,7 @@ tableFilter(df, tableProps, showRowNames = FALSE,
   selectableRowsClass = "info", bgColScales = list(),
   fgColScales = list(), edit = FALSE, radioButtons = NULL,
   checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE,
-  initialFilters = list(), width = NULL, height = NULL)
+  initialFilters = list(), footData = NULL, width = NULL, height = NULL)
 }
 \arguments{
 \item{df}{Data frame or matrix to display as html table}
@@ -50,6 +50,8 @@ filter settings and valid rows}
 
 \item{initialFilters}{List of initial filter settings
 filter settings and valid rows}
+
+\item{footData}{Data frame or matrix to append as footer to the table. Column names must match the colnames of the main table. Cells in the footer will get an id attribute (e.g. first footer row, second column in "mtcars" output is named "frow_0_fcol_1_tbl_mtcars") allowing them to be used with the "col_operation" option of TableFilter.}
 }
 \description{
 R interface to Max Guglielmi's \href{http://tablefilter.free.fr/ }{HTML Table

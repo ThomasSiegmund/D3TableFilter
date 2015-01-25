@@ -293,7 +293,22 @@ confirmEdit <- function(session, tbl, row, col, id, value = NULL, color = "green
 #' setCellValue(session, "mtcars", row = 8, col = 3, val = 8)
 #' @export 
 setCellValue <- function(session, tbl, row, col, value, feedback = FALSE) {
-  message <- list(tbl = tbl, row = row, col = col, action = "edit", value = value, feedback = feedback);
+  message <- list(tbl = tbl, row = row, col = col, action = "edit", value = value, feedback = feedback, foot = FALSE);
+  session$sendCustomMessage(type = "setCellValue", message);
+}
+
+#' Set foot cell value
+#' @param Session Shiny session object.
+#' @param tbl Name of the table.
+#' @param row Footer row number (one-based).
+#' @param col Footer olumn number (one-based). If \code{showRowNames == TRUE}, the rownames column is number zero.
+#' @param value Cell value to set.
+#' 
+#' @examples
+#' setFootCellValue(session, "mtcars", row = 1, col = 1, val = 8)
+#' @export 
+setFootCellValue <- function(session, tbl, row, col, value, feedback = FALSE) {
+  message <- list(tbl = tbl, row = row, col = col, action = "edit", value = value, feedback = FALSE, foot = TRUE);
   session$sendCustomMessage(type = "setCellValue", message);
 }
 

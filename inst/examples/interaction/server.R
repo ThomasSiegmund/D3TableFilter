@@ -89,7 +89,7 @@ shinyServer(function(input, output, session) {
       if(col == 0) {
         rownames(revals$mtcars)[row] <- val;
       } else if (col %in% c(1, 2, 3)) {
-        revals$mtcars[row, col] <- val;
+        revals$mtcars[row, col] <- as.numeric(val);
         val = round(as.numeric(val), 1)
       } else if (col == 4) {
         # radio buttons. There is no uncheck event
@@ -99,13 +99,26 @@ shinyServer(function(input, output, session) {
       }
       # confirm edits
       confirmEdit(session, tbl = "mtcars", row = row, col = col, id = id, value = val);
-
       revals$edits["Success", "Row"] <- row;
       revals$edits["Success", "Column"] <- col;
       revals$edits["Success", "Value"] <- val;
     })
     
    })
+  
+  # update summary row. calculate mean of displayed row for cols 1:3
+  observe({
+    for (col in c(1, 2, 3)) {
+      if(input$summaryRow == "mean") {
+        setFootCellValue(session, tbl = "mtcars", row = 1, col = 0, value = "Mean");
+        value = round(mean(revals$mtcars[revals$rowIndex, col]), 1);
+      } else {
+        setFootCellValue(session, tbl = "mtcars", row = 1, col = 0, value = "Median");
+        value = round(median(revals$mtcars[revals$rowIndex, col]), 1);
+      }
+      setFootCellValue(session, tbl = "mtcars", row = 1, col = col, value = value);
+    }
+  })
   
   output$edits <- renderTable({
     if(is.null(revals$edits)) return(invisible());
@@ -145,21 +158,13 @@ shinyServer(function(input, output, session) {
       ),
       col_4 = "none",
       col_5 = "none",
-      # adding a summary row, showing the column means
-      rows_always_visible = list(nrow(mtcars) + 2),
-      col_operation = list( 
-        id = list("frow_0_fcol_1_tbl_mtcars","frow_0_fcol_2_tbl_mtcars", "frow_0_fcol_3_tbl_mtcars"),    
-        col = list(1, 2, 3),    
-        operation = list("mean","mean", "mean"),
-        write_method = list("innerhtml", 'innerhtml', 'innerhtml'),  
-        exclude_row = list(nrow(mtcars) + 2),  
-        decimal_precision = list(1, 1, 1)
-      )
+      # exclude the summary row from filtering
+      rows_always_visible = list(nrow(mtcars) + 2)
       );
     
     # add a summary row. Can be used to set values statically, but also to 
     # make use of TableFilters "col_operation"
-    footData <- data.frame(Model = "Mean", mpgx = 0, cyl = 0, disp = 0);
+    footData <- data.frame(Model = "Mean", mpg = mean(mtcars$mpg), cyl = mean(mtcars$cyl), disp = mean(mtcars$disp));
 
     # columns are addressed in TableFilter as col_0, col_1, ..., coln
     # the "auto" scales recalculate the data range after each edit

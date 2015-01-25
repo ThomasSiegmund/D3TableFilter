@@ -44,8 +44,8 @@ shinyServer(function(input, output, session) {
       showHide_enable_tick_all = TRUE,
       # filters
       refresh_filters = FALSE,  # refresh filters is incompatible with col_operations, at least here
-      col_8 = "checklist",
-      col_9 = "checklist",
+      col_8 = "multiple", # checklist doesn't work for me
+      col_9 = "multiple",
       col_10 = "multiple",
       col_11 = "multiple",
       # row counter not supported

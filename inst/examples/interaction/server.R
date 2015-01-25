@@ -317,9 +317,9 @@ shinyServer(function(input, output, session) {
                 // text formatting function
                 var textformat = d3.format(".1f");
                 // make cell text right aligned
-                this.classed("text-right", true);
-                selection.style("font-weight", "bold")
-                          .text(function(d) { return textformat(d.value); });
+                selection.classed("text-right", true)
+                         .style("font-weight", "bold")
+                         .text(function(d) { return textformat(d.value); });
             }')
       
           );

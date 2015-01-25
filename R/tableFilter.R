@@ -70,13 +70,15 @@
 #'   (\code{radioButtons = "col_4"}).
 #' @param checkBoxes Turn logical columns into checkboxes (\code{checkBoxes =
 #'   "col_3"}).
-#' @param cellFunctions Run D3 functions to format a cell. Can be used to
+#' @param cellFunctions Run D3 functions to format a column. Can be used to
 #'   generate D3 graphics in cells.
 #' @param filterInput Generate an input element named outputid + "_filter" listing
 #' filter settings and valid rows
 #' @param initialFilters List of initial filter settings
 #' filter settings and valid rows
 #' @param footData Data frame or matrix to append as footer to the table. Column names must match the colnames of the main table. Cells in the footer will get an id attribute (e.g. first footer row, second column in "mtcars" output is named "frow_0_fcol_1_tbl_mtcars") allowing them to be used with the "col_operation" option of TableFilter. 
+#' @param footCellFunctions Run D3 functions to format a footer column. Can be used to
+#'   format table footer or to generate D3 graphics in cells.
 #' @example inst/examples/basic/server.R
 #' @seealso \code{\link[DT]{datatable}}.
 #' @examples
@@ -102,7 +104,7 @@
 #' @import htmlwidgets
 #' @export JS
 #' @export
-tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "Rownames", extensions = c(), selectableRows = NULL, selectableRowsClass = "info", bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), footData = NULL, width = NULL, height = NULL) {
+tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "Rownames", extensions = c(), selectableRows = NULL, selectableRowsClass = "info", bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), footData = NULL, footCellFunctions = list(), width = NULL, height = NULL) {
   
   if(is.matrix(df)) {
     df <- as.data.frame(df);
@@ -120,7 +122,6 @@ if(is.null(tableProps$base_path)) {
 if(!is.null(height)) {
   tableProps <- c(tableProps, grid_height = paste0(height, 'px' ), fixed_headers = TRUE);
 }
-
 
 if(length(extensions) > 0) {
   ext <- list(name = list(), src = list(), description = list(), initialize = list());
@@ -185,6 +186,7 @@ x <- list(
     bgColScales = bgColScales,
     fgColScales = fgColScales,
     cellFunctions = cellFunctions,
+    footCellFunctions = footCellFunctions,
     edit = edit,
     radioButtons = radioButtons,
     checkBoxes = checkBoxes,

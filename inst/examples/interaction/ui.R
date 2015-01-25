@@ -28,7 +28,7 @@ shinyUI(fluidPage(
                        actionButton("favorite", label = "Make Datsun favorite")
                      ),
                      wellPanel(
-                       selectInput("summaryRow", label = "Summary", choice = c("mean", "median"), multiple = FALSE)
+                       selectInput("summaryRow", label = "Summary row", choice = c("mean", "median"), multiple = FALSE)
                      )
               ),
   column(width = 5, 

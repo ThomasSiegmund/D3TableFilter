@@ -9,7 +9,8 @@ tableFilter(df, tableProps, showRowNames = FALSE,
   selectableRowsClass = "info", bgColScales = list(),
   fgColScales = list(), edit = FALSE, radioButtons = NULL,
   checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE,
-  initialFilters = list(), footData = NULL, width = NULL, height = NULL)
+  initialFilters = list(), footData = NULL, footCellFunctions = list(),
+  width = NULL, height = NULL)
 }
 \arguments{
 \item{df}{Data frame or matrix to display as html table}
@@ -42,7 +43,7 @@ if  \code{"single"}  only a single line will be selectable.}
 \item{checkBoxes}{Turn logical columns into checkboxes (\code{checkBoxes =
 "col_3"}).}
 
-\item{cellFunctions}{Run D3 functions to format a cell. Can be used to
+\item{cellFunctions}{Run D3 functions to format a column. Can be used to
 generate D3 graphics in cells.}
 
 \item{filterInput}{Generate an input element named outputid + "_filter" listing
@@ -52,6 +53,9 @@ filter settings and valid rows}
 filter settings and valid rows}
 
 \item{footData}{Data frame or matrix to append as footer to the table. Column names must match the colnames of the main table. Cells in the footer will get an id attribute (e.g. first footer row, second column in "mtcars" output is named "frow_0_fcol_1_tbl_mtcars") allowing them to be used with the "col_operation" option of TableFilter.}
+
+\item{footCellFunctions}{Run D3 functions to format a footer column. Can be used to
+format table footer or to generate D3 graphics in cells.}
 }
 \description{
 R interface to Max Guglielmi's \href{http://tablefilter.free.fr/ }{HTML Table

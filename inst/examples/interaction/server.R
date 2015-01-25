@@ -106,7 +106,7 @@ shinyServer(function(input, output, session) {
     
    })
   
-  # update summary row. calculate mean of displayed row for cols 1:3
+  # update summary row. calculate mean/median of displayed row for cols 1:3
   observe({
     for (col in c(1, 2, 3)) {
       if(input$summaryRow == "mean") {
@@ -294,7 +294,35 @@ shinyServer(function(input, output, session) {
         window[tbl + "_" + col + "_init"] = true;
       }')
     );
+    
+    # apply D3.js functions to footer columns,
+    # e.g. to format them or to turn cell values into scaled SVG graphics
+    footCellFunctions <- list(
+      col_0 = JS('function makeGraph(selection){
+                selection.style("font-weight", "bold")
+            }'),
+      col_1 = JS('function makeGraph(selection){
+                // text formatting function
+                var textformat = d3.format(".1f");
+                selection.style("font-weight", "bold")
+                          .text(function(d) { return textformat(d.value); });
+            }'),
+      col_2 = JS('function makeGraph(selection){
+                // text formatting function
+                var textformat = d3.format(".1f");
+                selection.style("font-weight", "bold")
+                          .text(function(d) { return textformat(d.value); });
+            }'),
+      col_3 = JS('function makeGraph(selection){
+                // text formatting function
+                var textformat = d3.format(".0f");
+                // make cell text right aligned
+                this.classed("text-right", true);
+                selection.style("font-weight", "bold")
+                          .text(function(d) { return textformat(d.value); });
+            }')
       
+          );
     initialFilters = list(col_1 = ">20");
 
     # the mtcars table output
@@ -309,6 +337,7 @@ shinyServer(function(input, output, session) {
                 filterInput = TRUE,
                 initialFilters = initialFilters,
                 footData = footData,
+                footCellFunctions = footCellFunctions,
                 height = 2000);
   })
     

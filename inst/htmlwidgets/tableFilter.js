@@ -35,9 +35,8 @@ HTMLWidgets.widget({
     window["bgColScales_" + outputID] = data.bgColScales;
     window["fgColScales_" + outputID] = data.fgColScales;
     window["cellFunctions_" + outputID] = data.cellFunctions;
-
+    window["footCellFunctions_" + outputID] = data.footCellFunctions;
     // have a unique id for each edit
-    window["editCounter"] = 0;
     var edit = data.edit;
     window["selectableRows_" + outputID] = data.selectableRows;
     window["selectableRowsClass_" + outputID] = data.selectableRowsClass;
@@ -328,7 +327,11 @@ HTMLWidgets.widget({
               }
 
               colourCol(tbl, col);
-              runCellFunctions(tbl, col);
+              if(message["foot"]) {
+                runCellFunctions(tbl, col, foot = true);
+              } else {
+                runCellFunctions(tbl, col);
+              }
             }
             
             // send confirmation back to server
@@ -347,16 +350,22 @@ HTMLWidgets.widget({
       ; // already installed
     }
 
-    // turn cell content in graphics
-    runCellFunctions = function(tbl, col) {
-      var cellFunctions = window["cellFunctions_" + tbl];
+    // format cells or turn cell content in graphics
+    runCellFunctions = function(tbl, col, foot) {
+      if(foot == true) {
+        var selector = "tfoot";
+        var cellFunctions = window["footCellFunctions_" + tbl];
+      } else {
+        var selector = "tbody"
+        var cellFunctions = window["cellFunctions_" + tbl];
+      }
       if(col == null) {
         // check whole table
         for (var key in cellFunctions) {
            if (cellFunctions.hasOwnProperty(key)) { 
              table = tbl; // strange. this makes it accessible inside of the select
              var cells = d3.selectAll('#' + table)
-                           .selectAll('tbody')
+                           .selectAll(selector)
                            .selectAll('td.' + key);
                  cells.call(cellFunctions[key]);
         			};
@@ -365,7 +374,7 @@ HTMLWidgets.widget({
         // only selected column
         if (cellFunctions.hasOwnProperty(col)) {
           var cells = d3.selectAll('#' + tbl)
-                        .selectAll('tbody')
+                        .selectAll(selector)
                         .selectAll('td.' + col);
               cells.call(cellFunctions[col]);
         }
@@ -693,8 +702,9 @@ HTMLWidgets.widget({
         })
      }
     
-    // turn cell values into graphics
+    // run d3 functions to format cells
     runCellFunctions(outputID);
+    runCellFunctions(outputID, col = null, foot = true);
     
     // set intial color. Has to run again after table sorting. 
     colourCells(outputID);

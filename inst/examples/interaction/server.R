@@ -368,12 +368,6 @@ shinyServer(function(input, output, session) {
     # rownames column is col 0, "cylinders" is col 2.
     setCellValue(session, tbl = "mtcars", row = 8, col = 2, value = input$cellVal, feedback = TRUE);
   })
-  observe({
-    # Row address is based on the complete, unfiltered and unsorted table
-    # Column address is one based. In this case showRowNames is TRUE,
-    # rownames column is col 0, "cylinders" is col 2.
-    setCellValue(session, tbl = "mtcars", row = 8, col = 3, value = input$cellVal2, feedback = TRUE);
-  })
   
   # server side editing of checkbox
   output$candidateUi <- renderUI({

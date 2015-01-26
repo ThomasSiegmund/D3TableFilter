@@ -17,16 +17,14 @@ HTMLWidgets.widget({
     // name ouf the output widget
     var outputID = el.id;
 
+    log(data.data)
+    log(data.footData)
+  
     var celldata = HTMLWidgets.dataframeToD3(data.data);
     
     var footdata = HTMLWidgets.dataframeToD3(data.footData);
     
     var columns = Object.getOwnPropertyNames(celldata[0]);
-    var allCols = [];
-    var i;
-    for (i = 0; i < columns.length; ++i) {
-      allCols.push('col_' + i);
-    }
     
     window["table_Props_" + outputID] = data.tableProps;
     
@@ -73,13 +71,13 @@ HTMLWidgets.widget({
     var  thead = table.append("thead");
     var  tbody = table.append("tbody");
             
-     thead.append("tr")
+    thead.append("tr")
             .selectAll("th")
             .data(columns)
             .enter()
             .append("th")
-            .text(function(column) { return column; });
-            
+            .text(function(column) { var name = (data.colNames == null) ? column : data.colNames[column]; return name; });    
+
     // create a row for each object in the data
     var rows = tbody.selectAll("tr")
         .data(celldata)

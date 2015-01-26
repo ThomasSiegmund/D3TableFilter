@@ -5,12 +5,12 @@
 \title{tableFilter Generate a HTML table widget with advanced filtering, sorting and colouring.}
 \usage{
 tableFilter(df, tableProps, showRowNames = FALSE,
-  rowNamesColumn = "Rownames", extensions = c(), selectableRows = NULL,
-  selectableRowsClass = "info", bgColScales = list(),
-  fgColScales = list(), edit = FALSE, radioButtons = NULL,
-  checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE,
-  initialFilters = list(), footData = NULL, footCellFunctions = list(),
-  width = NULL, height = NULL)
+  rowNamesColumn = "Rownames", colNames = NULL, extensions = c(),
+  selectableRows = NULL, selectableRowsClass = "info",
+  bgColScales = list(), fgColScales = list(), edit = FALSE,
+  radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(),
+  filterInput = FALSE, initialFilters = list(), footData = NULL,
+  footCellFunctions = list(), width = NULL, height = NULL)
 }
 \arguments{
 \item{df}{Data frame or matrix to display as html table}
@@ -21,6 +21,8 @@ table}
 \item{showRowNames}{Add the R row names as first column to the table}
 
 \item{rowNamesColumn}{column title for the row names column}
+
+\item{colNames}{Character vector to display as column names}
 
 \item{extensions}{Vector of table filter extensions to load. See}
 

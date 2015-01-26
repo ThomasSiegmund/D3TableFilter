@@ -325,10 +325,13 @@ shinyServer(function(input, output, session) {
           );
     initialFilters = list(col_1 = ">20");
 
+    colNames = c(Model = "Model", mpg = "Miles per gallon",	cyl = "Cylinders",	disp = "Displacement",	candidates = "Candidates",	favorite = "My favorite");
+    
     # the mtcars table output
     tableFilter(mtcars, tableProps,
                 showRowNames = TRUE,
                 rowNamesColumn = "Model",
+                colNames = colNames,
                 edit = c("col_1", "col_3"),
                 checkBoxes = "col_4",
                 radioButtons = "col_5",

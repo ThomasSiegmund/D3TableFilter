@@ -1,6 +1,6 @@
 HTMLWidgets.widget({
 
-  name: "tableFilter",
+  name: "D3TableFilter",
 
   type: "output",
 

@@ -1,11 +1,10 @@
-#' tableFilter Generate a HTML table widget with advanced filtering, sorting and colouring.
+#' D3TableFilter Generate a HTML table widget with advanced filtering, sorting and colouring.
 #'
 #' R interface to Max Guglielmi's \href{http://tablefilter.free.fr/ }{HTML Table
 #' Filter Generator} JavaScript library. Provides advanced filtering and
-#' sorting. Columns can be coloured based on displayed values using D3 colour
-#' scales.
+#' sorting. Columns can be formatted using D3 functions.
 #' 
-#' @section Configuration: The tableFilter widget can be highly customized. See 
+#' @section Configuration: The D3TableFilter widget can be highly customized. See 
 #'   the website of the JavaScript library
 #'   \href{http://tablefilter.free.fr/}{HTML Table Filter Generator}
 #'   for details. Configuration is passed as a
@@ -104,7 +103,7 @@
 #' @import htmlwidgets
 #' @export JS
 #' @export
-tableFilter <- function(df, tableProps, showRowNames = FALSE, colNames = NULL, extensions = c(), selectableRows = NULL, selectableRowsClass = "info", bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), footData = NULL, footCellFunctions = list(), width = NULL, height = NULL) {
+D3TableFilter <- function(df, tableProps, showRowNames = FALSE, colNames = NULL, extensions = c(), selectableRows = NULL, selectableRowsClass = "info", bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), footData = NULL, footCellFunctions = list(), width = NULL, height = NULL) {
   
   if(is.matrix(df)) {
     df <- as.data.frame(df);
@@ -198,7 +197,7 @@ x <- list(
 )
 
   # create the widget
-  htmlwidgets::createWidget("tableFilter", x, width = width, 
+  htmlwidgets::createWidget("D3TableFilter", x, width = width, 
                             height = height, sizingPolicy = htmlwidgets::sizingPolicy(
                               viewer.padding = 0,
                               viewer.paneHeight = 800,
@@ -222,14 +221,14 @@ x <- list(
 #'   
 #' @name tableFilter-shiny
 #' @export
-tableFilterOutput <- function(outputId, width = "100%", height = "400px") {
-  shinyWidgetOutput(outputId, "tableFilter", width, height, package = "tableFilter")
+D3TableFilterOutput <- function(outputId, width = "100%", height = "400px") {
+  shinyWidgetOutput(outputId, "D3TableFilter", width, height, package = "D3TableFilter")
 }
 #' @rdname tableFilter-shiny
 #' @export
-renderTableFilter <- function(expr, env = parent.frame(), quoted = FALSE) {
+renderD3TableFilter <- function(expr, env = parent.frame(), quoted = FALSE) {
   if (!quoted) { expr <- substitute(expr) } # force quoted
-  shinyRenderWidget(expr, tableFilterOutput, env, quoted = TRUE)
+  shinyRenderWidget(expr, D3TableFilterOutput, env, quoted = TRUE)
 }
 
 #' Give feedback in case of validaton failure.

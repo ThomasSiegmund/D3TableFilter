@@ -3,7 +3,7 @@
 # ----------------------------------------------------------------------
 library(shiny)
 library(htmlwidgets)
-library(tableFilter)
+library(D3TableFilter)
 
 data(mtcars);
 mtcars <- mtcars[, 1:3];
@@ -141,7 +141,7 @@ shinyServer(function(input, output, session) {
       revals$mtcars[revals$rowIndex, ];
     });
   
-  output$mtcars <- renderTableFilter({
+  output$mtcars <- renderD3TableFilter({
     
     # define table properties. See http://tablefilter.free.fr/doc.php
     # for a complete reference
@@ -328,7 +328,7 @@ shinyServer(function(input, output, session) {
     footData <- data.frame(Rownames = "Mean", mpg = mean(mtcars$mpg), cyl = mean(mtcars$cyl), disp = mean(mtcars$disp));
     
     # the mtcars table output
-    tableFilter(mtcars, tableProps,
+    D3TableFilter(mtcars, tableProps,
                 showRowNames = TRUE,
                 colNames = colNames,
                 edit = c("col_1", "col_3"),
@@ -397,7 +397,7 @@ shinyServer(function(input, output, session) {
   })
   
   ## demonstrate selectable rows interface
-  output$mtcars2 <- renderTableFilter({
+  output$mtcars2 <- renderD3TableFilter({
     
     # define table properties. See http://tablefilter.free.fr/doc.php
     # for a complete reference
@@ -426,7 +426,7 @@ shinyServer(function(input, output, session) {
     # make use of TableFilters "col_operation"
     footData <- data.frame(Rownames = "Mean", mpg = 0, cyl = 0);
     
-    tableFilter(mtcars[ , 1:2],
+    D3tableFilter(mtcars[ , 1:2],
                 tableProps, showRowNames = TRUE, 
                 selectableRows = "multi",
                 selectableRowsClass = "info",

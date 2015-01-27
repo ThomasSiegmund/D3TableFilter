@@ -4,12 +4,12 @@
 # ------------------------------------------------------
 library(shiny)
 library(htmlwidgets)
-library(tableFilter)
+library(D3TableFilter)
 
 data(mtcars);
 
 shinyServer(function(input, output, session) {
-  output$mtcars <- renderTableFilter({
+  output$mtcars <- renderD3TableFilter({
     
     # Define table properties. See http://tablefilter.free.fr/doc.php
     # for a complete reference
@@ -23,6 +23,6 @@ shinyServer(function(input, output, session) {
       )
     );
     
-    tableFilter(mtcars, tableProps, showRowNames = TRUE, rowNamesColumn = "Model");
+    D3TableFilter(mtcars, tableProps, showRowNames = TRUE);
   })
 })

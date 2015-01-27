@@ -1,6 +1,6 @@
 library(shiny)
 library(htmlwidgets)
-library(tableFilter)
+library(D3TableFilter)
 
 shinyUI(fluidPage(
   title = 'Interactive features',
@@ -32,7 +32,7 @@ shinyUI(fluidPage(
               ),
   column(width = 5, 
            h4("mtcars"),
-           tableFilterOutput('mtcars', height = "2000px")
+           D3TableFilterOutput('mtcars', height = "2000px")
            ),
    column(width = 5,
           h4("Last edits"),
@@ -58,7 +58,7 @@ shinyUI(fluidPage(
                )
         ),
         column(width = 5,
-               tableFilterOutput('mtcars2', height = "2000px")
+               D3TableFilterOutput('mtcars2', height = "2000px")
         ),
         column(width = 5,
                tableOutput("mtcars2Output")

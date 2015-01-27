@@ -57,7 +57,6 @@
 #' table
 #' @param showRowNames Add the R row names as first column to the table
 #' @param colNames Character vector to display as column names
-#' @param rowNamesColumn column title for the row names column
 #' @param extensions Vector of table filter extensions to load. See
 #' @param selectableRows Enable row selection on (\code{cltr-}) mouse click. If 
 #'   \code{"multi"} multiple rows will be selectable using (\code{cltr click}), 
@@ -105,7 +104,7 @@
 #' @import htmlwidgets
 #' @export JS
 #' @export
-tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "Rownames", colNames = NULL, extensions = c(), selectableRows = NULL, selectableRowsClass = "info", bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), footData = NULL, footCellFunctions = list(), width = NULL, height = NULL) {
+tableFilter <- function(df, tableProps, showRowNames = FALSE, colNames = NULL, extensions = c(), selectableRows = NULL, selectableRowsClass = "info", bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), footData = NULL, footCellFunctions = list(), width = NULL, height = NULL) {
   
   if(is.matrix(df)) {
     df <- as.data.frame(df);
@@ -113,7 +112,7 @@ tableFilter <- function(df, tableProps, showRowNames = FALSE, rowNamesColumn = "
   
   if(showRowNames) {
     df <- cbind(rownames(df), df);
-    colnames(df)[1] <- rowNamesColumn;  
+    colnames(df)[1] <- "Rownames";  
   }
 
 if(is.null(tableProps$base_path)) {

@@ -76,7 +76,7 @@ HTMLWidgets.widget({
             .data(columns)
             .enter()
             .append("th")
-            .text(function(column) { var name = (data.colNames == null) ? column : data.colNames[column]; return name; });    
+            .text(function(column) { var name = (data.colNames != null && data.colNames.hasOwnProperty(column)) ? data.colNames[column] : column; return name; });    
 
     // create a row for each object in the data
     var rows = tbody.selectAll("tr")

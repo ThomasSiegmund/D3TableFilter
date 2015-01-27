@@ -162,10 +162,6 @@ shinyServer(function(input, output, session) {
       rows_always_visible = list(nrow(mtcars) + 2)
       );
     
-    # add a summary row. Can be used to set values statically, but also to 
-    # make use of TableFilters "col_operation"
-    footData <- data.frame(Model = "Mean", mpg = mean(mtcars$mpg), cyl = mean(mtcars$cyl), disp = mean(mtcars$disp));
-
     # columns are addressed in TableFilter as col_0, col_1, ..., coln
     # the "auto" scales recalculate the data range after each edit
     # to get the same behaviour with manually defined colour scales
@@ -325,12 +321,15 @@ shinyServer(function(input, output, session) {
           );
     initialFilters = list(col_1 = ">20");
 
-    colNames = c(Model = "Model", mpg = "Miles per gallon",	cyl = "Cylinders",	disp = "Displacement",	candidates = "Candidates",	favorite = "My favorite");
+    colNames = c(Rownames = "Model", mpg = "Miles per gallon",	cyl = "Cylinders",	disp = "Displacement",	candidates = "Candidates",	favorite = "My favorite");
+
+    # add a summary row. Can be used to set values statically, but also to 
+    # make use of TableFilters "col_operation"
+    footData <- data.frame(Rownames = "Mean", mpg = mean(mtcars$mpg), cyl = mean(mtcars$cyl), disp = mean(mtcars$disp));
     
     # the mtcars table output
     tableFilter(mtcars, tableProps,
                 showRowNames = TRUE,
-                rowNamesColumn = "Model",
                 colNames = colNames,
                 edit = c("col_1", "col_3"),
                 checkBoxes = "col_4",

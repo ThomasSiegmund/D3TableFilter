@@ -4,9 +4,8 @@
 \alias{tableFilter}
 \title{tableFilter Generate a HTML table widget with advanced filtering, sorting and colouring.}
 \usage{
-tableFilter(df, tableProps, showRowNames = FALSE,
-  rowNamesColumn = "Rownames", colNames = NULL, extensions = c(),
-  selectableRows = NULL, selectableRowsClass = "info",
+tableFilter(df, tableProps, showRowNames = FALSE, colNames = NULL,
+  extensions = c(), selectableRows = NULL, selectableRowsClass = "info",
   bgColScales = list(), fgColScales = list(), edit = FALSE,
   radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(),
   filterInput = FALSE, initialFilters = list(), footData = NULL,
@@ -19,8 +18,6 @@ tableFilter(df, tableProps, showRowNames = FALSE,
 table}
 
 \item{showRowNames}{Add the R row names as first column to the table}
-
-\item{rowNamesColumn}{column title for the row names column}
 
 \item{colNames}{Character vector to display as column names}
 

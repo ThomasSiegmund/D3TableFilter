@@ -146,8 +146,7 @@ shinyServer(function(input, output, session) {
     # define table properties. See http://tablefilter.free.fr/doc.php
     # for a complete reference
     tableProps <- list(
-      alternate_rows = FALSE,
-      btn_reset = TRUE,
+       btn_reset = TRUE,
       sort = TRUE,
       on_keyup = TRUE,  
       on_keyup_delay = 800,
@@ -261,8 +260,8 @@ shinyServer(function(input, output, session) {
            return(null);
         }
         
-        // can remove padding here, but still cant fill whole cell with svg 
-        this.style("padding", "0px 5px 0px 5px");
+        // can remove padding here, but still cant position text and box independently
+        this.style("padding", "5px 5px 5px 5px");
 
         // remove text. will be added back later
         selection.text(null);

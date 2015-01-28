@@ -124,6 +124,10 @@ HTMLWidgets.widget({
         .attr('id', function(d, i, j){ return 'frow_' + j + '_fcol_' + i + '_' +  'tbl_' + outputID; })
         .attr('class', function(d, i, j){ return "col_" + i + ' ' + 'row_' + j + ' ' + 'tbl_' + outputID; });
 
+    table.classed({'table': true, 'table-bordered': true})
+    tfoot.classed({'table': true, 'table-bordered': true})
+    thead.classed({'table': true, 'table-bordered': true})
+    
     // debounce from Underscore.js
     // modified to allow rapid editing of multiple cells
     // if args are different between subsequent calls, 
@@ -650,7 +654,7 @@ HTMLWidgets.widget({
     
     // make table rows selectable
     if(window["selectableRows_" + outputID] == "single" || window["selectableRows_" + outputID] == "multi") {
-      table.classed({'table': true,  'table-hover': true})
+      table.classed({'table-hover': true})
       rows.attr({clickable: true})
         .on("click", shinyRowClickEvent);
     }

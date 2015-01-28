@@ -6,7 +6,7 @@ library(ggplot2);
 data(diamonds)
 
 shinyServer(function(input, output, session) {
-  output$diamonds <- renderD3TableFilter({
+  output$diamonds <- renderD3tf({
     
     diamonds <- diamonds[1:input$rows, ];
     
@@ -58,7 +58,7 @@ shinyServer(function(input, output, session) {
         bgColScales <- list();
       }
      
-    D3TableFilter(diamonds, table_Props,
+    d3tf(diamonds, table_Props,
                 showRowNames = FALSE,
                 extensions = c('ColsVisibility', 'ColumnsResizer', 'FiltersRowVisibility'),
                 bgColScales = bgColScales);

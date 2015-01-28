@@ -5,7 +5,7 @@ library(D3TableFilter)
 data(mtcars)
 
 shinyServer(function(input, output, session) {
-  output$mtcars <- renderD3TableFilter({
+  output$mtcars <- renderD3tf({
     
     # configuration object listing many of TableFilters paramters.
     # There are more in http://tablefilter.free.fr/doc.php
@@ -89,7 +89,7 @@ shinyServer(function(input, output, session) {
     # make use of TableFilters "col_operation"
     footData <- data.frame(Model = c("Mean", "Median"), mpg = 0, cyl = 0, disp = 0, hp = 0,  drat = 0, wt = 0, qsec = 0, vs = 0, am = 0, gear = 0, carb = 0);
     
-    D3TableFilter(mtcars, table_Props,
+    d3tf(mtcars, table_Props,
                 showRowNames = TRUE,
                 extensions = c('ColsVisibility', 'ColumnsResizer', 'FiltersRowVisibility'),
                 footData = footData);

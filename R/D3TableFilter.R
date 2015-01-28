@@ -103,7 +103,7 @@
 #' @import htmlwidgets
 #' @export JS
 #' @export
-D3TableFilter <- function(df, tableProps, showRowNames = FALSE, colNames = NULL, extensions = c(), selectableRows = NULL, selectableRowsClass = "info", bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), footData = NULL, footCellFunctions = list(), width = NULL, height = NULL) {
+d3tf <- function(df, tableProps, showRowNames = FALSE, colNames = NULL, extensions = c(), selectableRows = NULL, selectableRowsClass = "info", bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), footData = NULL, footCellFunctions = list(), width = NULL, height = NULL) {
   
   if(is.matrix(df)) {
     df <- as.data.frame(df);
@@ -221,14 +221,14 @@ x <- list(
 #'   
 #' @name tableFilter-shiny
 #' @export
-D3TableFilterOutput <- function(outputId, width = "100%", height = "400px") {
+d3tfOutput <- function(outputId, width = "100%", height = "400px") {
   shinyWidgetOutput(outputId, "D3TableFilter", width, height, package = "D3TableFilter")
 }
 #' @rdname tableFilter-shiny
 #' @export
-renderD3TableFilter <- function(expr, env = parent.frame(), quoted = FALSE) {
+renderD3tf <- function(expr, env = parent.frame(), quoted = FALSE) {
   if (!quoted) { expr <- substitute(expr) } # force quoted
-  shinyRenderWidget(expr, D3TableFilterOutput, env, quoted = TRUE)
+  shinyRenderWidget(expr, d3tfOutput, env, quoted = TRUE)
 }
 
 #' Give feedback in case of validaton failure.

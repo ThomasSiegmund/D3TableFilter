@@ -9,7 +9,7 @@ library(D3TableFilter)
 data(mtcars);
 
 shinyServer(function(input, output, session) {
-  output$mtcars <- renderD3TableFilter({
+  output$mtcars <- renderD3tf({
     
     # Define table properties. See http://tablefilter.free.fr/doc.php
     # for a complete reference
@@ -23,6 +23,6 @@ shinyServer(function(input, output, session) {
       )
     );
     
-    D3TableFilter(mtcars, tableProps, showRowNames = TRUE);
+    d3tf(mtcars, tableProps, showRowNames = TRUE);
   })
 })

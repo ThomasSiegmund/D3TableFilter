@@ -32,7 +32,7 @@ shinyUI(fluidPage(
               ),
   column(width = 5, 
            h4("mtcars"),
-           D3TableFilterOutput('mtcars', height = "2000px")
+         d3tfOutput('mtcars', height = "2000px")
            ),
    column(width = 5,
           h4("Last edits"),
@@ -58,7 +58,7 @@ shinyUI(fluidPage(
                )
         ),
         column(width = 5,
-               D3TableFilterOutput('mtcars2', height = "2000px")
+               d3tfOutput('mtcars2', height = "2000px")
         ),
         column(width = 5,
                tableOutput("mtcars2Output")

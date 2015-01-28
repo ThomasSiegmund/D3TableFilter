@@ -3,7 +3,7 @@ library(htmlwidgets)
 library(D3TableFilter)
 
 shinyServer(function(input, output, session) {
-  output$colours <- renderD3TableFilter({
+  output$colours <- renderD3tf({
     
     tbl <- data.frame(AutoScale = round(seq(1, 200, length.out = 30), 1));
     tbl$LinearNumeric <- tbl$AutoScale;
@@ -95,7 +95,7 @@ shinyServer(function(input, output, session) {
       }') 
     );
         
-    D3TableFilter(tbl, table_Props,
+    d3tf(tbl, table_Props,
                 showRowNames = FALSE, bgColScales = bgColScales,  fgColScales = fgColScales);
   })
 })

@@ -15,7 +15,6 @@ shinyServer(function(input, output, session) {
     
     table_Props <- list(
       # appearence
-      alternate_rows = TRUE,
       btn_reset = TRUE,  
       btn_reset_text = "Clear",
       # behaviour
@@ -96,6 +95,7 @@ shinyServer(function(input, output, session) {
     );
         
     d3tf(tbl, table_Props,
-                showRowNames = FALSE, bgColScales = bgColScales,  fgColScales = fgColScales);
+                showRowNames = FALSE, tableStyle = "table table-condensed", 
+                bgColScales = bgColScales,  fgColScales = fgColScales);
   })
 })

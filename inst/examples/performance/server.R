@@ -14,7 +14,6 @@ shinyServer(function(input, output, session) {
     # There are more in http://tablefilter.free.fr/doc.php
     table_Props <- list(
       # appearence
-      alternate_rows = TRUE,
       btn_reset = TRUE,  
       btn_reset_text = "Clear",
       filters_row_index = 1,
@@ -61,6 +60,7 @@ shinyServer(function(input, output, session) {
     d3tf(diamonds, table_Props,
                 showRowNames = FALSE,
                 extensions = c('ColsVisibility', 'ColumnsResizer', 'FiltersRowVisibility'),
+                tableStyle = "table table-bordered table-striped",
                 bgColScales = bgColScales);
   })  
 })

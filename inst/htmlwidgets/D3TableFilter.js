@@ -123,11 +123,11 @@ HTMLWidgets.widget({
         // set an id to use for tablefilter "col_operations"
         .attr('id', function(d, i, j){ return 'frow_' + j + '_fcol_' + i + '_' +  'tbl_' + outputID; })
         .attr('class', function(d, i, j){ return "col_" + i + ' ' + 'row_' + j + ' ' + 'tbl_' + outputID; });
-
-    table.classed({'table': true, 'table-bordered': true})
-    tfoot.classed({'table': true, 'table-bordered': true})
-    thead.classed({'table': true, 'table-bordered': true})
-    
+    if(data.tableStyle != null) {
+      table.classed(data.tableStyle, true);
+      tfoot.classed(data.tableStyle, true);
+      thead.classed(data.tableStyle, true);
+    }
     // debounce from Underscore.js
     // modified to allow rapid editing of multiple cells
     // if args are different between subsequent calls, 
@@ -727,10 +727,3 @@ HTMLWidgets.widget({
 
 }); // end of HTMLWIDGET !!
 
-// table generation based in part on
-// stack overflow post
-// http://stackoverflow.com/questions/9268645/creating-a-table-linked-to-a-csv-file
-
-
-
- 

@@ -23,6 +23,9 @@ shinyServer(function(input, output, session) {
       )
     );
     
-    d3tf(mtcars, tableProps, showRowNames = TRUE);
+    d3tf(mtcars,
+         tableProps,
+         showRowNames = TRUE,
+         tableStyle = "table table-bordered");
   })
 })

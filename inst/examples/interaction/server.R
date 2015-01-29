@@ -42,7 +42,7 @@ shinyServer(function(input, output, session) {
     revals$filters <- do.call("rbind", tmp);
   })
   
-  # for a output object "mtcars" tableFilter generates an input
+  # for a output object "mtcars" D3TableFilter generates an input
   # "mtcars_edit"
   # this observer does a simple input validation and sends a confirm or reject message after each edit.
   observe({
@@ -146,20 +146,20 @@ shinyServer(function(input, output, session) {
     # define table properties. See http://tablefilter.free.fr/doc.php
     # for a complete reference
     tableProps <- list(
-       btn_reset = TRUE,
+      btn_reset = TRUE,
       sort = TRUE,
       on_keyup = TRUE,  
       on_keyup_delay = 800,
       col_number_format= c(NULL, "US", "US", "US", NULL, NULL), 
       sort_config = list(
-        # alphabetic sorting for the row names column, numeric for all other columns
-        sort_types = c("String", "Number", "Number", "Number", "none", "none")
+      # alphabetic sorting for the row names column, numeric for all other columns
+      sort_types = c("String", "Number", "Number", "Number", "none", "none")
       ),
       col_4 = "none",
       col_5 = "none",
       # exclude the summary row from filtering
       rows_always_visible = list(nrow(mtcars) + 2)
-      );
+    );
     
     # columns are addressed in TableFilter as col_0, col_1, ..., coln
     # the "auto" scales recalculate the data range after each edit
@@ -334,6 +334,7 @@ shinyServer(function(input, output, session) {
                 checkBoxes = "col_4",
                 radioButtons = "col_5",
                 cellFunctions = cellFunctions,
+                tableStyle = "table table-bordered",
                 bgColScales = bgColScales,
                 filterInput = TRUE,
                 initialFilters = initialFilters,
@@ -401,6 +402,7 @@ shinyServer(function(input, output, session) {
     # define table properties. See http://tablefilter.free.fr/doc.php
     # for a complete reference
     tableProps <- list(
+      stylesheet = "tablefilter-2.5/filtergridBS.css",
       btn_reset = TRUE,
       sort = TRUE,
       on_keyup = TRUE,  
@@ -429,11 +431,11 @@ shinyServer(function(input, output, session) {
                 tableProps, showRowNames = TRUE, 
                 selectableRows = "multi",
                 selectableRowsClass = "info",
+                tableStyle = "table table-bordered table-condensed",
                 filterInput = TRUE,
                 footData = footData,
                 height = 500);
   })
-  
   
   # for a output object "mtcars2" tableFilter generates an input
   # "mtcars2_edit". 
@@ -446,7 +448,5 @@ shinyServer(function(input, output, session) {
   observe({
     setRowClass(session, tbl = "mtcars2", row = 5, class = input$hornetClass);
   })
-  
-  
   
 })

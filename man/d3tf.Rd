@@ -2,14 +2,15 @@
 % Please edit documentation in R/D3TableFilter.R
 \name{d3tf}
 \alias{d3tf}
-\title{D3TableFilter Generate a HTML table widget with advanced filtering, sorting and colouring.}
+\title{d3tf Generate a HTML table widget with advanced filtering, sorting and colouring.}
 \usage{
 d3tf(df, tableProps, showRowNames = FALSE, colNames = NULL,
   extensions = c(), selectableRows = NULL, selectableRowsClass = "info",
-  bgColScales = list(), fgColScales = list(), edit = FALSE,
-  radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(),
-  filterInput = FALSE, initialFilters = list(), footData = NULL,
-  footCellFunctions = list(), width = NULL, height = NULL)
+  tableStyle = "table", bgColScales = list(), fgColScales = list(),
+  edit = FALSE, radioButtons = NULL, checkBoxes = NULL,
+  cellFunctions = list(), filterInput = FALSE, initialFilters = list(),
+  footData = NULL, footCellFunctions = list(), width = NULL,
+  height = NULL)
 }
 \arguments{
 \item{df}{Data frame or matrix to display as html table}
@@ -19,7 +20,7 @@ table}
 
 \item{showRowNames}{Add the R row names as first column to the table}
 
-\item{colNames}{Character vector to display as column names}
+\item{colNames}{Named character vector to display as column names}
 
 \item{extensions}{Vector of table filter extensions to load. See}
 
@@ -29,6 +30,14 @@ if  \code{"single"}  only a single line will be selectable.}
 
 \item{selectableRowsClass}{CSS class of selected row. Could be "active",
 "success", "info", "warning", or "danger" from Bootstrap3. Default: "info."}
+
+\item{tableStyle}{List css classes to apply to a table. Bootstrap3 provides
+\code{table}, \code{table-striped}, \code{table-bordered},
+\code{table-hover}, and \code{table-condensed}. The \code{table-hover}
+class is applied automatically if \code{selectableRows} is active. If
+\code{tableStyle} is not NULL, the normal CSS styling of TableFilter is
+automatically cut down by appending \code{stylesheet =
+"tablefilter-2.5/filtergridBS.css"} to the tableProps.}
 
 \item{bgColScales}{List of background colour scales to apply to the columns}
 
@@ -45,16 +54,20 @@ if  \code{"single"}  only a single line will be selectable.}
 \item{cellFunctions}{Run D3 functions to format a column. Can be used to
 generate D3 graphics in cells.}
 
-\item{filterInput}{Generate an input element named outputid + "_filter" listing
-filter settings and valid rows}
+\item{filterInput}{Generate an input element named outputid + "_filter"
+listing filter settings and valid rows}
 
-\item{initialFilters}{List of initial filter settings
-filter settings and valid rows}
+\item{initialFilters}{List of initial filter settings filter settings and
+valid rows}
 
-\item{footData}{Data frame or matrix to append as footer to the table. Column names must match the colnames of the main table. Cells in the footer will get an id attribute (e.g. first footer row, second column in "mtcars" output is named "frow_0_fcol_1_tbl_mtcars") allowing them to be used with the "col_operation" option of TableFilter.}
+\item{footData}{Data frame or matrix to append as footer to the table. Column
+names must match the colnames of the main table. Cells in the footer will
+get an id attribute (e.g. first footer row, second column in "mtcars"
+output is named "frow_0_fcol_1_tbl_mtcars") allowing them to be used with
+the "col_operation" option of TableFilter.}
 
-\item{footCellFunctions}{Run D3 functions to format a footer column. Can be used to
-format table footer or to generate D3 graphics in cells.}
+\item{footCellFunctions}{Run D3 functions to format a footer column. Can be
+used to format table footer or to generate D3 graphics in cells.}
 }
 \description{
 R interface to Max Guglielmi's \href{http://tablefilter.free.fr/ }{HTML Table
@@ -146,7 +159,7 @@ library(D3TableFilter)
 data(mtcars);
 
 shinyServer(function(input, output, session) {
-  output$mtcars <- renderD3TableFilter({
+  output$mtcars <- renderD3tf({
     
     # Define table properties. See http://tablefilter.free.fr/doc.php
     # for a complete reference
@@ -160,7 +173,10 @@ shinyServer(function(input, output, session) {
       )
     );
     
-    D3TableFilter(mtcars, tableProps, showRowNames = TRUE);
+    d3tf(mtcars,
+         tableProps,
+         showRowNames = TRUE,
+         tableStyle = "table table-bordered");
   })
 })
 }

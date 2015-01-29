@@ -11,7 +11,6 @@ shinyServer(function(input, output, session) {
     # There are more in http://tablefilter.free.fr/doc.php
     table_Props <- list(
       # appearence
-      alternate_rows = FALSE,
       btn_reset = TRUE,  
       btn_reset_text = "Clear",
       filters_row_index = 1,
@@ -87,10 +86,11 @@ shinyServer(function(input, output, session) {
     
     # add a summary row. Can be used to set values statically, but also to 
     # make use of TableFilters "col_operation"
-    footData <- data.frame(Model = c("Mean", "Median"), mpg = 0, cyl = 0, disp = 0, hp = 0,  drat = 0, wt = 0, qsec = 0, vs = 0, am = 0, gear = 0, carb = 0);
+    footData <- data.frame(Rownames = c("Mean", "Median"), mpg = 0, cyl = 0, disp = 0, hp = 0,  drat = 0, wt = 0, qsec = 0, vs = 0, am = 0, gear = 0, carb = 0);
     
     d3tf(mtcars, table_Props,
                 showRowNames = TRUE,
+                tableStyle = "table table-bordered table-striped",
                 extensions = c('ColsVisibility', 'ColumnsResizer', 'FiltersRowVisibility'),
                 footData = footData);
   })

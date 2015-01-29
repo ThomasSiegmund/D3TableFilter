@@ -1,4 +1,4 @@
-#' D3TableFilter Generate a HTML table widget with advanced filtering, sorting and colouring.
+#' d3tf Generate a HTML table widget with advanced filtering, sorting and colouring.
 #'
 #' R interface to Max Guglielmi's \href{http://tablefilter.free.fr/ }{HTML Table
 #' Filter Generator} JavaScript library. Provides advanced filtering and
@@ -53,31 +53,42 @@
 #'   
 #' @param df Data frame or matrix to display as html table
 #' @param tableProps A list object describing appearence and function of the 
-#' table
+#'   table
 #' @param showRowNames Add the R row names as first column to the table
-#' @param colNames Character vector to display as column names
+#' @param colNames Named character vector to display as column names
 #' @param extensions Vector of table filter extensions to load. See
 #' @param selectableRows Enable row selection on (\code{cltr-}) mouse click. If 
 #'   \code{"multi"} multiple rows will be selectable using (\code{cltr click}), 
 #'   if  \code{"single"}  only a single line will be selectable.
 #' @param selectableRowsClass CSS class of selected row. Could be "active", 
 #'   "success", "info", "warning", or "danger" from Bootstrap3. Default: "info."
+#' @param tableStyle List css classes to apply to a table. Bootstrap3 provides 
+#'   \code{table}, \code{table-striped}, \code{table-bordered}, 
+#'   \code{table-hover}, and \code{table-condensed}. The \code{table-hover} 
+#'   class is applied automatically if \code{selectableRows} is active. If
+#'   \code{tableStyle} is not NULL, the normal CSS styling of TableFilter is
+#'   automatically cut down by appending \code{stylesheet = 
+#'   "tablefilter-2.5/filtergridBS.css"} to the tableProps.
 #' @param bgColScales List of background colour scales to apply to the columns
 #' @param fgColScales List of text colour scales to apply to the columns
 #' @param edit Set whole table or selected columns editable. See details.
-#' @param radioButtons Turn logical columns into radio buttons
+#' @param radioButtons Turn logical columns into radio buttons 
 #'   (\code{radioButtons = "col_4"}).
-#' @param checkBoxes Turn logical columns into checkboxes (\code{checkBoxes =
+#' @param checkBoxes Turn logical columns into checkboxes (\code{checkBoxes = 
 #'   "col_3"}).
-#' @param cellFunctions Run D3 functions to format a column. Can be used to
+#' @param cellFunctions Run D3 functions to format a column. Can be used to 
 #'   generate D3 graphics in cells.
-#' @param filterInput Generate an input element named outputid + "_filter" listing
-#' filter settings and valid rows
-#' @param initialFilters List of initial filter settings
-#' filter settings and valid rows
-#' @param footData Data frame or matrix to append as footer to the table. Column names must match the colnames of the main table. Cells in the footer will get an id attribute (e.g. first footer row, second column in "mtcars" output is named "frow_0_fcol_1_tbl_mtcars") allowing them to be used with the "col_operation" option of TableFilter. 
-#' @param footCellFunctions Run D3 functions to format a footer column. Can be used to
-#'   format table footer or to generate D3 graphics in cells.
+#' @param filterInput Generate an input element named outputid + "_filter"
+#'   listing filter settings and valid rows
+#' @param initialFilters List of initial filter settings filter settings and
+#'   valid rows
+#' @param footData Data frame or matrix to append as footer to the table. Column
+#'   names must match the colnames of the main table. Cells in the footer will
+#'   get an id attribute (e.g. first footer row, second column in "mtcars"
+#'   output is named "frow_0_fcol_1_tbl_mtcars") allowing them to be used with
+#'   the "col_operation" option of TableFilter.
+#' @param footCellFunctions Run D3 functions to format a footer column. Can be
+#'   used to format table footer or to generate D3 graphics in cells.
 #' @example inst/examples/basic/server.R
 #' @seealso \code{\link[DT]{datatable}}.
 #' @examples
@@ -103,7 +114,7 @@
 #' @import htmlwidgets
 #' @export JS
 #' @export
-d3tf <- function(df, tableProps, showRowNames = FALSE, colNames = NULL, extensions = c(), selectableRows = NULL, selectableRowsClass = "info", bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), footData = NULL, footCellFunctions = list(), width = NULL, height = NULL) {
+d3tf <- function(df, tableProps, showRowNames = FALSE, colNames = NULL, extensions = c(), selectableRows = NULL, selectableRowsClass = "info", tableStyle = "table", bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), footData = NULL, footCellFunctions = list(), width = NULL, height = NULL) {
   
   if(is.matrix(df)) {
     df <- as.data.frame(df);
@@ -120,6 +131,10 @@ if(is.null(tableProps$base_path)) {
 
 if(!is.null(height)) {
   tableProps <- c(tableProps, grid_height = paste0(height, 'px' ), fixed_headers = TRUE);
+}
+
+if(!is.null(tableStyle)) {
+  tableProps <- c(tableProps, stylesheet = "tablefilter-2.5/filtergridBS.css");
 }
 
 if(length(extensions) > 0) {
@@ -182,6 +197,7 @@ x <- list(
     tableProps = tableProps,
     selectableRows = selectableRows,
     selectableRowsClass = selectableRowsClass,
+    tableStyle = tableStyle,
     bgColScales = bgColScales,
     fgColScales = fgColScales,
     cellFunctions = cellFunctions,

@@ -8,7 +8,7 @@ HTMLWidgets.widget({
 
     function log(message){
           if(typeof console == "object"){
-          	console.log(message);
+            console.log(message);
         	}
         }
 
@@ -17,9 +17,6 @@ HTMLWidgets.widget({
     // name ouf the output widget
     var outputID = el.id;
 
-    log(data.data)
-    log(data.footData)
-  
     var celldata = HTMLWidgets.dataframeToD3(data.data);
     
     var footdata = HTMLWidgets.dataframeToD3(data.footData);
@@ -123,11 +120,14 @@ HTMLWidgets.widget({
         // set an id to use for tablefilter "col_operations"
         .attr('id', function(d, i, j){ return 'frow_' + j + '_fcol_' + i + '_' +  'tbl_' + outputID; })
         .attr('class', function(d, i, j){ return "col_" + i + ' ' + 'row_' + j + ' ' + 'tbl_' + outputID; });
+    
+    // make table bootstrap styled
     if(data.tableStyle != null) {
       table.classed(data.tableStyle, true);
       tfoot.classed(data.tableStyle, true);
       thead.classed(data.tableStyle, true);
     }
+    
     // debounce from Underscore.js
     // modified to allow rapid editing of multiple cells
     // if args are different between subsequent calls, 
@@ -712,18 +712,18 @@ HTMLWidgets.widget({
     colourCells(outputID);
     
     // initialize table filter generator
-    window[tfName] = setFilterGrid(tableID, window["table_Props_" + outputID]);
-    
-    // initial filter settings
-    for (var key in initialFilters) {
-         if (initialFilters.hasOwnProperty(key)) {
-            var col = Number(key.replace(/col_/, ''));
-            window[tfName].SetFilterValue(col, initialFilters[key]);
-          };
-    };
-    window[tfName].Filter();
-    
+    if(data.enableTf == true) {
+      window[tfName] = setFilterGrid(tableID, window["table_Props_" + outputID]);
+      
+      // initial filter settings
+      for (var key in initialFilters) {
+           if (initialFilters.hasOwnProperty(key)) {
+              var col = Number(key.replace(/col_/, ''));
+              window[tfName].SetFilterValue(col, initialFilters[key]);
+            };
+      };
+      window[tfName].Filter();
+    }
   } // end of renderValue !!
 
 }); // end of HTMLWIDGET !!
-

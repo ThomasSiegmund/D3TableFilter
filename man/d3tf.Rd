@@ -4,16 +4,18 @@
 \alias{d3tf}
 \title{d3tf Generate a HTML table widget with advanced filtering, sorting and colouring.}
 \usage{
-d3tf(df, tableProps, showRowNames = FALSE, colNames = NULL,
-  extensions = c(), selectableRows = NULL, selectableRowsClass = "info",
-  tableStyle = "table", bgColScales = list(), fgColScales = list(),
-  edit = FALSE, radioButtons = NULL, checkBoxes = NULL,
-  cellFunctions = list(), filterInput = FALSE, initialFilters = list(),
-  footData = NULL, footCellFunctions = list(), width = NULL,
-  height = NULL)
+d3tf(df, enableTf = TRUE, tableProps, showRowNames = FALSE,
+  colNames = NULL, extensions = c(), selectableRows = NULL,
+  selectableRowsClass = "info", tableStyle = "table",
+  bgColScales = list(), fgColScales = list(), edit = FALSE,
+  radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(),
+  filterInput = FALSE, initialFilters = list(), footData = NULL,
+  footCellFunctions = list(), width = NULL, height = NULL)
 }
 \arguments{
 \item{df}{Data frame or matrix to display as html table}
+
+\item{enableTf}{Enable the features for the "HTML table filter generator"}
 
 \item{tableProps}{A list object describing appearence and function of the
 table}

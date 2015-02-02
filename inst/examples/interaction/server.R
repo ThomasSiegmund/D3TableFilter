@@ -327,7 +327,7 @@ shinyServer(function(input, output, session) {
     footData <- data.frame(Rownames = "Mean", mpg = mean(mtcars$mpg), cyl = mean(mtcars$cyl), disp = mean(mtcars$disp));
     
     # the mtcars table output
-    d3tf(mtcars, tableProps,
+    d3tf(mtcars, tableProps = tableProps,
                 showRowNames = TRUE,
                 colNames = colNames,
                 edit = c("col_1", "col_3"),
@@ -428,7 +428,9 @@ shinyServer(function(input, output, session) {
     footData <- data.frame(Rownames = "Mean", mpg = 0, cyl = 0);
     
     d3tf(mtcars[ , 1:2],
-                tableProps, showRowNames = TRUE, 
+                enableTf = TRUE,
+                tableProps = NULL,
+                showRowNames = TRUE, 
                 selectableRows = "multi",
                 selectableRowsClass = "info",
                 tableStyle = "table table-bordered table-condensed",

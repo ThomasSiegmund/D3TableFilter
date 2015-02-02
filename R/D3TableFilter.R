@@ -52,6 +52,7 @@
 #'   inst/examples/ directory of this package for an example.
 #'   
 #' @param df Data frame or matrix to display as html table
+#' @param enableTf Enable the features for the "HTML table filter generator"
 #' @param tableProps A list object describing appearence and function of the 
 #'   table
 #' @param showRowNames Add the R row names as first column to the table
@@ -114,7 +115,7 @@
 #' @import htmlwidgets
 #' @export JS
 #' @export
-d3tf <- function(df, tableProps, showRowNames = FALSE, colNames = NULL, extensions = c(), selectableRows = NULL, selectableRowsClass = "info", tableStyle = "table", bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), footData = NULL, footCellFunctions = list(), width = NULL, height = NULL) {
+d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, colNames = NULL, extensions = c(), selectableRows = NULL, selectableRowsClass = "info", tableStyle = "table", bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), footData = NULL, footCellFunctions = list(), width = NULL, height = NULL) {
   
   if(is.matrix(df)) {
     df <- as.data.frame(df);
@@ -124,76 +125,77 @@ d3tf <- function(df, tableProps, showRowNames = FALSE, colNames = NULL, extensio
     df <- cbind(rownames(df), df);
     colnames(df)[1] <- "Rownames";  
   }
-
-if(is.null(tableProps$base_path)) {
-  tableProps <- c(tableProps, base_path = 'tablefilter-2.5/');
-}
-
-if(!is.null(height)) {
-  tableProps <- c(tableProps, grid_height = paste0(height, 'px' ), fixed_headers = TRUE);
-}
-
-if(!is.null(tableStyle)) {
-  tableProps <- c(tableProps, stylesheet = "tablefilter-2.5/filtergridBS.css");
-}
-
-if(length(extensions) > 0) {
-  ext <- list(name = list(), src = list(), description = list(), initialize = list());
-  if("ColsVisibility" %in% extensions) {
+  
+  if(is.null(tableProps$base_path)) {
+    tableProps <- c(tableProps, base_path = 'tablefilter-2.5/');
+  }
+  
+  if(!is.null(height)) {
+    tableProps <- c(tableProps, grid_height = paste0(height, 'px' ), fixed_headers = TRUE);
+  }
+  
+  if(!is.null(tableStyle)) {
+    tableProps <- c(tableProps, stylesheet = "tablefilter-2.5/filtergridBS.css");
+  }
+  
+  if(length(extensions) > 0) {
+    ext <- list(name = list(), src = list(), description = list(), initialize = list());
+    if("ColsVisibility" %in% extensions) {
       ext$name[length(ext$name) + 1] = 'ColsVisibility';
       ext$src[length(ext$src) + 1] = 'tablefilter-2.5/TFExt_ColsVisibility/TFExt_ColsVisibility.js';
       ext$description[length(ext$description) + 1] = 'Columns visibility manager';
       ext$initialize[length(ext$initialize) + 1] = list(JS('function(o){o.SetColsVisibility();}'));
-  } 
-  if("ColumnsResizer" %in% extensions) {
-    ext$name[length(ext$name) + 1] = 'ColumnsResizer';
-    ext$src[length(ext$src) + 1] = 'tablefilter-2.5/TFExt_ColsResizer/TFExt_ColsResizer.js';
-    ext$description[length(ext$description) + 1] = 'Columns Resizing';
-    ext$initialize[length(ext$initialize) + 1] = list(JS('function(o){o.SetColsResizer();}'));
-  } 
-  if("FiltersRowVisibility" %in% extensions) {
-    ext$name[length(ext$name) + 1] = 'FiltersRowVisibility';
-    ext$src[length(ext$src) + 1] = 'tablefilter-2.5/TFExt_FiltersRowVisibility/TFExt_FiltersRowVisibility.js';
-    ext$description[length(ext$description) + 1] = 'Expand/Collapse filters row';
-    ext$initialize[length(ext$initialize) + 1] = list(JS('function(o){o.SetFiltersRowVisibility();}'));
-  } 
-  tableProps$extensions <- ext;
-}
-
-# turn "auto:white:red" in a linear d3 colour scale function
-autoColScale <- function(colScales) {
-  if(length(colScales) == 0) {
-    return(colScales);
+    } 
+    if("ColumnsResizer" %in% extensions) {
+      ext$name[length(ext$name) + 1] = 'ColumnsResizer';
+      ext$src[length(ext$src) + 1] = 'tablefilter-2.5/TFExt_ColsResizer/TFExt_ColsResizer.js';
+      ext$description[length(ext$description) + 1] = 'Columns Resizing';
+      ext$initialize[length(ext$initialize) + 1] = list(JS('function(o){o.SetColsResizer();}'));
+    } 
+    if("FiltersRowVisibility" %in% extensions) {
+      ext$name[length(ext$name) + 1] = 'FiltersRowVisibility';
+      ext$src[length(ext$src) + 1] = 'tablefilter-2.5/TFExt_FiltersRowVisibility/TFExt_FiltersRowVisibility.js';
+      ext$description[length(ext$description) + 1] = 'Expand/Collapse filters row';
+      ext$initialize[length(ext$initialize) + 1] = list(JS('function(o){o.SetFiltersRowVisibility();}'));
+    } 
+    tableProps$extensions <- ext;
   }
-  cols <- names(colScales);
-  for(i in 1:length(colScales)) {
-    if(! "JS_EVAL" %in% class(colScales[[i]]) )  {
-      clrs <- unlist(strsplit(colScales[[i]], ':', fixed = TRUE));
-      startColour <- clrs[2];
-      endColour <- clrs[3];
-     scale <- JS(paste0('function colorScale(tbl, i){
-       var color = d3.scale.linear()
-       .domain(colExtent(tbl, "', cols[i] ,'"))
-       .range(["', startColour, '", "', endColour, '"])
-       .interpolate(d3.interpolateHcl);
-       return color(i);
-     }'));
+  
+  # turn "auto:white:red" in a linear d3 colour scale function
+  autoColScale <- function(colScales) {
+    if(length(colScales) == 0) {
+      return(colScales);
+    }
+    cols <- names(colScales);
+    for(i in 1:length(colScales)) {
+      if(! "JS_EVAL" %in% class(colScales[[i]]) )  {
+        clrs <- unlist(strsplit(colScales[[i]], ':', fixed = TRUE));
+        startColour <- clrs[2];
+        endColour <- clrs[3];
+        scale <- JS(paste0('function colorScale(tbl, i){
+                           var color = d3.scale.linear()
+                           .domain(colExtent(tbl, "', cols[i] ,'"))
+                           .range(["', startColour, '", "', endColour, '"])
+                           .interpolate(d3.interpolateHcl);
+                           return color(i);
+      }'));
      colScales[cols[i]] <- list(scale);
     }
+    }
+    return(colScales);
+    }
+  
+  bgColScales <- autoColScale(bgColScales);
+  fgColScales <- autoColScale(fgColScales);
+  
+  # make edit a d3 select string
+  if (is.character(edit)) {
+    edit <- paste0('.',  edit, collapse = ', ');
   }
-  return(colScales);
-}
-
-bgColScales <- autoColScale(bgColScales);
-fgColScales <- autoColScale(fgColScales);
-
-# make edit a d3 select string
-if (is.character(edit)) {
-  edit <- paste0('.',  edit, collapse = ', ');
-}
-
-x <- list(
+  
+  x <- list(
     data = df,
+    enableTf = enableTf,
     tableProps = tableProps,
     selectableRows = selectableRows,
     selectableRowsClass = selectableRowsClass,
@@ -210,8 +212,8 @@ x <- list(
     filterInput = filterInput,
     initialFilters = initialFilters,
     footData = footData
-)
-
+  )
+  
   # create the widget
   htmlwidgets::createWidget("D3TableFilter", x, width = width, 
                             height = height, sizingPolicy = htmlwidgets::sizingPolicy(
@@ -219,7 +221,7 @@ x <- list(
                               viewer.paneHeight = 800,
                               browser.fill = TRUE
                             ))
-}
+  }
 
 #' Shiny bindings for tableFilter
 #' 
@@ -269,8 +271,8 @@ renderD3tf <- function(expr, env = parent.frame(), quoted = FALSE) {
 #' @param value Reset the input to this value if not null.
 #' @export 
 rejectEdit <- function(session, tbl, row, col, id, value = NULL, color = "red") {
-        message <- list(tbl = tbl, row = row, col = col, action = "reject", id = id, value = value, color = color, feedback = FALSE);
-        session$sendCustomMessage(type = "setCellValue", message);
+  message <- list(tbl = tbl, row = row, col = col, action = "reject", id = id, value = value, color = color, feedback = FALSE);
+  session$sendCustomMessage(type = "setCellValue", message);
 }
 
 #' Give feedback in case of validaton success

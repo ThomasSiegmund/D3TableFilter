@@ -39,6 +39,8 @@ HTMLWidgets.widget({
     var radioButtons = data.radioButtons;
     var checkBoxes = data.checkBoxes;
     window["showRowNames_" + outputID] = data.showRowNames;
+    window["rowStyles_" + outputID] = data.rowStyles;
+    
     
     var tableID = el.id + '_tbl';
     var tfName = 'tf_' + el.id;
@@ -128,6 +130,19 @@ HTMLWidgets.widget({
       thead.classed(data.tableStyle, true);
     }
     
+    // apply row styles
+    log(data.rowStyles);
+    var rowStyles = window["rowStyles_" + outputID];
+    if(rowStyles != null) {
+      log("setting rowstyles")
+      rows.each(
+        function(d, i, j) {
+            var elt = d3.select(this);
+            elt.classed(rowStyles[i], true);
+        }
+      ) 
+    }
+        
     // debounce from Underscore.js
     // modified to allow rapid editing of multiple cells
     // if args are different between subsequent calls, 
@@ -447,10 +462,12 @@ HTMLWidgets.widget({
                   .selectAll('tr');
                   
             // radio button behavior: clear selectableRowsClass from all rows
+            // restore previous class
             if (window["selectableRows_" + tbl] == "single" && clss == window["selectableRowsClass_" + tbl] ) {
                 rows.classed(window["selectableRowsClass_" + tbl], false);
+                rows.classed(window["rowStyles_" + tbl], true);
             }
-            
+
             // current row
             var row = d3.selectAll('#' +  tbl)
                         .select('#r' + (Number(message["row"]) - 1));

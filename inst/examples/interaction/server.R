@@ -434,6 +434,7 @@ shinyServer(function(input, output, session) {
                 selectableRows = "multi",
                 selectableRowsClass = "info",
                 tableStyle = "table table-bordered table-condensed",
+                rowStyles = c(rep("", 7), rep("info", 7)),
                 filterInput = TRUE,
                 footData = footData,
                 height = 500);

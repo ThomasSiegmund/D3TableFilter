@@ -4,9 +4,9 @@
 \alias{d3tf}
 \title{d3tf Generate a HTML table widget with advanced filtering, sorting and colouring.}
 \usage{
-d3tf(df, enableTf = TRUE, tableProps, showRowNames = FALSE,
+d3tf(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE,
   colNames = NULL, extensions = c(), selectableRows = NULL,
-  selectableRowsClass = "info", tableStyle = "table",
+  selectableRowsClass = "info", tableStyle = "table", rowStyles = NULL,
   bgColScales = list(), fgColScales = list(), edit = FALSE,
   radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(),
   filterInput = FALSE, initialFilters = list(), footData = NULL,
@@ -34,12 +34,16 @@ if  \code{"single"}  only a single line will be selectable.}
 "success", "info", "warning", or "danger" from Bootstrap3. Default: "info."}
 
 \item{tableStyle}{List css classes to apply to a table. Bootstrap3 provides
-\code{table}, \code{table-striped}, \code{table-bordered},
-\code{table-hover}, and \code{table-condensed}. The \code{table-hover}
+  \code{table}, \code{table-striped}, \code{table-bordered},
+  \code{table-hover}, and \code{table-condensed}. The \code{table-hover}
 class is applied automatically if \code{selectableRows} is active. If
 \code{tableStyle} is not NULL, the normal CSS styling of TableFilter is
 automatically cut down by appending \code{stylesheet =
 "tablefilter-2.5/filtergridBS.css"} to the tableProps.}
+
+\item{rowStyles}{Character vector of Bootstrap classes to apply to rows.
+Could be used to pre-select rows when using the \code{selectableRows}
+interface.}
 
 \item{bgColScales}{List of background colour scales to apply to the columns}
 

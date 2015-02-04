@@ -128,8 +128,8 @@ HTMLWidgets.widget({
       table.classed(data.tableStyle, true);
       tfoot.classed(data.tableStyle, true);
       thead.classed(data.tableStyle, true);
-    }
-    
+     }
+
     // apply row styles
     log(data.rowStyles);
     var rowStyles = window["rowStyles_" + outputID];
@@ -741,6 +741,19 @@ HTMLWidgets.widget({
       };
       window[tfName].Filter();
     }
+    
+    // make thead and info row bootstrap styled
+    // TODO: find a working solution for info row
+    if(data.tableStyle != null) {
+      thead.selectAll("tr").classed("active", true);
+      var infDiv = d3.select(el)
+      .selectAll("#inf_" + outputID + "_tbl")
+      .classed({"active": true})
+      .style("width", "auto");
+    }
+
+    
+    
   } // end of renderValue !!
 
 }); // end of HTMLWIDGET !!

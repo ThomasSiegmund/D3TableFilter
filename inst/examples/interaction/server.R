@@ -150,6 +150,8 @@ shinyServer(function(input, output, session) {
       sort = TRUE,
       on_keyup = TRUE,  
       on_keyup_delay = 800,
+      rows_counter = TRUE,  
+      rows_counter_text = "Rows: ",
       col_number_format= c(NULL, "US", "US", "US", NULL, NULL), 
       sort_config = list(
       # alphabetic sorting for the row names column, numeric for all other columns
@@ -402,8 +404,9 @@ shinyServer(function(input, output, session) {
     # define table properties. See http://tablefilter.free.fr/doc.php
     # for a complete reference
     tableProps <- list(
-      stylesheet = "tablefilter-2.5/filtergridBS.css",
       btn_reset = TRUE,
+      rows_counter = TRUE,  
+      rows_counter_text = "Rows: ",
       sort = TRUE,
       on_keyup = TRUE,  
       on_keyup_delay = 800,
@@ -429,7 +432,7 @@ shinyServer(function(input, output, session) {
     
     d3tf(mtcars[ , 1:2],
                 enableTf = TRUE,
-                tableProps = NULL,
+                tableProps = tableProps,
                 showRowNames = TRUE, 
                 selectableRows = "multi",
                 selectableRowsClass = "info",

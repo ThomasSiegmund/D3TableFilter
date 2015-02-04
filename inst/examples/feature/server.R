@@ -9,12 +9,14 @@ shinyServer(function(input, output, session) {
     
     # configuration object listing many of TableFilters paramters.
     # There are more in http://tablefilter.free.fr/doc.php
-    table_Props <- list(
+    tableProps <- list(
       # appearence
       btn_reset = TRUE,  
       btn_reset_text = "Clear",
       filters_row_index = 1,
       mark_active_columns = TRUE,
+      rows_counter = TRUE,  
+      rows_counter_text = "Rows: ",
       # behaviour
       on_change = TRUE,  
       btn = FALSE,  
@@ -35,8 +37,6 @@ shinyServer(function(input, output, session) {
       # paging
       paging = FALSE,  # paging is incompatible with col_operations, at least here
       paging_length = 30,  
-      rows_counter = TRUE,  
-      rows_counter_text = "Rows:",
       results_per_page = JS("['Rows per page',[30, 60]]"),  
       #column visibility
       showHide_cols_text = 'Hide columns:',
@@ -47,8 +47,6 @@ shinyServer(function(input, output, session) {
       col_9 = "multiple",
       col_10 = "multiple",
       col_11 = "multiple",
-      # row counter not supported
-      rows_counter = FALSE,
       # adding a summary row, showing the column means
       rows_always_visible = list(nrow(mtcars) + 2, nrow(mtcars) + 3),
       col_operation = list( 
@@ -88,7 +86,7 @@ shinyServer(function(input, output, session) {
     # make use of TableFilters "col_operation"
     footData <- data.frame(Rownames = c("Mean", "Median"), mpg = 0, cyl = 0, disp = 0, hp = 0,  drat = 0, wt = 0, qsec = 0, vs = 0, am = 0, gear = 0, carb = 0);
     
-    d3tf(mtcars, table_Props,
+    d3tf(mtcars, tableProps = tableProps,
                 showRowNames = TRUE,
                 tableStyle = "table table-bordered table-striped",
                 extensions = c('ColsVisibility', 'ColumnsResizer', 'FiltersRowVisibility'),

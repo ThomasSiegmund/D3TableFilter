@@ -115,7 +115,9 @@ input.reset:hover{ background:#CAD1D6 url(TF_Themes/btn_clear_filters.png) cente
 /* PAGING ELEMENTS
 =====================================================*/
 .inf{ /* div containing left, middle and right divs */
-	clear:both; width:auto; height:25px; 
+/*	clear:both;*/
+/*  width:auto;*/
+  height:25px; 
 /*	background:#f4f4f4; */
   font-size:12px; 
 	margin:0; padding:1px 3px 1px 3px; 

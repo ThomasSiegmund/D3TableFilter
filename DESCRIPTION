@@ -2,8 +2,13 @@ Package: D3TableFilter
 Title: A table widget based on Max Guglielmi's "HTML Table Filter Generator"
     and D3.js
 Version: 0.5
-Authors@R: person("Thomas", "Siegmund", email = "thomas.siegmund@gmail.com",
-    role = c("aut", "cre"))
+Authors@R: c(person("Thomas", "Siegmund", email = "thomas.siegmund@gmail.com",
+    role = c("aut", "cre")),
+        person("Max", "Guglielmi", role = c("aut", "cph")),
+        person("Erik", "Arvidsson", role = c("aut", "cph")),
+        person("Mike", "Bostock", role = c("aut", "cph")),
+        person("Cynthia", "Brewer", role = c("aut", "cph"))
+    )
 Description: D3TableFilter provides a powerful and flexible HTML table widget for
     use with the htmlwidgets R library. It allows R users to create HTML tables
     with functions for advanced filtering and sorting. It also allows for advanced

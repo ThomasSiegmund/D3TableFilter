@@ -14,7 +14,6 @@ shinyServer(function(input, output, session) {
     # Define table properties. See http://tablefilter.free.fr/doc.php
     # for a complete reference
     tableProps <- list(
-      alternate_rows = TRUE,
       btn_reset = TRUE,
       sort = TRUE,
       sort_config = list(
@@ -24,7 +23,7 @@ shinyServer(function(input, output, session) {
     );
     
     d3tf(mtcars,
-         tableProps,
+         tableProps = tableProps,
          showRowNames = TRUE,
          tableStyle = "table table-bordered");
   })

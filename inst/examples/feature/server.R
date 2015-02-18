@@ -78,7 +78,7 @@ shinyServer(function(input, output, session) {
         write_method = as.list(rep("innerhtml", 22)),
         exclude_row = list(nrow(mtcars) + 2, nrow(mtcars) + 3),  
         decimal_precision = as.list(rep(1, 22)),
-        tot_row_index =list(nrow(mtcars) + 2, nrow(mtcars) + 3)
+        tot_row_index = list(nrow(mtcars) + 2, nrow(mtcars) + 3)
       )
     );
     

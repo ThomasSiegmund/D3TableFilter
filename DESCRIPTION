@@ -13,10 +13,12 @@ Description: D3TableFilter provides a powerful and flexible HTML table widget fo
     use with the htmlwidgets R library. It allows R users to create HTML tables
     with functions for advanced filtering and sorting. It also allows for advanced
     formatting of table cells using D3 functions.
-Depends:
+Depends: 
     R (>= 3.1.0)
-Imports:
+Imports: 
     htmlwidgets (>= 0.3)
 License: MIT + file LICENSE
 LazyData: true
 Enhances: rmarkdown (>= 0.3.3), shiny (>= 0.10.2.1)
+Suggests: knitr
+VignetteBuilder: knitr

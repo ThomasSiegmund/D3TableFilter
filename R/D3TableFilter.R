@@ -24,7 +24,7 @@
 #' tableProps parameter.
 #'
 #' @section Editing: The whole table (\code{edit = TRUE}) or selected columns
-#'   (\code{edit = c("col_1", "col_3")}) can set to be editible. An editible
+#'   (\code{edit = c("col_1", "col_3")}) can set to be editable. An editable
 #'   table provides an input element named like the corresponding output element
 #'   + "_edit". Here each (debounced) edit event in a table cell is visible as a
 #'   list of row (\code{row}), column (\code{col}) and new value (\code{val}). See

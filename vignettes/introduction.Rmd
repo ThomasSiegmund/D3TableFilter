@@ -111,9 +111,9 @@ The Table Filter JavaScript library provides a huge number of configuration opti
 ## TableFilter extensions
 Some of the TableFilter functions are beeing provided as separate modules, in particular
 
-    + ColsVisibility: Visibility of columns can be adjusted by configuration or interactively
-    + ColumnsResizer: Interactive resizing of column width
-    + FiltersRowVisibility: Interactively show or hide the filter row.
+* ColsVisibility: Visibility of columns can be adjusted by configuration or interactively
+* ColumnsResizer: Interactive resizing of column width
+* FiltersRowVisibility: Interactively show or hide the filter row.
 
 To activate these extensions simply define them as a character vector in the extensions parameter, e.g. ```extensions = c("ColsVisibility", "ColumnsResizer", "FiltersRowVisibility")```. This takes care of enabling and basic configuration of the extensions. For further customization use the tableProps parameter.
 
@@ -121,4 +121,94 @@ To activate these extensions simply define them as a character vector in the ext
 TableFilter comes with it's own CSS based default styling which is compact and efficient, but can look a little bit out of place within Bootstrap styled Shiny apps. Per default D3TableFilter applies the basic Bootstrap table class (```table```). This behaviour can be modified using the ```tableStyle``` argument. Bootstrap provides the classes ```table```, ```table-striped```, ```table-bordered```, and ```table-condensed```. These classes can be combined, e.g. ```tableStyle = "table table-striped table-bordered"```. ```tableStyle = NULL``` reverts to the original TableFilter CSS. 
 
 # Table Footer
+TableFilter provides functions for statistical summaries in a table footer (see ```col_operation```). D3TableFilter supports this by providing the ```footData``` argument to ```d3tf```. It allows to attach one or more rows to a table to be used as footer. The TableFilter ```col_operation``` functions need unique cell ids to display their results in. D3TableFilter supports this by supplying a unique id for each cell in a footer. The cell at the first footer row, second column in a table "mtcars" would get the id ```frow_0_fcol_1_tbl_mtcars```. See the examples/feature Shiny app for an example.
+
+Alternatively to these values calculated by JavaScript the data for a table footer can be supplied directly from R via the footData argument. These can be updated dynamically using the ```setFootCellValue``` function. An example for this can be found in the 
+examples/interaction Shiny app. Here the footer row shows column mean or column median values depending on a select input:
+
+```r
+  # update summary row. calculate mean/median of displayed row for cols 1:3
+  observe({
+    for (col in c(1, 2, 3)) {
+      if(input$summaryRow == "mean") {
+        setFootCellValue(session, tbl = "mtcars", row = 1, col = 0, value = "Mean");
+        value = round(mean(revals$mtcars[revals$rowIndex, col]), 1);
+      } else {
+        setFootCellValue(session, tbl = "mtcars", row = 1, col = 0, value = "Median");
+        value = round(median(revals$mtcars[revals$rowIndex, col]), 1);
+      }
+      setFootCellValue(session, tbl = "mtcars", row = 1, col = col, value = value);
+    }
+  })
+```
+
+# Editing
+
+Using the ```edit``` argument to d3tf the whole table (```edit = TRUE```) or selected columns (```edit = c("col_1", "col_3")```) can set to be editable. Table columns with logical values can be transformed into radio buttons or checkboxes for easy editing. It is also possible to enable or disable editing of columns dynamically:
+
+```r
+# enable editing of the first two columns of the "mtcars" table
+enableEdit(session, "mtcars", c("col_1", "col_2"))
+
+# disable editing of the first two columns of the "mtcars" table
+disableEdit(session, "mtcars", c("col_1", "col_2"))
+```
+
+An editable table provides an input element named like the corresponding output element + "_edit". For performance reasons not the complete edited table is sent back from the browser to the server, but single edit events.
+The ```_edit``` input element receives for each edit element in the corresponding table a list of row (```row```), column (```col```) and new value (```val```).
+
+Within a Shiny app here an ```observe``` function should take care of validation and processing of these data. D3TableFilter provides two functions to send validation feedback to the user (```confirmEdit```, ```rejectEdit```). They allow to give visual feedback by means of a brief text colour transition. They also allow to revert the edit in case of a validation failure or to rewrite the value in case of a confirm. The latter may seem unneccessary at first, but it could help in case of difficult network conditions. Depending on the environment there is no guarantee that edit events in the browser get processed in the correct order on the server. If a user starts to edit a cell, waits briefly, and then continues to edit the same cell two edits could be sent back to the server. There is no guarantee that the second edit arrives after the first one on the server. Thus in D3TableFilter each edited cell gets tagged with a unique attribute and which is checked when the server sends a reject or confirm message. Only a confirm or reject message corresponding to the latest edit of a cell will find a matching id in the table.
+
+```r
+  # for a output object "mtcars" D3TableFilter generates an input
+  # "mtcars_edit"
+  # this observer does a simple input validation and sends a confirm or reject message after each edit.
+  observe({
+    if(is.null(input$mtcars_edit)) return(NULL);
+     edit <- input$mtcars_edit;
+    
+    isolate({
+      # need isolate, otherwise this observer would run twice
+      # for each edit
+      id <- edit$id;
+      row <- as.integer(edit$row);
+      col <- as.integer(edit$col);
+      val <- edit$val;
+      
+      # validate input 
+      if(col == 0) {
+        # rownames
+        oldval <- rownames(mtcars)[row];
+        # rownames can not start with a digit
+        if(grepl('^\\d', val)) {
+          rejectEdit(session, tbl = "mtcars", row = row, col = col,  id = id, value = oldval);
+          return(NULL);
+        }
+      } else if (col %in% c(1, 2, 3)){
+        # numeric columns
+        if(is.na(suppressWarnings(as.numeric(val)))) {
+          oldval <- revals$mtcars[row, col];
+          # reset to the old value
+          # input will turn red briefly, than fade to previous color while
+          # text returns to previous value
+          rejectEdit(session, tbl = "mtcars", row = row, col = col, id = id, value = oldval);
+          return(NULL);
+        } 
+      }
+      
+      # accept edits
+      if(col == 0) {
+        rownames(revals$mtcars)[row] <- val;
+      } else if (col %in% c(1, 2, 3)) {
+        revals$mtcars[row, col] <- as.numeric(val);
+        val = round(as.numeric(val), 1)
+      }
+      # confirm edits
+      confirmEdit(session, tbl = "mtcars", row = row, col = col, id = id, value = val);
+     })
+   })
+```
+Cell values can also be updated dynamically by the server without resending the whole table using the ```setCellValue``` function. If a table uses coloring or inline graphics, these elements will these elements can react on edit events with smooth visual transitions. See examples/interaction for a Shiny app demonstrating this features.
+
+# Coloring
 

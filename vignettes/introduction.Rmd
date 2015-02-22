@@ -31,7 +31,7 @@ In addition to the impressive feature set of the *TableFilter* library the table
     + logarithmic
     + threshold
     + categorical
-    + ColourBrewer
+    + ColorBrewer
     + ...
 
 * In-cell graphics. Can turn cell values into SVG graphics using D3.js functions.
@@ -102,6 +102,8 @@ Two optional parameters for tableFilter, "showRowNames" and "rowNamesColumn" ena
 ![knob](images/basicTable.png)
 
 Running this app generates a window filling table which can be filtered for strings, numbers, numeric expressions and regular expressions. There is a reset button for the filters in the upper rigth corner, and small help popup behind the question mark also in the upper right. The table can be sorted by mouseclick on the column headers. 
+
+TODO: a few words on getting and setting filters
 
 # Customizing the table
 The Table Filter JavaScript library provides a huge number of configuration options which define the appearance and behaviour of the table. It can for example do client side paging. It can provied a control to hide selected columns. It can provide checkbox and lists controls for filtering and many more. A complete discussion of the features of Table Filter is beyond the scope of this document. Please see [HTML Table Filter Generator](http://tablefilter.free.fr/) for examples and documentation. In the examples/feature directory of this package is a Shiny app demonstrating quite a few TableFilter features in a single table. It shows sorting, filtering, pagination, rows counter, column resizing and column visibility, and a table footer with column statistics.
@@ -210,5 +212,71 @@ Within a Shiny app here an ```observe``` function should take care of validation
 ```
 Cell values can also be updated dynamically by the server without resending the whole table using the ```setCellValue``` function. If a table uses coloring or inline graphics, these elements will these elements can react on edit events with smooth visual transitions. See examples/interaction for a Shiny app demonstrating this features.
 
+# Row selection
+
+A D3TableFilter table can act as a simple input element for row selection. The ```selectableRows``` argument to the ```d3tf``` function makes ```single``` or ```multiple``` rows selectable. Using the ```selectableRowsClass``` argument you can use a choice of Bootstrap classes to modify the look of selected rows. A new input element (named like the corresponding output element + "_edit") will provide a vector of indices of selected rows. To pre-select rows when generating a new table, the "rowStyles" argument to d3tf can be used. At run time rows can be (de-)selected using the ``setRowClass``` function.
+
+![knob](images/rowSelection.png)
+
+Technically ```selectableRows``` can be combined with other D3TableFilter features. From a user point of view it may be confusing though to have selected rows which are hidden by the filtering function. Thus it may be a good idea to switch off filtering in this case using  ```enableTf = FALSE```. An example for a table with selectable rows is on the second tab of the examples/interaction Shiny app:
+
 # Coloring
 
+Color can greatly enhance the perception especially of numerical values in tables. One of the driving forces in the development of D3TableFilter was the need for smooth, heatmap-like colors in tables. The D3.js library provides powerful mechanisms to map data to colors. I has support for simple linear color scales, but also logarithmic scales and categorical scales (including the famous [ColorBrewer](http://colorbrewer2.org/) scales). D3TableFilter allows to make use of this for cell backgrounds as well as for the text color. D3TableFilter tries to provide the full D3.js tool set for colour scales, at the cost of exposing R programmers to the D3 javascript code. The following code sniplet for example could be used to colour cell the first column (```col_1```) in a table. Given a range of cell values between 0 and 200 (```.domain([0, 200])```) the cell background would be colored in white to blue (```.range(["white", "blue"])```) according to the cells numeric value.
+
+
+```r
+    bgColScales <- list(
+       col_1 = JS('function colorScale(tbl, i){
+        var color = d3.scale.linear()
+                      .domain([0, 200])
+                      .range(["white", "blue"]);
+        return color(i);
+      }')
+      )
+```
+
+In this example the background color may get to dark to read the cell text. One solution obviously is to use a lighter background color. Another option is to modify the text color accordingly. The next code sniplet achives this by using a threshold function (```d3.scale.threshold()```) to switch the text color from black to white on a dark background.
+
+```r
+   fgColScales <- list(
+      col_1 = JS('function colorScale(tbl, i){
+        var color = d3.scale.threshold()
+        .domain([130, 130, 200.1])
+        .range(["black", "black", "white"]);
+        return color(i);
+      }')
+      )
+```
+
+
+
+The result in shown in the second column in the table below.
+![knob](images/color.png)
+
+Color perception is a complex issue. If you wish for a perceptionally correct mapping of numerical data to colour the linear scale as shown above is not the best solution. D3.js provides Lab and HCL color scales for this purpose. They make sure the perceived difference between two colors is propotional to the distance of the mapped values. The next code sniplet maps the same data as above to a white-blue palette in HCL space. The results is shown in the third row in the figure above.
+
+
+```r
+    bgColScales <- list(
+       col_2 = JS('function colorScale(tbl, i){
+        var color = d3.scale.linear()
+        .domain([0, 200])
+        .range(["white", "blue"])
+        .interpolate(d3.interpolateHcl);
+        return color(i);
+      }')
+      )
+```
+
+As a shortcut you can define linear hcl scales as automatic. The data range (```domain``` in D3 parlance) is determined automatically in this case.
+
+```r
+    bgColScales <- list(
+     col_0 = "auto:white:green"
+    )
+```
+
+
+
+# Graphics

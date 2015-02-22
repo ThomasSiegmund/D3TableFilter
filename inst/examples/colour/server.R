@@ -82,7 +82,7 @@ shinyServer(function(input, output, session) {
     fgColScales <- list(
       col_1 = JS('function colorScale(tbl, i){
         var color = d3.scale.threshold()
-        .domain([130, 130, 200.1])
+        .domain([110, 110, 200.1])
         .range(["black", "black", "white"]);
         return color(i);
       }'),

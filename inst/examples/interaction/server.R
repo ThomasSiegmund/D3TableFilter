@@ -60,7 +60,7 @@ shinyServer(function(input, output, session) {
       # validate input 
       if(col == 0) {
         # rownames
-        oldval <- rownames(mtcars)[row];
+        oldval <- rownames(revals$mtcars)[row];
         if(grepl('^\\d', val)) {
           rejectEdit(session, tbl = "mtcars", row = row, col = col,  id = id, value = oldval);
           revals$edits["Fail", "Row"] <- row;
@@ -318,8 +318,7 @@ shinyServer(function(input, output, session) {
                          .style("font-weight", "bold")
                          .text(function(d) { return textformat(d.value); });
             }')
-      
-          );
+    );
     initialFilters = list(col_1 = ">20");
 
     colNames = c(Rownames = "Model", mpg = "Miles per gallon",	cyl = "Cylinders",	disp = "Displacement",	candidates = "Candidates",	favorite = "My favorite");

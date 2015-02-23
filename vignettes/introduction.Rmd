@@ -97,18 +97,82 @@ shinyServer(function(input, output, session) {
 })
 ```
 
-Two optional parameters for tableFilter, "showRowNames" and "rowNamesColumn" enable the display of the row names as first Column ("Model").
+Two optional parameters for tableFilter, "showRowNames" and "rowNamesColumn" enable the display of the row names as first column.
 
-![knob](images/basicTable.png)
+![](images/basicTable.png)
 
-Running this app generates a window filling table which can be filtered for strings, numbers, numeric expressions and regular expressions. There is a reset button for the filters in the upper rigth corner, and small help popup behind the question mark also in the upper right. The table can be sorted by mouseclick on the column headers. 
+Running this app generates a window filling table which can be filtered for strings, numbers, numeric expressions and regular expressions. There is a reset button for the filters in the upper right corner, and small help popup behind the question mark also in the upper right. The table can be sorted by mouseclick on the column headers. 
 
-TODO: a few words on getting and setting filters
+As a app developer you may want to know which filters a user has set, e.g. to provide statistics on the filtered rows or to allow for an export of the filtered data. If activated using ```filterInput = TRUE``` as argument to ```d3tf``` there is for each table an input called outputid + "_filter" which provides a list of
+
+* the filters entered by the user
+* an index of the table rows visible after filtering
+
+This variation of the above app prints the current filter settings and the valid rows after filtering:
+
+```r
+# ------------------------------------------------------
+# Minimal shiny app demonstrating the tableFilter widget
+# server.R
+# ------------------------------------------------------
+library(shiny)
+library(htmlwidgets)
+library(D3TableFilter)
+
+data(mtcars);
+
+shinyServer(function(input, output, session) {
+  output$mtcars <- renderD3tf({
+    
+    # Define table properties. See http://tablefilter.free.fr/doc.php
+    # for a complete reference
+    tableProps <- list(
+      btn_reset = TRUE,
+      sort = TRUE,
+      sort_config = list(
+        # alphabetic sorting for the row names column, numeric for all other columns
+        sort_types = c("String", rep("Number", ncol(mtcars)))
+      )
+    );
+    
+    observe({
+      if(is.null(input$mtcars_filter)) return(NULL);
+      
+      filterSettings <-input$mtcars_filter$filterSettings;
+      tmp <- lapply(filterSettings, function(x) data.frame(Column = x$column, Filter = x$value, stringsAsFactors = FALSE));
+      filters <- do.call("rbind", tmp);
+      
+      print("Active filters:")
+      print(filters)
+      
+      rowIndex <- unlist(input$mtcars_filter$validRows);
+      print("Valid rows:")
+      print(mtcars[rowIndex, ]);
+      
+    })
+    
+    d3tf(mtcars,
+         tableProps = tableProps,
+         showRowNames = TRUE,
+         filterInput = TRUE,
+         tableStyle = "table table-bordered");
+  })
+})
+
+```
+
+TableFilter has a cookie based mechanism to restore filter settings after page reload (```remember_grid_values = TRUE``` in ```tableProps```). Alternatively you could restore filter settings by using the ```initialFilters argument```.
+
+```r
+d3tf(mtcars, showRowNames = TRUE, initialFilters = list(col_0 = "Merc", col_1 = ">20"));
+```
+
+Filters can be set programmatically at run time using the ```setFilter()``` function. There is also a ```clearFilters``` function to reset all filter inputs in a table. The *examples/interaction* Shiny app demonstrates these functions.
 
 # Customizing the table
-The Table Filter JavaScript library provides a huge number of configuration options which define the appearance and behaviour of the table. It can for example do client side paging. It can provied a control to hide selected columns. It can provide checkbox and lists controls for filtering and many more. A complete discussion of the features of Table Filter is beyond the scope of this document. Please see [HTML Table Filter Generator](http://tablefilter.free.fr/) for examples and documentation. In the examples/feature directory of this package is a Shiny app demonstrating quite a few TableFilter features in a single table. It shows sorting, filtering, pagination, rows counter, column resizing and column visibility, and a table footer with column statistics.
+The Table Filter JavaScript library provides a huge number of configuration options which define the appearance and behaviour of the table. It can for example do client side paging. It can provied a control to hide selected columns. It can provide checkbox and lists controls for filtering and many more. A complete discussion of the features of Table Filter is beyond the scope of this document. Please see [HTML Table Filter Generator](http://tablefilter.free.fr/) for examples and documentation. In the *examples/feature* directory of this package is a Shiny app demonstrating quite a few TableFilter features in a single table. It shows sorting, filtering, pagination, rows counter, column resizing and column visibility, and a table footer with column statistics.
 
-![knob](images/fullFeaturedTable.png)
+![](images/fullFeaturedTable.png)
 
 ## TableFilter extensions
 Some of the TableFilter functions are beeing provided as separate modules, in particular
@@ -123,10 +187,9 @@ To activate these extensions simply define them as a character vector in the ext
 TableFilter comes with it's own CSS based default styling which is compact and efficient, but can look a little bit out of place within Bootstrap styled Shiny apps. Per default D3TableFilter applies the basic Bootstrap table class (```table```). This behaviour can be modified using the ```tableStyle``` argument. Bootstrap provides the classes ```table```, ```table-striped```, ```table-bordered```, and ```table-condensed```. These classes can be combined, e.g. ```tableStyle = "table table-striped table-bordered"```. ```tableStyle = NULL``` reverts to the original TableFilter CSS. 
 
 # Table Footer
-TableFilter provides functions for statistical summaries in a table footer (see ```col_operation```). D3TableFilter supports this by providing the ```footData``` argument to ```d3tf```. It allows to attach one or more rows to a table to be used as footer. The TableFilter ```col_operation``` functions need unique cell ids to display their results in. D3TableFilter supports this by supplying a unique id for each cell in a footer. The cell at the first footer row, second column in a table "mtcars" would get the id ```frow_0_fcol_1_tbl_mtcars```. See the examples/feature Shiny app for an example.
+TableFilter provides functions for statistical summaries in a table footer (see ```col_operation```). D3TableFilter supports this by providing the ```footData``` argument to ```d3tf```. It allows to attach one or more rows to a table to be used as footer. The TableFilter ```col_operation``` functions need unique cell ids to display their results in. D3TableFilter supports this by supplying a unique id for each cell in a footer. The cell at the first footer row, second column in a table "mtcars" would get the id ```frow_0_fcol_1_tbl_mtcars```. See the *examples/feature* Shiny app for an example.
 
-Alternatively to these values calculated by JavaScript the data for a table footer can be supplied directly from R via the footData argument. These can be updated dynamically using the ```setFootCellValue``` function. An example for this can be found in the 
-examples/interaction Shiny app. Here the footer row shows column mean or column median values depending on a select input:
+Alternatively to these values calculated by JavaScript the data for a table footer can be supplied directly from R via the footData argument. These can be updated dynamically using the ```setFootCellValue``` function. An example for this can be found in the *examples/interaction* Shiny app. Here the footer row shows column mean or column median values depending on a select input:
 
 ```r
   # update summary row. calculate mean/median of displayed row for cols 1:3
@@ -180,7 +243,7 @@ Within a Shiny app here an ```observe``` function should take care of validation
       # validate input 
       if(col == 0) {
         # rownames
-        oldval <- rownames(mtcars)[row];
+        oldval <- rownames(revals$mtcars)[row];
         # rownames can not start with a digit
         if(grepl('^\\d', val)) {
           rejectEdit(session, tbl = "mtcars", row = row, col = col,  id = id, value = oldval);
@@ -210,15 +273,18 @@ Within a Shiny app here an ```observe``` function should take care of validation
      })
    })
 ```
-Cell values can also be updated dynamically by the server without resending the whole table using the ```setCellValue``` function. If a table uses coloring or inline graphics, these elements will these elements can react on edit events with smooth visual transitions. See examples/interaction for a Shiny app demonstrating this features.
+
+![](images/inputVal.gif)
+
+Cell values can also be updated dynamically by the server without resending the whole table using the ```setCellValue()``` function. If a table uses coloring or inline graphics, these elements will these elements can react on edit events with smooth visual transitions. See *examples/interaction* for a Shiny app demonstrating this features.
 
 # Row selection
 
-A D3TableFilter table can act as a simple input element for row selection. The ```selectableRows``` argument to the ```d3tf``` function makes ```single``` or ```multiple``` rows selectable. Using the ```selectableRowsClass``` argument you can use a choice of Bootstrap classes to modify the look of selected rows. A new input element (named like the corresponding output element + "_edit") will provide a vector of indices of selected rows. To pre-select rows when generating a new table, the "rowStyles" argument to d3tf can be used. At run time rows can be (de-)selected using the ``setRowClass``` function.
+A D3TableFilter table can act as a simple input element for row selection. The ```selectableRows``` argument to the ```d3tf``` function makes ```single``` or ```multiple``` rows selectable. Using the ```selectableRowsClass``` argument you can use a choice of Bootstrap classes to modify the look of selected rows. A new input element (named like the corresponding output element + "_edit") will provide a vector of indices of selected rows. To pre-select rows when generating a new table, the "rowStyles" argument to d3tf can be used. At run time rows can be (de-)selected using the ```setRowClass()``` function.
 
-![knob](images/rowSelection.png)
+![](images/rowSelection.png)
 
-Technically ```selectableRows``` can be combined with other D3TableFilter features. From a user point of view it may be confusing though to have selected rows which are hidden by the filtering function. Thus it may be a good idea to switch off filtering in this case using  ```enableTf = FALSE```. An example for a table with selectable rows is on the second tab of the examples/interaction Shiny app:
+Technically ```selectableRows``` can be combined with other D3TableFilter features. From a user point of view it may be confusing though to have selected rows which are hidden by the filtering function. Thus it may be a good idea to switch off filtering in this case using  ```enableTf = FALSE```. An example for a table with selectable rows is on the second tab of the *examples/interaction* Shiny app:
 
 # Coloring
 
@@ -249,13 +315,11 @@ In this example the background color may get to dark to read the cell text. One 
       )
 ```
 
-
-
 The result in shown in the second column in the table below.
-![knob](images/color.png)
 
-Color perception is a complex issue. If you wish for a perceptionally correct mapping of numerical data to colour the linear scale as shown above is not the best solution. D3.js provides Lab and HCL color scales for this purpose. They make sure the perceived difference between two colors is propotional to the distance of the mapped values. The next code sniplet maps the same data as above to a white-blue palette in HCL space. The results is shown in the third row in the figure above.
+![](images/color.png)
 
+Color perception is a complex issue. If you wish for a perceptionally correct mapping of numerical data to colour a linear scale as shown above is not the best solution. D3.js provides Lab and HCL color scales for this purpose. They make sure the perceived difference between two colors is propotional to the distance of the mapped values. The next code sniplet maps the same data as above to a white-blue palette in HCL space. The results is shown in the third column in the figure above.
 
 ```r
     bgColScales <- list(
@@ -277,6 +341,166 @@ As a shortcut you can define linear hcl scales as automatic. The data range (```
     )
 ```
 
+# More D3 magic
+
+While the TableFilter library provides many features to modify the styling of tables using CSS, it does not support directly the styling and formatting of text in table cells. You can not, for example, generate right aligned numeric columns using TableFilter alone. D3TableFilter allows this, similar to the color mapping, by use of D3. The ```cellFunctions``` and ```footCellFunctions``` argument to ```d3tf()``` apply D3 JavaScript code to columns in the table body or footer. The code below will make the first column (```col_0```) in a table footer right aligned ```classed("text-right", true)```, bold ```.style("font-weight", "bold")```and formatted with one decimal point ```d3.format(".1f")```. D3 has formatters for [numbers](https://github.com/mbostock/d3/wiki/Formatting and [dates](https://github.com/mbostock/d3/wiki/Time-Formatting).
+
+```r
+    # apply D3.js functions to footer columns,
+    # e.g. to format them or to turn cell values into scaled SVG graphics
+    footCellFunctions <- list(
+      col_0 = JS('function makeGraph(selection){
+                // text formatting function
+                var textformat = d3.format(".1f");
+                // make cell text right aligned
+                selection.classed("text-right", true)
+                         .style("font-weight", "bold")
+                         .text(function(d) { return textformat(d.value); });
+            }')
+    );
+
+```
+
+While the example is an serious application of D3 to generate good looking an correctly formatted tables, the following section is on the border of eye candy (or maybe a little bit beyond).
+
+The ```cellFunctions``` argument can be used not only to format numbers, but to turn them into SVG graphics within a cell. The following code replaces numbers in the third column (```col_2```) into SVG filled circles. The area of the circles is scaled proportional to the numeric values. The finally the numbers are shown centered inside the circles.
+
+```r
+    cellFunctions <- list(
+      col_2 = JS('function makeGraph(selection){
+      
+        // find out wich table and column
+        var regex = /(col_\\d+)/;
+        var col = regex.exec(this[0][0].className)[0];
+        var regex = /tbl_(\\w+)/;
+        var tbl = regex.exec(this[0][0].className)[1];
+  
+        // create a scaling function
+        var domain = colExtent(tbl, col);
+        var rScale = d3.scale.sqrt()
+                       .domain(domain)
+                       .range([8, 14]);
+
+        // column has been initialized before, update function
+        if(tbl + "_" + col + "_init" in window) {
+            var sel = selection.selectAll("svg")
+                     .selectAll("circle")
+                     .transition().duration(500)
+                     .attr("r", function(d) { return rScale(d.value)});
+                     return(null);
+        }
+
+        // remove text. will be added later within the svg
+        selection.text(null)
+
+        // create svg element
+        var svg = selection.append("svg")
+              .attr("width", 28)
+              .attr("height", 28);
+              
+        // create a circle with a radius ("r") scaled to the 
+        // value of the cell ("d.value")
+        var circle = svg.append("g")
+              .append("circle").attr("class", "circle")
+              .attr("cx", 14)
+              .attr("cy", 14)
+              .style("fill", "orange")
+              .attr("stroke","none")
+              .attr("r", domain[0])
+              .transition().duration(400)
+              .attr("r", function(d) { return rScale(d.value); }); 
+
+        // place the text within the circle
+        var text = svg.append("g")
+              .append("text").attr("class", "text")
+              .style("fill", "black")
+              .attr("x", 14)
+              .attr("y", 14)
+              .attr("dy", ".35em")
+              .attr("text-anchor", "middle")
+              .text(function (d) { return d.value; });
+        window[tbl + "_" + col + "_init"] = true;
+
+      }')
+    )
+```
+
+Surprisingly sorting and filtering based on the numbers still works as before. The *examples/interaction* Shiny app demonstrates this.
+
+![](images/eyecandy.png)
+
+The *examples/interaction* Shiny app also shows a second variation of in-cell graphics, a horizontal bar chart. Here the text is not replaced, but overlayed to the graphic and can be edited. Enjoy smooth D3 transitions of the bar charts while editing the numbers!
+
+```r
+    # apply D3.js functions to a column,
+    # e.g. to turn cell values into scaled SVG graphics
+    cellFunctions <- list(
+      col_3 = JS('function makeGraph(selection){
+
+        // find out wich table and column
+        var regex = /(col_\\d+)/;
+        var col = regex.exec(this[0][0].className)[0];
+        var regex = /tbl_(\\w+)/;
+        var tbl = regex.exec(this[0][0].className)[1];
+        var innerWidth = 117;
+        var innerHeight = 14;
+        
+        // create a scaling function
+        var max = colMax(tbl, col);
+        var min = colMin(tbl, col);
+        var wScale = d3.scale.linear()
+                       .domain([0, max])
+                       .range([0, innerWidth]);
+
+        // text formatting function
+        var textformat = d3.format(".1f");
+
+        // column has been initialized before, update function
+        if(tbl + "_" + col + "_init" in window) {
+            var sel = selection.selectAll("svg")
+                     .selectAll("rect")
+                     .transition().duration(500)
+                     .attr("width", function(d) { return wScale(d.value)});
+            var txt = selection
+                        .selectAll("text")
+                        .text(function(d) { return textformat(d.value); });
+           return(null);
+        }
+        
+        // can remove padding here, but still cant position text and box independently
+        this.style("padding", "5px 5px 5px 5px");
+
+        // remove text. will be added back later
+        selection.text(null);
+
+        var svg = selection.append("svg")
+              .style("position",  "absolute")
+              .attr("width", innerWidth)
+              .attr("height", innerHeight);
+
+        var box = svg.append("rect")
+                     .style("fill", "lightblue")
+                     .attr("stroke","none")
+                     .attr("height", innerHeight)
+                     .attr("width", min)
+                     .transition().duration(500)
+                     .attr("width", function(d) { return wScale(d.value); });
+
+        // format number and add text back
+        var textdiv = selection.append("div");
+                          textdiv.style("position",  "relative")
+                                 .attr("align", "right");
+
+        textdiv.append("text")
+                 .text(function(d) { return textformat(d.value); });
+        window[tbl + "_" + col + "_init"] = true;
+      }')
+    );
+```
 
 
-# Graphics
+
+
+
+
+

@@ -22,11 +22,17 @@ vignette: >
 * Column resizing
 * Column visibility
 
-The R package *tableFilter* provided here packages the TableFilter JavaScript library as an easy to use widget for [Shiny](http://www.rstudio.com/products/shiny/). It can be used in [RStudio](http://www.rstudio.com/products/RStudio/) and in Shiny applications. The package is based on the [htmlwidgets](https://github.com/ramnathv/htmlwidgets) library which allows to integrate JavaScript libraries into R and Shiny. Filters can be set within the widget but also via R functions. Filter settings and filter results can be retrieved from the widget for use on the server.
+The R package *D3TableFilter* packages the *TableFilter* JavaScript library as an easy to use widget for [Shiny](http://www.rstudio.com/products/shiny/). It can be used in [RStudio](http://www.rstudio.com/products/RStudio/) and in Shiny applications. The package is based on the [htmlwidgets](https://github.com/ramnathv/htmlwidgets) library which allows to integrate JavaScript libraries into R and Shiny.
 
-In addition to the impressive feature set of the *TableFilter* library the tableFilter R widget provides some additional functions:
+In addition to the impressive feature set of the *TableFilter* library the *D3TableFilter* R widget provides some additional functions:
 
-* Coloring. Similar to conditional formatting in spreadsheet applications text and cell background can be colorized based on cell values. The [D3.js](http://d3js.org/) visualization library is used to generate the colour scales. This allows for a broad range of available scales.
+* Filters can be set within the widget but also via R functions. Filter settings and filter results can be retrieved from the widget for use on the server.
+
+* Row selection. Single cell selection (radiobutton like) or multiple row selection using the ctrl key is possible. Selection can also be set or reset by the server.
+
+* Editing. The tableFilter widget can provide simple table editing features. Via a custom shiny input element each editing event in the table gets sent to the shiny app. After server side validation feedback can be given to the user within the widget. Logical columns can be presented as radio boxes or as checkbox input elements. It should be noted though that Max provides an extension [ezEditTable](http://codecanyon.net/item/-ezedittable-enhance-html-tables/2425123) which gives more extensive editing capabilities. Since ezEditTable is not free software it is out of the scope of the tableFilter R library.
+
+* Coloring. Similar to conditional formatting in spreadsheet applications text and cell background can be colorized based on cell values. The [D3.js](http://d3js.org/) visualization library is used to generate smooth colour scales. This allows for a broad range of available scales.
     + linear
     + logarithmic
     + threshold
@@ -36,14 +42,8 @@ In addition to the impressive feature set of the *TableFilter* library the table
 
 * In-cell graphics. Can turn cell values into SVG graphics using D3.js functions.
 
-* Row selection. Single cell selection (radiobutton like) or multiple row selection using the ctrl key is possible. Selection can also be set or reset by the server.
-
-* Editing. The tableFilter widget can provide simple table editing features. Via a custom shiny input element each editing event in the table gets sent to the shiny app. After server side validation feedback can be given to the user within the widget. Logical columns can be presented as radio boxes or as checkbox input elements.
-
-It should be noted though that Max provides an extension [ezEditTable](http://codecanyon.net/item/-ezedittable-enhance-html-tables/2425123) which gives more extensive editing capabilities. Since ezEditTable is not free software it is out of the scope of the tableFilter R library.
 
 # Installation
-
 # First steps
 Generating a table with filtering and sorting options in a Shiny app using the tableFilter library is very simple. First your have to declare a tableFilterOutput in your user interface definition. 
 
@@ -60,9 +60,9 @@ shinyUI(fluidPage(
 ))
 ```
 
-In server.R you load the shiny, htmlwidgets and tableFilter libraries and you define the corresponding output function. The tableFilter function needs two arguments: df, the data.frame or matrix which will be transformed into a html table.
+In server.R you load the shiny, htmlwidgets and tableFilter libraries and you define the corresponding output function. The ```d3tf``` function needs only one arguments: df, the data.frame or matrix which will be transformed into a html table
 
-tableProps is a list of options to define the look and feel of the table. In the example below, a very simple table is generated. It shows white/grey stripes, it has a reset button, and it can be sorted. Sorting is alphabetical for the row names and numeric for all other rows. 
+Optionally the ```tableProps``` argument can be used to define the look and feel of the table. In the example below, a very simple table is generated.
 
 ```r
 # ------------------------------------------------------
@@ -97,7 +97,7 @@ shinyServer(function(input, output, session) {
 })
 ```
 
-Two optional parameters for tableFilter, "showRowNames" and "rowNamesColumn" enable the display of the row names as first column.
+An optional parameter for tableFilter, ```showRowNames``` enables the display of the row names as first column.
 
 ![](images/basicTable.png)
 
@@ -170,7 +170,7 @@ d3tf(mtcars, showRowNames = TRUE, initialFilters = list(col_0 = "Merc", col_1 = 
 Filters can be set programmatically at run time using the ```setFilter()``` function. There is also a ```clearFilters``` function to reset all filter inputs in a table. The *examples/interaction* Shiny app demonstrates these functions.
 
 # Customizing the table
-The Table Filter JavaScript library provides a huge number of configuration options which define the appearance and behaviour of the table. It can for example do client side paging. It can provied a control to hide selected columns. It can provide checkbox and lists controls for filtering and many more. A complete discussion of the features of Table Filter is beyond the scope of this document. Please see [HTML Table Filter Generator](http://tablefilter.free.fr/) for examples and documentation. In the *examples/feature* directory of this package is a Shiny app demonstrating quite a few TableFilter features in a single table. It shows sorting, filtering, pagination, rows counter, column resizing and column visibility, and a table footer with column statistics.
+The Table Filter JavaScript library provides a huge number of configuration options which define the appearance and behaviour of the table. It can for example do client side paging. It can provide a control to hide selected columns. It can provide checkbox and lists controls for filtering and many more. A complete discussion of the features of Table Filter is beyond the scope of this document. Please see [HTML Table Filter Generator](http://tablefilter.free.fr/) for examples and documentation. In the *examples/feature* directory of this package is a Shiny app demonstrating quite a few TableFilter features in a single table. It shows sorting, filtering, pagination, rows counter, column resizing and column visibility, and a table footer with column statistics.
 
 ![](images/fullFeaturedTable.png)
 
@@ -187,7 +187,7 @@ To activate these extensions simply define them as a character vector in the ext
 TableFilter comes with it's own CSS based default styling which is compact and efficient, but can look a little bit out of place within Bootstrap styled Shiny apps. Per default D3TableFilter applies the basic Bootstrap table class (```table```). This behaviour can be modified using the ```tableStyle``` argument. Bootstrap provides the classes ```table```, ```table-striped```, ```table-bordered```, and ```table-condensed```. These classes can be combined, e.g. ```tableStyle = "table table-striped table-bordered"```. ```tableStyle = NULL``` reverts to the original TableFilter CSS. 
 
 # Table Footer
-TableFilter provides functions for statistical summaries in a table footer (see ```col_operation```). D3TableFilter supports this by providing the ```footData``` argument to ```d3tf```. It allows to attach one or more rows to a table to be used as footer. The TableFilter ```col_operation``` functions need unique cell ids to display their results in. D3TableFilter supports this by supplying a unique id for each cell in a footer. The cell at the first footer row, second column in a table "mtcars" would get the id ```frow_0_fcol_1_tbl_mtcars```. See the *examples/feature* Shiny app for an example.
+TableFilter provides functions for statistical summaries in a table footer (see ```col_operation```). D3TableFilter supports this by providing the ```footData``` argument to ```d3tf```. It allows to attach one or more rows to a table to be used as footer. The TableFilter ```col_operation``` functions need cells with unique id to display their results. D3TableFilter supports this by supplying a unique id for each cell in a footer. The cell at the first footer row, second column in a table "mtcars" would get the id ```frow_0_fcol_1_tbl_mtcars```. See the *examples/feature* Shiny app for an example.
 
 Alternatively to these values calculated by JavaScript the data for a table footer can be supplied directly from R via the footData argument. These can be updated dynamically using the ```setFootCellValue``` function. An example for this can be found in the *examples/interaction* Shiny app. Here the footer row shows column mean or column median values depending on a select input:
 
@@ -222,7 +222,11 @@ disableEdit(session, "mtcars", c("col_1", "col_2"))
 An editable table provides an input element named like the corresponding output element + "_edit". For performance reasons not the complete edited table is sent back from the browser to the server, but single edit events.
 The ```_edit``` input element receives for each edit element in the corresponding table a list of row (```row```), column (```col```) and new value (```val```).
 
-Within a Shiny app here an ```observe``` function should take care of validation and processing of these data. D3TableFilter provides two functions to send validation feedback to the user (```confirmEdit```, ```rejectEdit```). They allow to give visual feedback by means of a brief text colour transition. They also allow to revert the edit in case of a validation failure or to rewrite the value in case of a confirm. The latter may seem unneccessary at first, but it could help in case of difficult network conditions. Depending on the environment there is no guarantee that edit events in the browser get processed in the correct order on the server. If a user starts to edit a cell, waits briefly, and then continues to edit the same cell two edits could be sent back to the server. There is no guarantee that the second edit arrives after the first one on the server. Thus in D3TableFilter each edited cell gets tagged with a unique attribute and which is checked when the server sends a reject or confirm message. Only a confirm or reject message corresponding to the latest edit of a cell will find a matching id in the table.
+Within a Shiny app here an ```observe``` function should take care of validation and processing of these data. D3TableFilter provides two functions to send validation feedback to the user (```confirmEdit```, ```rejectEdit```). They allow to give visual feedback by means of a brief text colour transition. They also allow to revert the edit in case of a validation failure or to rewrite the value in case of a confirm.
+
+![](images/inputVal.gif)
+
+Rewriting a validated edit may seem unneccessary at first, but it could help in case of difficult network conditions. Depending on the environment there is no guarantee that edit events in the browser get processed in the correct order on the server. If a user starts to edit a cell, waits briefly, and then continues to edit the same cell two edits could be sent back to the server. There is no guarantee that the second edit arrives after the first one on the server. Thus in *D3TableFilter* each edited cell gets tagged with a unique attribute and which is checked when the server sends a reject or confirm message. Only a confirm or reject message corresponding to the latest edit of a cell will find a matching id in the table.
 
 ```r
   # for a output object "mtcars" D3TableFilter generates an input
@@ -274,13 +278,11 @@ Within a Shiny app here an ```observe``` function should take care of validation
    })
 ```
 
-![](images/inputVal.gif)
-
-Cell values can also be updated dynamically by the server without resending the whole table using the ```setCellValue()``` function. If a table uses coloring or inline graphics, these elements will these elements can react on edit events with smooth visual transitions. See *examples/interaction* for a Shiny app demonstrating this features.
+Cell values can also be updated dynamically by the server without resending the whole table using the ```setCellValue()``` function. If a table uses coloring or inline graphics, these elements can react on edit events with smooth visual transitions. See *examples/interaction* for a Shiny app demonstrating this features.
 
 # Row selection
 
-A D3TableFilter table can act as a simple input element for row selection. The ```selectableRows``` argument to the ```d3tf``` function makes ```single``` or ```multiple``` rows selectable. Using the ```selectableRowsClass``` argument you can use a choice of Bootstrap classes to modify the look of selected rows. A new input element (named like the corresponding output element + "_edit") will provide a vector of indices of selected rows. To pre-select rows when generating a new table, the "rowStyles" argument to d3tf can be used. At run time rows can be (de-)selected using the ```setRowClass()``` function.
+A D3TableFilter table can act as a simple input element for row selection. The ```selectableRows``` argument to the ```d3tf``` function makes ```single``` or ```multiple``` rows selectable. Using the ```selectableRowsClass``` argument you can use a choice of Bootstrap classes to modify the look of selected rows. A new input element (named like the corresponding output element + "_edit") will provide a vector of indices of selected rows. To pre-select rows when generating a new table, the "rowStyles" argument to ```d3tf()``` can be used. At run time rows can be (de-)selected using the ```setRowClass()``` function.
 
 ![](images/rowSelection.png)
 
@@ -288,7 +290,7 @@ Technically ```selectableRows``` can be combined with other D3TableFilter featur
 
 # Coloring
 
-Color can greatly enhance the perception especially of numerical values in tables. One of the driving forces in the development of D3TableFilter was the need for smooth, heatmap-like colors in tables. The D3.js library provides powerful mechanisms to map data to colors. I has support for simple linear color scales, but also logarithmic scales and categorical scales (including the famous [ColorBrewer](http://colorbrewer2.org/) scales). D3TableFilter allows to make use of this for cell backgrounds as well as for the text color. D3TableFilter tries to provide the full D3.js tool set for colour scales, at the cost of exposing R programmers to the D3 javascript code. The following code sniplet for example could be used to colour cell the first column (```col_1```) in a table. Given a range of cell values between 0 and 200 (```.domain([0, 200])```) the cell background would be colored in white to blue (```.range(["white", "blue"])```) according to the cells numeric value.
+Color can greatly enhance the perception especially of numerical values in tables. One of the driving forces in the development of D3TableFilter was the need for smooth, heatmap-like colors in tables. The D3.js library provides powerful mechanisms to map data to colors. I has support for simple linear color scales, but also logarithmic scales and ordinal scales (including the famous [ColorBrewer](http://colorbrewer2.org/) scales). D3TableFilter allows to make use of this for cell backgrounds as well as for the text color. *D3TableFilter* tries to provide the full D3.js tool set for colour scales, at the cost of exposing R programmers to the D3 javascript code. The following code sniplet for example could be used to colour cell the first column (```col_1```) in a table. Given a range of cell values between 0 and 200 (```.domain([0, 200])```) the cell background would be colored in white to blue (```.range(["white", "blue"])```) according to the cells numeric value.
 
 
 ```r
@@ -341,9 +343,9 @@ As a shortcut you can define linear hcl scales as automatic. The data range (```
     )
 ```
 
-# More D3 magic
+# D3 cell styling
 
-While the TableFilter library provides many features to modify the styling of tables using CSS, it does not support directly the styling and formatting of text in table cells. You can not, for example, generate right aligned numeric columns using TableFilter alone. D3TableFilter allows this, similar to the color mapping, by use of D3. The ```cellFunctions``` and ```footCellFunctions``` argument to ```d3tf()``` apply D3 JavaScript code to columns in the table body or footer. The code below will make the first column (```col_0```) in a table footer right aligned ```classed("text-right", true)```, bold ```.style("font-weight", "bold")```and formatted with one decimal point ```d3.format(".1f")```. D3 has formatters for [numbers](https://github.com/mbostock/d3/wiki/Formatting and [dates](https://github.com/mbostock/d3/wiki/Time-Formatting).
+While the *TableFilter* library provides many features to modify the appearance of various table elements using CSS, it does not support directly the styling and formatting of text in table cells. You can not, for example, generate right aligned numeric columns using *TableFilter* alone. *D3TableFilter* allows this, similar to the color mapping, by use of D3. The ```cellFunctions``` and ```footCellFunctions``` argument to ```d3tf()``` apply D3 JavaScript code to columns in the table body or footer. The code below will make the first column (```col_0```) in a table footer right aligned ```classed("text-right", true)```, bold ```.style("font-weight", "bold")```and formatted with one decimal point ```d3.format(".1f")```. D3 has formatters for [numbers](https://github.com/mbostock/d3/wiki/Formatting and [dates](https://github.com/mbostock/d3/wiki/Time-Formatting).
 
 ```r
     # apply D3.js functions to footer columns,

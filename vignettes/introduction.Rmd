@@ -101,8 +101,9 @@ An optional parameter for tableFilter, ```showRowNames``` enables the display of
 
 ![](images/basicTable.png)
 
-Running this app generates a window filling table which can be filtered for strings, numbers, numeric expressions and regular expressions. There is a reset button for the filters in the upper right corner, and small help popup behind the question mark also in the upper right. The table can be sorted by mouseclick on the column headers. 
+Running this app generates a window filling table which can be filtered for strings, numbers, numeric expressions and regular expressions. There is a reset button for the filters in the upper right corner, and small help popup behind the question mark also in the upper right. The table can be sorted by mouseclick on the column headers.
 
+## Getting and setting filters
 As a app developer you may want to know which filters a user has set, e.g. to provide statistics on the filtered rows or to allow for an export of the filtered data. If activated using ```filterInput = TRUE``` as argument to ```d3tf``` there is for each table an input called outputid + "_filter" which provides a list of
 
 * the filters entered by the user

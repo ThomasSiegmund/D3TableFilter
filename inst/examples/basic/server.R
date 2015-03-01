@@ -1,7 +1,7 @@
-# ------------------------------------------------------
-# Minimal shiny app demonstrating the tableFilter widget
+# --------------------------------------------------------
+# Minimal shiny app demonstrating the D3TableFilter widget
 # server.R
-# ------------------------------------------------------
+# --------------------------------------------------------
 library(shiny)
 library(htmlwidgets)
 library(D3TableFilter)

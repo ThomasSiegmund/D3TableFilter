@@ -54,12 +54,12 @@ devtools::install_github("ThomasSiegmund/D3TableFilter")
 Generating a table with filtering and sorting options in a Shiny app using the tableFilter library is very simple. First your have to declare a ```d3tfOutput``` in your user interface definition. 
 
 ```r
-# ------------------------------------------------------
-# Minimal shiny app demonstrating the tableFilter widget
+# --------------------------------------------------------
+# Minimal shiny app demonstrating the D3TableFilter widget
 # ui.R
-# ------------------------------------------------------
+# --------------------------------------------------------
 shinyUI(fluidPage(
-  title = 'Basic usage of TableFilter in Shiny',
+  title = 'Basic usage of D3TableFilter in Shiny',
   fluidRow(
     column(width = 12, d3tfOutput('mtcars'))
   )
@@ -71,10 +71,10 @@ In server.R you load the shiny, htmlwidgets and tableFilter libraries and you de
 Optionally the ```tableProps``` argument can be used to define the look and feel of the table. In the example below, a very simple table is generated.
 
 ```r
-# ------------------------------------------------------
-# Minimal shiny app demonstrating the tableFilter widget
+# --------------------------------------------------------
+# Minimal shiny app demonstrating the D3TableFilter widget
 # server.R
-# ------------------------------------------------------
+# --------------------------------------------------------
 library(shiny)
 library(htmlwidgets)
 library(tableFilter)
@@ -118,10 +118,10 @@ As a app developer you may want to know which filters a user has set, e.g. to pr
 This variation of the above app prints the current filter settings and the valid rows after filtering:
 
 ```r
-# ------------------------------------------------------
-# Minimal shiny app demonstrating the tableFilter widget
+# --------------------------------------------------------
+# Minimal shiny app demonstrating the D3TableFilter widget
 # server.R
-# ------------------------------------------------------
+# --------------------------------------------------------
 library(shiny)
 library(htmlwidgets)
 library(D3TableFilter)

@@ -22,3 +22,5 @@ LazyData: true
 Enhances: rmarkdown (>= 0.3.3), shiny (>= 0.10.2.1)
 Suggests: knitr
 VignetteBuilder: knitr
+URL: https://github.com/ThomasSiegmund/D3TableFilter
+BugReports: https://github.com/ThomasSiegmund/D3TableFilter/issues

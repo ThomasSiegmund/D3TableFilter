@@ -42,8 +42,14 @@ In addition to the impressive feature set of the *TableFilter* library the *D3Ta
 
 * In-cell graphics. Can turn cell values into SVG graphics using D3.js functions.
 
-
 # Installation
+D3TableFilter is not yet on CRAN, but you can easily install it from Github using the devtools package:
+
+```r
+install.packages("devtools")
+devtools::install_github("ThomasSiegmund/D3TableFilter")
+```
+
 # First steps
 Generating a table with filtering and sorting options in a Shiny app using the tableFilter library is very simple. First your have to declare a tableFilterOutput in your user interface definition. 
 
@@ -140,7 +146,9 @@ shinyServer(function(input, output, session) {
       if(is.null(input$mtcars_filter)) return(NULL);
       
       filterSettings <-input$mtcars_filter$filterSettings;
-      tmp <- lapply(filterSettings, function(x) data.frame(Column = x$column, Filter = x$value, stringsAsFactors = FALSE));
+      tmp <- lapply(filterSettings,
+                  function(x) data.frame(Column = x$column,
+                                         Filter = x$value, stringsAsFactors = FALSE));
       filters <- do.call("rbind", tmp);
       
       print("Active filters:")
@@ -188,7 +196,7 @@ To activate these extensions simply define them as a character vector in the ext
 TableFilter comes with it's own CSS based default styling which is compact and efficient, but can look a little bit out of place within Bootstrap styled Shiny apps. Per default D3TableFilter applies the basic Bootstrap table class (```table```). This behaviour can be modified using the ```tableStyle``` argument. Bootstrap provides the classes ```table```, ```table-striped```, ```table-bordered```, and ```table-condensed```. These classes can be combined, e.g. ```tableStyle = "table table-striped table-bordered"```. ```tableStyle = NULL``` reverts to the original TableFilter CSS. 
 
 # Table Footer
-TableFilter provides functions for statistical summaries in a table footer (see ```col_operation```). D3TableFilter supports this by providing the ```footData``` argument to ```d3tf```. It allows to attach one or more rows to a table to be used as footer. The TableFilter ```col_operation``` functions need cells with unique id to display their results. D3TableFilter supports this by supplying a unique id for each cell in a footer. The cell at the first footer row, second column in a table "mtcars" would get the id ```frow_0_fcol_1_tbl_mtcars```. See the *examples/feature* Shiny app for an example.
+TableFilter provides functions for statistical summaries in a table footer (see ```col_operation``` in the [TableFilter documentation](http://tablefilter.free.fr/doc.php]). D3TableFilter supports this by providing the ```footData``` argument to ```d3tf```. It allows to attach one or more rows to a table to be used as footer. The TableFilter ```col_operation``` functions need cells with unique id to display their results. D3TableFilter supports this by supplying a unique id for each cell in a footer. The cell at the first footer row, second column in a table "mtcars" would get the id ```frow_0_fcol_1_tbl_mtcars```. See the *examples/feature* Shiny app for an example.
 
 Alternatively to these values calculated by JavaScript the data for a table footer can be supplied directly from R via the footData argument. These can be updated dynamically using the ```setFootCellValue``` function. An example for this can be found in the *examples/interaction* Shiny app. Here the footer row shows column mean or column median values depending on a select input:
 
@@ -230,9 +238,10 @@ Within a Shiny app here an ```observe``` function should take care of validation
 Rewriting a validated edit may seem unneccessary at first, but it could help in case of difficult network conditions. Depending on the environment there is no guarantee that edit events in the browser get processed in the correct order on the server. If a user starts to edit a cell, waits briefly, and then continues to edit the same cell two edits could be sent back to the server. There is no guarantee that the second edit arrives after the first one on the server. Thus in *D3TableFilter* each edited cell gets tagged with a unique attribute and which is checked when the server sends a reject or confirm message. Only a confirm or reject message corresponding to the latest edit of a cell will find a matching id in the table.
 
 ```r
-  # for a output object "mtcars" D3TableFilter generates an input
-  # "mtcars_edit"
-  # this observer does a simple input validation and sends a confirm or reject message after each edit.
+  # For a output object "mtcars" D3TableFilter generates an input "mtcars_edit".
+  #
+  # This observer does a simple input validation and sends a confirm or reject message
+  # after each edit.
   observe({
     if(is.null(input$mtcars_edit)) return(NULL);
      edit <- input$mtcars_edit;

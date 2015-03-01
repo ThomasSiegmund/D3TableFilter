@@ -84,7 +84,6 @@ shinyServer(function(input, output, session) {
       } else if (col %in% c(4, 5)) {
         ; #nothing to validate for logical columns
       }
-      
       # accept edits
       if(col == 0) {
         rownames(revals$mtcars)[row] <- val;
@@ -92,6 +91,8 @@ shinyServer(function(input, output, session) {
         revals$mtcars[row, col] <- as.numeric(val);
         val = round(as.numeric(val), 1)
       } else if (col == 4) {
+         revals$mtcars[row, col] <- val;
+      } else if (col == 5) {
         # radio buttons. There is no uncheck event
         # so we need to set the whole column to FALSE here
         revals$mtcars[, "favorite"] <- FALSE;

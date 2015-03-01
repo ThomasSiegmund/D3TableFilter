@@ -51,7 +51,7 @@ devtools::install_github("ThomasSiegmund/D3TableFilter")
 ```
 
 # First steps
-Generating a table with filtering and sorting options in a Shiny app using the tableFilter library is very simple. First your have to declare a tableFilterOutput in your user interface definition. 
+Generating a table with filtering and sorting options in a Shiny app using the tableFilter library is very simple. First your have to declare a ```d3tfOutput``` in your user interface definition. 
 
 ```r
 # ------------------------------------------------------
@@ -61,7 +61,7 @@ Generating a table with filtering and sorting options in a Shiny app using the t
 shinyUI(fluidPage(
   title = 'Basic usage of TableFilter in Shiny',
   fluidRow(
-    column(width = 12, tableFilterOutput('mtcars'))
+    column(width = 12, d3tfOutput('mtcars'))
   )
 ))
 ```
@@ -82,7 +82,7 @@ library(tableFilter)
 data(mtcars);
 
 shinyServer(function(input, output, session) {
-  output$mtcars <- renderTableFilter({
+  output$mtcars <- renderD3tf({
     
     # Define table properties. See http://tablefilter.free.fr/doc.php
     # for a complete reference

@@ -300,7 +300,7 @@ Technically ```selectableRows``` can be combined with other D3TableFilter featur
 
 # Coloring
 
-Color can greatly enhance the perception especially of numerical values in tables. One of the driving forces in the development of D3TableFilter was the need for smooth, heatmap-like colors in tables. The D3.js library provides powerful mechanisms to map data to colors. I has support for simple linear color scales, but also logarithmic scales and ordinal scales (including the famous [ColorBrewer](http://colorbrewer2.org/) scales). D3TableFilter allows to make use of this for cell backgrounds as well as for the text color. *D3TableFilter* tries to provide the full D3.js tool set for colour scales, at the cost of exposing R programmers to the D3 javascript code. The following code sniplet for example could be used to colour cell the first column (```col_1```) in a table. Given a range of cell values between 0 and 200 (```.domain([0, 200])```) the cell background would be colored in white to blue (```.range(["white", "blue"])```) according to the cells numeric value.
+Color can greatly enhance the perception especially of numerical values in tables. One of the driving forces in the development of D3TableFilter was the need for smooth, heatmap-like colors in tables. The D3.js library provides powerful mechanisms to map data to colors. I has support for simple linear color scales, but also logarithmic scales and ordinal scales (including the famous [ColorBrewer](http://colorbrewer2.org/) scales). D3TableFilter allows to make use of this for cell backgrounds as well as for the text color. *D3TableFilter* tries to provide the full D3.js tool set for colour scales, at the cost of exposing R programmers to the D3 javascript code. The following code sniplet for example could be used to colour cell the second column (```col_1```) in a table. Given a range of cell values between 0 and 200 (```.domain([0, 200])```) the cell background would be colored in white to blue (```.range(["white", "blue"])```) according to the cells numeric value.
 
 
 ```r
@@ -352,6 +352,7 @@ As a shortcut you can define linear hcl scales as automatic. The data range (```
      col_0 = "auto:white:green"
     )
 ```
+Examples for different color scales can found in the *examples/colour* Shiny app.
 
 # D3 cell styling
 

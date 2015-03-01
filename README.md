@@ -30,7 +30,7 @@ In addition to the impressive feature set of the *TableFilter* library the *D3Ta
 
 * Row selection. Single cell selection (radiobutton like) or multiple row selection using the ctrl key is possible. Selection can also be set or reset by the server.
 
-* Editing. The tableFilter widget can provide simple table editing features. Via a custom shiny input element each editing event in the table gets sent to the shiny app. After server side validation feedback can be given to the user within the widget. Logical columns can be presented as radio boxes or as checkbox input elements. It should be noted though that Max provides an extension [ezEditTable](http://codecanyon.net/item/-ezedittable-enhance-html-tables/2425123) which gives more extensive editing capabilities. Since ezEditTable is not free software it is out of the scope of the tableFilter R library.
+* Editing. The tableFilter widget can provide simple table editing features. Via a custom shiny input element each editing event in the table gets sent to the shiny app. After server side validation feedback can be given to the user within the widget. Logical columns can be presented as radio boxes or as checkbox input elements. It should be noted though that Max provides an extension [ezEditTable](http://codecanyon.net/item/-ezedittable-enhance-html-tables/2425123) which gives more extensive editing capabilities. Since ezEditTable is not free software it is out of the scope of *D3TableFilter*.
 
 * Coloring. Similar to conditional formatting in spreadsheet applications text and cell background can be colorized based on cell values. The [D3.js](http://d3js.org/) visualization library is used to generate smooth colour scales. This allows for a broad range of available scales.
     + linear
@@ -66,7 +66,7 @@ shinyUI(fluidPage(
 ))
 ```
 
-In server.R you load the shiny, htmlwidgets and tableFilter libraries and you define the corresponding output function. The ```d3tf``` function needs only one arguments: df, the data.frame or matrix which will be transformed into a html table
+In server.R you load the shiny, htmlwidgets and tableFilter libraries and you define the corresponding output function. The ```d3tf``` function needs only one arguments df, the data.frame or matrix which will be transformed into a html table.
 
 Optionally the ```tableProps``` argument can be used to define the look and feel of the table. In the example below, a very simple table is generated.
 
@@ -105,9 +105,9 @@ shinyServer(function(input, output, session) {
 
 An optional parameter for tableFilter, ```showRowNames``` enables the display of the row names as first column.
 
-![](vignettes/images/basicTable.png)
+![](images/basicTable.png)
 
-Running this app generates a window filling table which can be filtered for strings, numbers, numeric expressions and regular expressions. There is a reset button for the filters in the upper right corner, and small help popup behind the question mark also in the upper right. The table can be sorted by mouseclick on the column headers.
+Running this app generates a html table which can be filtered for strings, numbers, numeric expressions and regular expressions. There is a reset button for the filters in the upper right corner, and small help popup behind the question mark also in the upper right. The table can be sorted by mouseclick on the column headers.
 
 ## Getting and setting filters
 As a app developer you may want to know which filters a user has set, e.g. to provide statistics on the filtered rows or to allow for an export of the filtered data. If activated using ```filterInput = TRUE``` as argument to ```d3tf``` there is for each table an input called outputid + "_filter" which provides a list of
@@ -181,7 +181,7 @@ Filters can be set programmatically at run time using the ```setFilter()``` func
 # Customizing the table
 The Table Filter JavaScript library provides a huge number of configuration options which define the appearance and behaviour of the table. It can for example do client side paging. It can provide a control to hide selected columns. It can provide checkbox and lists controls for filtering and many more. A complete discussion of the features of Table Filter is beyond the scope of this document. Please see [HTML Table Filter Generator](http://tablefilter.free.fr/) for examples and documentation. In the *examples/feature* directory of this package is a Shiny app demonstrating quite a few TableFilter features in a single table. It shows sorting, filtering, pagination, rows counter, column resizing and column visibility, and a table footer with column statistics.
 
-![](vignettes/images/fullFeaturedTable.png)
+![](images/fullFeaturedTable.png)
 
 ## TableFilter extensions
 Some of the TableFilter functions are beeing provided as separate modules, in particular
@@ -233,7 +233,7 @@ The ```_edit``` input element receives for each edit element in the correspondin
 
 Within a Shiny app here an ```observe``` function should take care of validation and processing of these data. D3TableFilter provides two functions to send validation feedback to the user (```confirmEdit```, ```rejectEdit```). They allow to give visual feedback by means of a brief text colour transition. They also allow to revert the edit in case of a validation failure or to rewrite the value in case of a confirm.
 
-![](vignettes/images/inputVal.gif)
+![](images/inputVal.gif)
 
 Rewriting a validated edit may seem unneccessary at first, but it could help in case of difficult network conditions. Depending on the environment there is no guarantee that edit events in the browser get processed in the correct order on the server. If a user starts to edit a cell, waits briefly, and then continues to edit the same cell two edits could be sent back to the server. There is no guarantee that the second edit arrives after the first one on the server. Thus in *D3TableFilter* each edited cell gets tagged with a unique attribute and which is checked when the server sends a reject or confirm message. Only a confirm or reject message corresponding to the latest edit of a cell will find a matching id in the table.
 
@@ -294,7 +294,7 @@ Cell values can also be updated dynamically by the server without resending the 
 
 A D3TableFilter table can act as a simple input element for row selection. The ```selectableRows``` argument to the ```d3tf``` function makes ```single``` or ```multiple``` rows selectable. Using the ```selectableRowsClass``` argument you can use a choice of Bootstrap classes to modify the look of selected rows. A new input element (named like the corresponding output element + "_edit") will provide a vector of indices of selected rows. To pre-select rows when generating a new table, the "rowStyles" argument to ```d3tf()``` can be used. At run time rows can be (de-)selected using the ```setRowClass()``` function.
 
-![](vignettes/images/rowSelection.png)
+![](images/rowSelection.png)
 
 Technically ```selectableRows``` can be combined with other D3TableFilter features. From a user point of view it may be confusing though to have selected rows which are hidden by the filtering function. Thus it may be a good idea to switch off filtering in this case using  ```enableTf = FALSE```. An example for a table with selectable rows is on the second tab of the *examples/interaction* Shiny app:
 
@@ -329,7 +329,7 @@ In this example the background color may get to dark to read the cell text. One 
 
 The result in shown in the second column in the table below.
 
-![](vignettes/images/color.png)
+![](images/color.png)
 
 Color perception is a complex issue. If you wish for a perceptionally correct mapping of numerical data to colour a linear scale as shown above is not the best solution. D3.js provides Lab and HCL color scales for this purpose. They make sure the perceived difference between two colors is propotional to the distance of the mapped values. The next code sniplet maps the same data as above to a white-blue palette in HCL space. The results is shown in the third column in the figure above.
 
@@ -440,7 +440,7 @@ The ```cellFunctions``` argument can be used not only to format numbers, but to 
 
 Surprisingly sorting and filtering based on the numbers still works as before. The *examples/interaction* Shiny app demonstrates this.
 
-![](vignettes/images/eyecandy.png)
+![](images/eyecandy.png)
 
 The *examples/interaction* Shiny app also shows a second variation of in-cell graphics, a horizontal bar chart. Here the text is not replaced, but overlayed to the graphic and can be edited. Enjoy smooth D3 transitions of the bar charts while editing the numbers!
 

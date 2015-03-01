@@ -30,7 +30,7 @@ In addition to the impressive feature set of the *TableFilter* library the *D3Ta
 
 * Row selection. Single cell selection (radiobutton like) or multiple row selection using the ctrl key is possible. Selection can also be set or reset by the server.
 
-* Editing. The tableFilter widget can provide simple table editing features. Via a custom shiny input element each editing event in the table gets sent to the shiny app. After server side validation feedback can be given to the user within the widget. Logical columns can be presented as radio boxes or as checkbox input elements. It should be noted though that Max provides an extension [ezEditTable](http://codecanyon.net/item/-ezedittable-enhance-html-tables/2425123) which gives more extensive editing capabilities. Since ezEditTable is not free software it is out of the scope of the tableFilter R library.
+* Editing. The tableFilter widget can provide simple table editing features. Via a custom shiny input element each editing event in the table gets sent to the shiny app. After server side validation feedback can be given to the user within the widget. Logical columns can be presented as radio boxes or as checkbox input elements. It should be noted though that Max provides an extension [ezEditTable](http://codecanyon.net/item/-ezedittable-enhance-html-tables/2425123) which gives more extensive editing capabilities. Since ezEditTable is not free software it is out of the scope of *D3TableFilter*.
 
 * Coloring. Similar to conditional formatting in spreadsheet applications text and cell background can be colorized based on cell values. The [D3.js](http://d3js.org/) visualization library is used to generate smooth colour scales. This allows for a broad range of available scales.
     + linear
@@ -66,7 +66,7 @@ shinyUI(fluidPage(
 ))
 ```
 
-In server.R you load the shiny, htmlwidgets and tableFilter libraries and you define the corresponding output function. The ```d3tf``` function needs only one arguments: df, the data.frame or matrix which will be transformed into a html table
+In server.R you load the shiny, htmlwidgets and tableFilter libraries and you define the corresponding output function. The ```d3tf``` function needs only one arguments df, the data.frame or matrix which will be transformed into a html table.
 
 Optionally the ```tableProps``` argument can be used to define the look and feel of the table. In the example below, a very simple table is generated.
 
@@ -107,7 +107,7 @@ An optional parameter for tableFilter, ```showRowNames``` enables the display of
 
 ![](images/basicTable.png)
 
-Running this app generates a window filling table which can be filtered for strings, numbers, numeric expressions and regular expressions. There is a reset button for the filters in the upper right corner, and small help popup behind the question mark also in the upper right. The table can be sorted by mouseclick on the column headers.
+Running this app generates a html table which can be filtered for strings, numbers, numeric expressions and regular expressions. There is a reset button for the filters in the upper right corner, and small help popup behind the question mark also in the upper right. The table can be sorted by mouseclick on the column headers.
 
 ## Getting and setting filters
 As a app developer you may want to know which filters a user has set, e.g. to provide statistics on the filtered rows or to allow for an export of the filtered data. If activated using ```filterInput = TRUE``` as argument to ```d3tf``` there is for each table an input called outputid + "_filter" which provides a list of

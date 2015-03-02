@@ -115,6 +115,7 @@
 #' )
 #' 
 #' 
+#' @import gtools
 #' @import htmlwidgets
 #' @export JS
 #' @export
@@ -195,6 +196,21 @@ d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, c
   if (is.character(edit)) {
     edit <- paste0('.',  edit, collapse = ', ');
   }
+  # prepare mixed sort order. have already a rownames column if showRownames == TRUE
+  sortKeys = NULL;
+  if(!is.null(tableProps$sort_config$sort_types)) {
+    mixedCols <- grep("mixed", tableProps$sort_config$sort_types, ignore.case = TRUE);
+    if(length(mixedCols) > 0) {
+      sortKeys <- lapply(mixedCols, function(x) {
+        index <- 1:nrow(df);
+        order <- gtools::mixedorder(as.character(df[ , x]));
+        index[order] <- 1:length(order);
+        return(index);
+      });
+      names(sortKeys) <- paste0('col_', mixedCols - 1);
+      tableProps$sort_config$sort_types <- gsub('mixed', 'Number', tableProps$sort_config$sort_types, ignore.case = TRUE);
+    }
+  }
   
   x <- list(
     data = df,
@@ -215,7 +231,8 @@ d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, c
     colNames = colNames,
     filterInput = filterInput,
     initialFilters = initialFilters,
-    footData = footData
+    footData = footData,
+    sortKeys = sortKeys
   )
   
   # create the widget

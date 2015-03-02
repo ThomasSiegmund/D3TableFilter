@@ -19,4 +19,7 @@ dependencies:
     version: 2.5
     src: "lib/tablefilter/dist"
     script: tfAdapter.sortabletable.js
-
+  - name: jquery
+    version: 1.11.2
+    src: "lib/jquery/dist/"
+    script: jquery-1.11.2.min.js

@@ -1,7 +1,7 @@
 ---
 title: "D3TableFilter Intro"
 author: "Thomas Siegmund"
-date: "2015-03-01"
+date: "2015-03-02"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
@@ -51,37 +51,31 @@ devtools::install_github("ThomasSiegmund/D3TableFilter")
 ```
 
 # First steps
-Generating a table with filtering and sorting options in a Shiny app using the tableFilter library is very simple. First your have to declare a ```d3tfOutput``` in your user interface definition. 
-
-```r
-# --------------------------------------------------------
-# Minimal shiny app demonstrating the D3TableFilter widget
-# ui.R
-# --------------------------------------------------------
-shinyUI(fluidPage(
-  title = 'Basic usage of D3TableFilter in Shiny',
-  fluidRow(
-    column(width = 12, d3tfOutput('mtcars'))
-  )
-))
-```
-
-In server.R you load the shiny, htmlwidgets and tableFilter libraries and you define the corresponding output function. The ```d3tf``` function needs only one arguments df, the data.frame or matrix which will be transformed into a html table.
+Generating a table with filtering and sorting options in a Shiny app using the tableFilter library is very simple. First your have to declare a ```d3tfOutput``` in your user interface definition. In server.R or the ```shinyServer``` you define the corresponding output function. The ```d3tf``` function needs only one argument: ``df``, the data.frame or matrix which will be transformed into a html table.
 
 Optionally the ```tableProps``` argument can be used to define the look and feel of the table. In the example below, a very simple table is generated.
 
 ```r
 # --------------------------------------------------------
 # Minimal shiny app demonstrating the D3TableFilter widget
-# server.R
-# --------------------------------------------------------
+
 library(shiny)
 library(htmlwidgets)
-library(tableFilter)
+library(D3TableFilter)
+data(mtcars)
 
-data(mtcars);
+# ui.R
+# --------------------------------------------------------
+ui <- shinyUI(fluidPage(
+  title = 'Basic usage of D3TableFilter in Shiny',
+  fluidRow(
+    column(width = 12, d3tfOutput('mtcars'))
+  )
+))
 
-shinyServer(function(input, output, session) {
+# server.R
+# --------------------------------------------------------
+server <- shinyServer(function(input, output, session) {
   output$mtcars <- renderD3tf({
     
     # Define table properties. See http://tablefilter.free.fr/doc.php
@@ -101,6 +95,10 @@ shinyServer(function(input, output, session) {
          tableStyle = "table table-bordered");
   })
 })
+
+
+runApp(list(ui=ui,server=server))
+
 ```
 
 An optional parameter for tableFilter, ```showRowNames``` enables the display of the row names as first column.
@@ -356,7 +354,7 @@ Examples for different color scales can found in the *examples/colour* Shiny app
 
 # D3 cell styling
 
-While the *TableFilter* library provides many features to modify the appearance of various table elements using CSS, it does not support directly the styling and formatting of text in table cells. You can not, for example, generate right aligned numeric columns using *TableFilter* alone. *D3TableFilter* allows this, similar to the color mapping, by use of D3. The ```cellFunctions``` and ```footCellFunctions``` argument to ```d3tf()``` apply D3 JavaScript code to columns in the table body or footer. The code below will make the first column (```col_0```) in a table footer right aligned ```classed("text-right", true)```, bold ```.style("font-weight", "bold")```and formatted with one decimal point ```d3.format(".1f")```. D3 has formatters for [numbers](https://github.com/mbostock/d3/wiki/Formatting) and [dates](https://github.com/mbostock/d3/wiki/Time-Formatting).
+While the *TableFilter* library provides many features to modify the appearance of various table elements using CSS, it does not support directly the styling and formatting of text in table cells. You can not, for example, generate right aligned numeric columns using *TableFilter* alone. *D3TableFilter* allows this, similar to the color mapping, by use of D3. The ```cellFunctions``` and ```footCellFunctions``` argument to ```d3tf()``` apply D3 JavaScript code to columns in the table body or footer. The code below will make the first column (```col_0```) in a table footer right aligned ```classed("text-right", true)```, bold ```.style("font-weight", "bold")```and formatted with one decimal point ```d3.format(".1f")```. D3 has formatters for [numbers](https://github.com/mbostock/d3/wiki/Formatting and [dates](https://github.com/mbostock/d3/wiki/Time-Formatting).
 
 ```r
     # apply D3.js functions to footer columns,

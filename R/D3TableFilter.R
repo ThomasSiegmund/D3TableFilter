@@ -130,16 +130,18 @@ d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, c
     colnames(df)[1] <- "Rownames";  
   }
   
+  if(is.null(tableProps)) {
+    tableProps <- list();
+  }
   if(is.null(tableProps$base_path)) {
     tableProps <- c(tableProps, base_path = 'tablefilter-2.5/');
+  }
+  if(!is.null(tableStyle)) {
+    tableProps <- c(tableProps, stylesheet = "tablefilter-2.5/filtergridBS.css");
   }
   
   if(!is.null(height)) {
     tableProps <- c(tableProps, grid_height = paste0(height, 'px' ), fixed_headers = TRUE);
-  }
-  
-  if(!is.null(tableStyle)) {
-    tableProps <- c(tableProps, stylesheet = "tablefilter-2.5/filtergridBS.css");
   }
   
   if(length(extensions) > 0) {
@@ -196,19 +198,24 @@ d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, c
   if (is.character(edit)) {
     edit <- paste0('.',  edit, collapse = ', ');
   }
+  
   # prepare mixed sort order. have already a rownames column if showRownames == TRUE
   sortKeys = NULL;
-  if(!is.null(tableProps$sort_config$sort_types)) {
-    mixedCols <- grep("mixed", tableProps$sort_config$sort_types, ignore.case = TRUE);
-    if(length(mixedCols) > 0) {
-      sortKeys <- lapply(mixedCols, function(x) {
-        index <- 1:nrow(df);
-        order <- gtools::mixedorder(as.character(df[ , x]));
-        index[order] <- 1:length(order);
-        return(index);
-      });
-      names(sortKeys) <- paste0('col_', mixedCols - 1);
-      tableProps$sort_config$sort_types <- gsub('mixed', 'Number', tableProps$sort_config$sort_types, ignore.case = TRUE);
+  if(!is.null(tableProps)) {
+    if(!is.null(tableProps$sort_config)) {
+      if(!is.null(tableProps$sort_config$sort_types)) {
+        mixedCols <- grep("mixed", tableProps$sort_config$sort_types, ignore.case = TRUE);
+        if(length(mixedCols) > 0) {
+          sortKeys <- lapply(mixedCols, function(x) {
+            index <- 1:nrow(df);
+            order <- gtools::mixedorder(as.character(df[ , x]));
+            index[order] <- 1:length(order);
+            return(index);
+          });
+          names(sortKeys) <- paste0('col_', mixedCols - 1);
+          tableProps$sort_config$sort_types <- gsub('mixed', 'Number', tableProps$sort_config$sort_types, ignore.case = TRUE);
+        }
+      }
     }
   }
   

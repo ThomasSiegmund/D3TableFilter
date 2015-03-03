@@ -29,7 +29,7 @@ shinyServer(function(input, output, session) {
       # sorting
       sort = TRUE,
       sort_config = list(
-        sort_types = c("US", "US", "US","US", "US", "String")
+        sort_types = c("US", "US", "US","US", "US", "String", "String")
       ),
       # paging
       paging = FALSE
@@ -94,7 +94,7 @@ shinyServer(function(input, output, session) {
       }') 
     );
         
-    d3tf(tbl, table_Props,
+    d3tf(tbl, table_Props, enableTf = TRUE,
                 showRowNames = FALSE, tableStyle = "table table-condensed", 
                 bgColScales = bgColScales,  fgColScales = fgColScales);
   })

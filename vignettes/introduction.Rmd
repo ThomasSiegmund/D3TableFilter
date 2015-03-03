@@ -190,6 +190,24 @@ Some of the TableFilter functions are beeing provided as separate modules, in pa
 
 To activate these extensions simply define them as a character vector in the extensions parameter, e.g. ```extensions = c("ColsVisibility", "ColumnsResizer", "FiltersRowVisibility")```. This takes care of enabling and basic configuration of the extensions. For further customization use the tableProps parameter.
 
+## Sorting
+On click on column headers *TableFilter* sorts the table. It can sort by ```String```, various number formats ```Number, eu, us```, different date formats ```dmydate, mdydate, ymddate, ddmmmyyyy'```, and by ```'ipaddress'```. Sorting of specific columns can be defined in the ```tableProps``` argument:
+
+```r
+  tableProps <- list(
+    sort = TRUE,
+    sort_config = list(
+      # sort first column by character, second by US number format,
+      # third column by date format 08/05/2010 
+      sort_types = c("String", "US", "mdydate") 
+    )
+  )
+
+```
+
+The [TableFilter documentation](http://tablefilter.free.fr/doc.php]) has some more details about sorting.  *D3TableFilter* extends the list of sort types by the ```Mixed```. This function is based on the [mixedorder](http://www.inside-r.org/packages/cran/gtools/docs/mixedorder) function from the gtools package. It allows to sort character strings containing numbers in a logical order. See the *examples/mixedsort* Shiny app for an example.
+
+
 ## Bootstrap styling
 TableFilter comes with its own CSS based default styling which is compact and efficient, but can look a little bit out of place within Bootstrap styled Shiny apps. Per default D3TableFilter applies the basic Bootstrap table class (```table```). This behaviour can be modified using the ```tableStyle``` argument. Bootstrap provides the classes ```table```, ```table-striped```, ```table-bordered```, and ```table-condensed```. These classes can be combined, e.g. ```tableStyle = "table table-striped table-bordered"```. ```tableStyle = NULL``` reverts to the original TableFilter CSS. 
 

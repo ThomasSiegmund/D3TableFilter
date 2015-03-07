@@ -12,7 +12,7 @@ shinyServer(function(input, output, session) {
     
     # configuration object listing many of TableFilters paramters.
     # There are more in http://tablefilter.free.fr/doc.php
-    table_Props <- list(
+    tableProps <- list(
       # appearence
       btn_reset = TRUE,  
       btn_reset_text = "Clear",
@@ -57,7 +57,8 @@ shinyServer(function(input, output, session) {
         bgColScales <- list();
       }
      
-    d3tf(diamonds, table_Props,
+    d3tf(diamonds, 
+                tableProps = tableProps,
                 showRowNames = FALSE,
                 extensions = c('ColsVisibility', 'ColumnsResizer', 'FiltersRowVisibility'),
                 tableStyle = "table table-bordered table-striped",

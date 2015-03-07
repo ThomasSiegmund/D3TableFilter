@@ -133,11 +133,15 @@ d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, c
   if(is.null(tableProps)) {
     tableProps <- list();
   }
-  if(is.null(tableProps$base_path)) {
-    tableProps <- c(tableProps, base_path = 'tablefilter-2.5/');
-  }
+#  if(is.null(tableProps$base_path)) {
+#    tableProps <- c(tableProps, base_path = 'tablefilter-2.5/');
+#  }
+  
+#   if(!is.null(tableStyle)) {
+#     tableProps <- c(tableProps, stylesheet = "tablefilter-2.5/filtergridBS.css");
+#   }
   if(!is.null(tableStyle)) {
-    tableProps <- c(tableProps, stylesheet = "tablefilter-2.5/filtergridBS.css");
+    tableProps <- c(tableProps, stylesheet = "filtergridBS.css");
   }
   
   if(!is.null(height)) {

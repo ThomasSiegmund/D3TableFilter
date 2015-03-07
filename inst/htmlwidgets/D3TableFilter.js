@@ -23,6 +23,11 @@ HTMLWidgets.widget({
     
     var columns = Object.getOwnPropertyNames(celldata[0]);
     
+    // set TF base path depending on mode
+    var url = window.HTMLWidgets.getAttachmentUrl(id="tablefilter", key = 1);
+    url = url.replace(/TF_Themes.*/, '');
+    data.tableProps["base_path"] = url;
+    
     window["table_Props_" + outputID] = data.tableProps;
     
     // need to access this from shiny custom message functions
@@ -49,7 +54,7 @@ HTMLWidgets.widget({
     //  generate a filter input?
     var filterInput = data.filterInput;
     if(filterInput) {
-      window["table_Props_" + outputID]["on_after_filter"] = function(o) {updateFilterInput(o)};
+      data.tableProps["on_after_filter"] = function(o) {updateFilterInput(o)};
     }
     var initialFilters = data.initialFilters;
     
@@ -742,7 +747,7 @@ HTMLWidgets.widget({
     
     // initialize table filter generator
     if(data.enableTf == true) {
-      window[tfName] = setFilterGrid(tableID, window["table_Props_" + outputID]);
+      window[tfName] = setFilterGrid(tableID, data.tableProps);
       
       // initial filter settings
       for (var key in initialFilters) {

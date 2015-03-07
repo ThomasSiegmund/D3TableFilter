@@ -269,51 +269,6 @@ div.grd_tblCont table td{
 div.grd_Cont .even{ background-color:#fff; }/*row bg alternating color*/
 div.grd_Cont .odd{ background-color:#DFE8F6; }/*row bg alternating color*/
 
-/* ezEditTable
-=====================================================*/
-
-/* Selection */
-.ezActiveRow{ background-color:#2852A8 !important; color:#fff; }
-.ezSelectedRow{	background-color:#316AC5; color:#fff; }
-.ezActiveCell{
-	background-color:#D9E8FB !important;
-	color:#000 !important; font-weight:bold;	
-}
-.ezETSelectedCell{ background-color:#FFDC61 !important; font-weight:bold; color:rgb(0,0,0)!important; }
-.ezUnselectable{
-   -moz-user-select: -moz-none;
-   -khtml-user-select: none;
-   -webkit-user-select: none;
-   -o-user-select: none;
-   user-select: none;
-}
-
-/* Cell editors */
-.ezInputEditor{ width:95%; height:auto; font-size:inherit; border:1px solid #AACCF6; }
-.ezTextareaEditor{ width:95%; height:35px; font-size:inherit; border:1px solid #AACCF6; }
-.ezSelectEditor{ width:100%; font-size:inherit; border:1px solid #AACCF6; }
-.ezModifiedCell{ background:transparent url(themes/bg_mod_cell.png) 0 0 no-repeat; }
-select[multiple="multiple"].ezSelectEditor{ height:35px; }
-/* Command type editor */
-.ezCommandEditor{ margin:2px; }
-.ezCommandEditor button, .ezCommandEditor input[type="button"] { 
-	font-size:11px;	min-height:22px;
-	margin:1px; padding:3px;
-	border:1px solid #ccc; background:#fff;
-	border-radius:4px 4px 4px 4px;
-	-moz-border-radius:4px 4px 4px 4px;
-}
-.ezCommandEditor button:hover, .ezCommandEditor input[type="button"]:hover { border:1px solid #999; }
-.ezCommandEditor img{ border:0; vertical-align:middle; margin:2px; }
-
-/* Utils */
-.ezOpacity{
-	filter:alpha(opacity=60); /* for IE */
-	opacity:0.6; /* CSS3 standard */
-}
-.alignLeft{ text-align:left; }
-.alignCenter{ text-align:center; }
-.alignRight{ text-align:right; }
 
 /* WEB FX Sortable table
 /* Change images paths if you don't use same folder

@@ -179,7 +179,7 @@ shinyServer(function(input, output, session) {
     );
     
     d3tf(mtcars,
-         tableProps = tableProps,
+          tableProps = tableProps,
          showRowNames = TRUE,
          tableStyle = "table table-bordered");
   })

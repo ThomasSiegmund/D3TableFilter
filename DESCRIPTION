@@ -10,7 +10,9 @@ Authors@R: c(person("Thomas", "Siegmund", email = "thomas.siegmund@gmail.com",
         person(family = "jQuery Foundation", role = "cph",
           comment = "jQuery library and jQuery UI library"),
         person(family = "jQuery contributors", role = c("ctb", "cph"),
-          comment = "jQuery library; authors listed in inst/www/shared/jquery-AUTHORS.txt")
+          comment = "jQuery library; authors listed in inst/www/shared/jquery-AUTHORS.txt"),
+        person(family = "Twitter Inc.", role = c("ctb", "cph"),
+          comment = "Bootstrap library and CSS; authors listed in https://github.com/orgs/twbs/people")
         )
 Description: D3TableFilter provides a powerful and flexible HTML table widget for
     use with the htmlwidgets R library. It allows R users to create HTML tables

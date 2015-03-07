@@ -10,16 +10,97 @@ dependencies:
   - name: tablefilter
     version: 2.5
     src: "lib/tablefilter/dist"
-    script: tablefilter_all_min.js
-  - name: sortable
-    version: 2.5
-    src: "lib/tablefilter/dist"
-    script: sortabletable.js
-  - name: tfAdapter.sortabletable
-    version: 2.5
-    src: "lib/tablefilter/dist"
-    script: tfAdapter.sortabletable.js
+    script:
+    - tablefilter_all_min.js
+    - sortabletable.js
+    - tfAdapter.sortabletable.js
+    - TFExt_ColsResizer/TFExt_ColsResizer.js
+    - TFExt_ColsVisibility/TFExt_ColsVisibility.js
+    - TFExt_FiltersRowVisibility/TFExt_FiltersRowVisibility.js
+    - TF_Modules/tf_alternateRows.js
+    - TF_Modules/tf_colOps.js
+    - TF_Modules/tf_cookies.js
+    - TF_Modules/tf_extensions.js
+    - TF_Modules/tf_ezEditTable.js
+    - TF_Modules/tf_fixedHeaders.js
+    - TF_Modules/tf_gridLayout.js
+    - TF_Modules/tf_highlightKeywords.js
+    - TF_Modules/tf_loader.js
+    - TF_Modules/tf_paging.js
+    - TF_Modules/tf_populateCheckList.js
+    - TF_Modules/tf_populateSelect.js
+    - TF_Modules/tf_popupFilters.js
+    - TF_Modules/tf_publicMethods.js
+    - TF_Modules/tf_refreshFilters.js
+    - TF_Modules/tf_resetBtn.js
+    - TF_Modules/tf_rowsCounter.js
+    - TF_Modules/tf_sort.js
+    - TF_Modules/tf_statusBar.js
+    - TF_Modules/tf_themes.js
+    - TF_Modules/tf_watermark.js
+    stylesheet: 
+    - filtergridBS.css
+    - filtergrid.css
+    - TFExt_ColsResizer/TFExt_ColsResizer.css
+    - TFExt_ColsVisibility/TFExt_ColsVisibility.css
+    - TFExt_FiltersRowVisibility/TFExt_FiltersRowVisibility.css
+#    - TF_Themes/Default/TF_Default.css
+#    - TF_Themes/MyTheme/MyTheme.css
+#    - TF_Themes/SkyBlue/TF_SkyBlue.css
+    attachment:
+    - TF_Themes/blank.png
+    - TF_Themes/bg_mod_cell.png
+    - TF_Themes/btn_clear_filters.png
+    - TF_Themes/btn_filter.png
+    - TF_Themes/btn_first_page.gif
+    - TF_Themes/btn_last_page.gif
+    - TF_Themes/btn_next_page.gif
+    - TF_Themes/btn_previous_page.gif
+    - TF_Themes/Default/images/bg_infDiv.jpg
+    - TF_Themes/Default/images/bg_th.jpg
+    - TF_Themes/Default/images/btn_eraser.gif
+    - TF_Themes/Default/images/btn_first_page.gif
+    - TF_Themes/Default/images/btn_last_page.gif
+    - TF_Themes/Default/images/btn_next_page.gif
+    - TF_Themes/Default/images/btn_over_eraser.gif
+    - TF_Themes/Default/images/btn_over_first_page.gif
+    - TF_Themes/Default/images/btn_over_last_page.gif
+    - TF_Themes/Default/images/btn_over_previous_page.gif
+    - TF_Themes/Default/images/btn_previous_page.gif
+    - TF_Themes/Default/images/img_loading.gif
+    - TF_Themes/MyTheme/images/bg_headers.jpg
+    - TF_Themes/MyTheme/images/bg_infDiv.jpg
+    - TF_Themes/MyTheme/images/btn_filter.png
+    - TF_Themes/MyTheme/images/btn_first_page.gif
+    - TF_Themes/MyTheme/images/btn_last_page.gif
+    - TF_Themes/MyTheme/images/btn_next_page.gif
+    - TF_Themes/MyTheme/images/btn_previous_page.gif
+    - TF_Themes/MyTheme/images/img_loading.gif
+    - TF_Themes/SkyBlue/images/bg_skyblue.gif
+    - TF_Themes/SkyBlue/images/btn_first_page.gif
+    - TF_Themes/SkyBlue/images/btn_last_page.gif
+    - TF_Themes/SkyBlue/images/btn_next_page.gif
+    - TF_Themes/SkyBlue/images/btn_prev_page.gif
+    - TF_Themes/SkyBlue/images/icn_clear_filters.png
+    - TF_Themes/SkyBlue/images/img_loading.gif
+    - TF_Themes/downsimple.png
+    - TF_Themes/icn_filterActive.gif
+    - TF_Themes/icn_filter.gif
+    - TF_Themes/upsimple.png
+    - TFExt_FiltersRowVisibility/icn_clp.png
+    - TFExt_FiltersRowVisibility/icn_exp.png
   - name: jquery
     version: 1.11.2
     src: "lib/jquery/dist/"
     script: jquery-1.11.2.min.js
+  - name: bootstrap
+    version: 3.3.2
+    src: "lib/bootstrap/dist/"
+    script:
+    - js/bootstrap.min.js
+    - js/npm.js
+    stylesheet:
+    - css/bootstrap.css.map
+    - css/bootstrap.min.css
+    - css/bootstrap-theme.css.map
+    - css/bootstrap-theme.min.css

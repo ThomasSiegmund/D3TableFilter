@@ -69,7 +69,7 @@ TF.prototype._PopulateSelect = function(colIndex,isRefreshed,isExternal,extSlcId
 						&& ((activeFlt==undefined || activeFlt==colIndex)  || (activeFlt!=colIndex && this.validRowsIndex.tf_Has(k) ))) )))
 				{
 					var cell_data = this.GetCellData(j, cell[j]);
-					var cell_string = cell_data.tf_MatchCase(this.matchCase);//Váry Péter's patch
+					var cell_string = cell_data.tf_MatchCase(this.matchCase);//VÃ¡ry PÃ©ter's patch
 					// checks if celldata is already in array
 					if(!optArray.tf_Has(cell_string,this.matchCase)) optArray.push(cell_data);
 					

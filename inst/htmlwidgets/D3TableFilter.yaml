@@ -98,9 +98,9 @@ dependencies:
     src: "lib/bootstrap/dist/"
     script:
     - js/bootstrap.min.js
-    - js/npm.js
+#    - js/npm.js
     stylesheet:
-    - css/bootstrap.css.map
+#    - css/bootstrap.css.map
     - css/bootstrap.min.css
-    - css/bootstrap-theme.css.map
+#    - css/bootstrap-theme.css.map
     - css/bootstrap-theme.min.css

@@ -1,7 +1,7 @@
 ---
 title: "D3TableFilter Intro"
 author: "Thomas Siegmund"
-date: "2015-03-03"
+date: "2015-03-08"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
@@ -401,7 +401,7 @@ The ```cellFunctions``` argument can be used not only to format numbers, but to 
         // find out wich table and column
         var regex = /(col_\\d+)/;
         var col = regex.exec(this[0][0].className)[0];
-        var regex = /tbl_(\\w+)/;
+        var regex = /tbl_(\\S+)/;
         var tbl = regex.exec(this[0][0].className)[1];
   
         // create a scaling function
@@ -469,7 +469,7 @@ The *examples/interaction* Shiny app also shows a second variation of in-cell gr
         // find out wich table and column
         var regex = /(col_\\d+)/;
         var col = regex.exec(this[0][0].className)[0];
-        var regex = /tbl_(\\w+)/;
+        var regex = /tbl_(\\S+)/;
         var tbl = regex.exec(this[0][0].className)[1];
         var innerWidth = 117;
         var innerHeight = 14;

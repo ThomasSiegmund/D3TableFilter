@@ -181,7 +181,7 @@ shinyServer(function(input, output, session) {
         // find out wich table and column
         var regex = /(col_\\d+)/;
         var col = regex.exec(this[0][0].className)[0];
-        var regex = /tbl_(\\w+)/;
+        var regex = /tbl_(\\S+)/;
         var tbl = regex.exec(this[0][0].className)[1];
   
         // create a scaling function
@@ -236,7 +236,7 @@ shinyServer(function(input, output, session) {
         // find out wich table and column
         var regex = /(col_\\d+)/;
         var col = regex.exec(this[0][0].className)[0];
-        var regex = /tbl_(\\w+)/;
+        var regex = /tbl_(\\S+)/;
         var tbl = regex.exec(this[0][0].className)[1];
         var innerWidth = 117;
         var innerHeight = 14;

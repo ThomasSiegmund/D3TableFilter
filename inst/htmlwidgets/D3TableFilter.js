@@ -13,7 +13,6 @@ HTMLWidgets.widget({
         }
 
     var $el = $(el);
-
     // name ouf the output widget
     var outputID = el.id;
 
@@ -198,7 +197,7 @@ HTMLWidgets.widget({
       var col = Number(regex.exec(this.className)[1]);
       var regex = /row_(\d+)/;
       var row = Number(regex.exec(this.className)[1]) + 1;
-      var regex = /tbl_(\w+)/;
+      var regex = /tbl_(\S+)/;
       var tbl = regex.exec(this.className)[1];
       var showRowNames = window["showRowNames_" + tbl];
       var inputID = tbl + '_edit';
@@ -219,8 +218,21 @@ HTMLWidgets.widget({
       } else {
         var val = sel.text();
       }
-      var edit = {id: editID, row: row, col: col, val: val};
-      Shiny.onInputChange(inputID, edit);
+      if(window.HTMLWidgets.shinyMode) {
+        var edit = {id: editID, row: row, col: col, val: val};
+        Shiny.onInputChange(inputID, edit);
+      } else {
+        row = 'row_' + (row - 1);
+        col = 'col_' + col;
+        var selector = '.' + row + '.' + col;
+        var cell = d3.select('#' + tbl)
+                     .selectAll('tbody')
+                     .select(selector);
+        setCellData(cell, val, tbl, col);
+        runCellFunctions(tbl, col);
+        runCellFunctions(tbl, col, foot = true);
+        colourCol(tbl, col);
+      }
     }
     
     // generate shiny input from radio buttons
@@ -249,17 +261,45 @@ HTMLWidgets.widget({
       var cell = d3.selectAll('#' + tbl)
                        .selectAll('td.' + col + ' ' + '.row_' + row)
                        .attr('id', editID);
-      
-      col = Number(col.replace(/col_/, ''));
-      if(!showRowNames) {
-        col = col + 1;
+      if(window.HTMLWidgets.shinyMode) {
+        col = Number(col.replace(/col_/, ''));
+        if(!showRowNames) {
+          col = col + 1;
+        }
+        row = row + 1;
+        var edit = {id: editID, row: row, col: col, val: true};
+        Shiny.onInputChange(inputID, edit);
       }
-      row = row + 1;
-      var edit = {id: editID, row: row, col: col, val: true};
-      Shiny.onInputChange(inputID, edit);
      }
+    
+    // update data for D3
+    setCellData = function(cell, val, tbl, col) {
+                  // todo: check if there is a d3 syntax to do this
+            cell[0][0].__data__.value = val;
+            
+            if(cell[0][0].firstChild.type == "radio") {
+              // uncheck other buttons in group
+              var radio = d3.selectAll('#' + tbl)
+                       .selectAll('td.' + col)
+                       .selectAll("input")
+                       .property("checked", false);
+            } 
+            if(cell[0][0].firstChild.type == "checkbox" || cell[0][0].firstChild.type == "radio") {
+              cell.selectAll("input").property("checked", val);
+            } else {
+              if(cell.selectAll("text").empty()) {
+                // simple cell, update text directly
+              cell = cell.attr('value', val)
+                         .text(val);
+              } else {
+                // cell styled using cellfunctions, look for text element within
+              cell = cell.attr('value', val)
+                  .selectAll("text").text(val);
+              }
+            }
 
-
+    }
+    
     // server side edit, confirm or reject
     try {
       Shiny.addCustomMessageHandler("setCellValue",
@@ -327,47 +367,28 @@ HTMLWidgets.widget({
             
 
             var val = message["value"];
-            // todo: check if there is a d3 syntax to do this
-            cell[0][0].__data__.value = val;
             
-            if(cell[0][0].firstChild.type == "radio") {
-              // uncheck other buttons in group
-              var radio = d3.selectAll('#' + tbl)
-                       .selectAll('td.' + col)
-                       .selectAll("input")
-                       .property("checked", false);
-            } 
-            if(cell[0][0].firstChild.type == "checkbox" || cell[0][0].firstChild.type == "radio") {
-              cell.selectAll("input").property("checked", val);
-            } else {
-              if(cell.selectAll("text").empty()) {
-                // simple cell, update text directly
-              cell = cell.attr('value', val)
-                         .text(val);
-              } else {
-                // cell styled using cellfunctions, look for text element within
-              cell = cell.attr('value', val)
-                  .selectAll("text").text(val);
-              }
+            setCellData(cell, val, tbl, col);
 
-              colourCol(tbl, col);
-              if(message["foot"]) {
-                runCellFunctions(tbl, col, foot = true);
-              } else {
-                runCellFunctions(tbl, col);
-              }
+            colourCol(tbl, col);
+            if(message["foot"]) {
+              runCellFunctions(tbl, col, foot = true);
+            } else {
+              runCellFunctions(tbl, col);
             }
             
+            if(window.HTMLWidgets.shinyMode) {
             // send confirmation back to server
             // cell gets labeled with a unique edit id. 
             // this way a confirmation or reject from the server will find
             // only the most recent edit
-            if(message["feedback"]) {
-              var editID = "edit_" + tbl + '_' + window["editCounter"]++;
-              var inputID = tbl + '_edit';
-              cell.attr('id', editID);
-              var edit = {id: editID, row: message["row"], col:  message["col"], val: val};
-              Shiny.onInputChange(inputID, edit);
+              if(message["feedback"]) {
+                var editID = "edit_" + tbl + '_' + window["editCounter"]++;
+                var inputID = tbl + '_edit';
+                cell.attr('id', editID);
+                var edit = {id: editID, row: message["row"], col:  message["col"], val: val};
+                Shiny.onInputChange(inputID, edit);
+              }
             }
       });
     } catch (err) {
@@ -484,14 +505,16 @@ HTMLWidgets.widget({
             }
             
             // now update selected rows input
-            var selected = [];
-            rows.each(function(d, i) {
-              if($(this).hasClass(window["selectableRowsClass_" + tbl])) {
-                selected.push(Number(this.id.replace('r', '')) + 1);
-              }
-            })
-            var inputID = tbl + '_select';
-            Shiny.onInputChange(inputID, selected);
+            if(window.HTMLWidgets.shinyMode) {
+              var selected = [];
+              rows.each(function(d, i) {
+                if($(this).hasClass(window["selectableRowsClass_" + tbl])) {
+                  selected.push(Number(this.id.replace('r', '')) + 1);
+                }
+              })
+              var inputID = tbl + '_select';
+              Shiny.onInputChange(inputID, selected);
+            }
         });
     } catch (err) {
       ; // already installed
@@ -519,13 +542,15 @@ HTMLWidgets.widget({
         sel.classed(window["selectableRowsClass_" + tbl], true);
       }
       
+      if(window.HTMLWidgets.shinyMode) {
       var selected = [];
-      rows.each(function(d, i) {
-        if($(this).hasClass(window["selectableRowsClass_" + tbl])) {
-          selected.push(Number(this.id.replace('r', '')) + 1);
-        }
-      })
-      Shiny.onInputChange(inputID, selected);
+        rows.each(function(d, i) {
+          if($(this).hasClass(window["selectableRowsClass_" + tbl])) {
+            selected.push(Number(this.id.replace('r', '')) + 1);
+          }
+        })
+        Shiny.onInputChange(inputID, selected);
+      }
     }
 
     // clear filters from table
@@ -641,6 +666,12 @@ HTMLWidgets.widget({
     // generate a shiny input listing the filter settings and
     // the displayed rows index
     updateFilterInput = function(tbl) {
+      
+      // only in shiny mode
+      if(!window.HTMLWidgets.shinyMode) {
+        return(null);
+      }
+
       // extract table id from tablefiler object
       tblID = tbl['id'].replace(/_tbl/, '');
       tfName = "tf_" + tblID;

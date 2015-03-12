@@ -27,6 +27,15 @@ HTMLWidgets.widget({
     url = url.replace(/TF_Themes.*/, '');
     data.tableProps["base_path"] = url;
     
+    // adjust path for tablefilter extensions
+    if(data.tableProps.hasOwnProperty("extensions")) {
+     if(data.tableProps.extensions.hasOwnProperty("src")) {
+       for(var i = 0; i < data.tableProps.extensions.src.length; i++) {
+         data.tableProps.extensions.src[i] = url + data.tableProps.extensions.src[i];
+       }
+      }
+    }
+
     window["table_Props_" + outputID] = data.tableProps;
     
     // need to access this from shiny custom message functions

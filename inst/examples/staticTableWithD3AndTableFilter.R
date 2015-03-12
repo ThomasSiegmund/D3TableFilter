@@ -206,6 +206,7 @@ mtcars[myCandidates, "candidates"] <- TRUE;
          checkBoxes = "col_4",
          radioButtons = "col_5",
          cellFunctions = cellFunctions,
+         extensions = c('ColsVisibility', 'ColumnsResizer', 'FiltersRowVisibility'),
          tableStyle = "table table-bordered",
          bgColScales = bgColScales,
          filterInput = TRUE,

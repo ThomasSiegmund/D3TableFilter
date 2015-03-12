@@ -152,19 +152,22 @@ d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, c
     ext <- list(name = list(), src = list(), description = list(), initialize = list());
     if("ColsVisibility" %in% extensions) {
       ext$name[length(ext$name) + 1] = 'ColsVisibility';
-      ext$src[length(ext$src) + 1] = 'tablefilter-2.5/TFExt_ColsVisibility/TFExt_ColsVisibility.js';
+#      ext$src[length(ext$src) + 1] = 'tablefilter-2.5/TFExt_ColsVisibility/TFExt_ColsVisibility.js';
+      ext$src[length(ext$src) + 1] = 'TFExt_ColsVisibility/TFExt_ColsVisibility.js';
       ext$description[length(ext$description) + 1] = 'Columns visibility manager';
       ext$initialize[length(ext$initialize) + 1] = list(JS('function(o){o.SetColsVisibility();}'));
     } 
     if("ColumnsResizer" %in% extensions) {
       ext$name[length(ext$name) + 1] = 'ColumnsResizer';
-      ext$src[length(ext$src) + 1] = 'tablefilter-2.5/TFExt_ColsResizer/TFExt_ColsResizer.js';
+#      ext$src[length(ext$src) + 1] = 'tablefilter-2.5/TFExt_ColsResizer/TFExt_ColsResizer.js';
+      ext$src[length(ext$src) + 1] = 'TFExt_ColsResizer/TFExt_ColsResizer.js';
       ext$description[length(ext$description) + 1] = 'Columns Resizing';
       ext$initialize[length(ext$initialize) + 1] = list(JS('function(o){o.SetColsResizer();}'));
     } 
     if("FiltersRowVisibility" %in% extensions) {
       ext$name[length(ext$name) + 1] = 'FiltersRowVisibility';
-      ext$src[length(ext$src) + 1] = 'tablefilter-2.5/TFExt_FiltersRowVisibility/TFExt_FiltersRowVisibility.js';
+#      ext$src[length(ext$src) + 1] = 'tablefilter-2.5/TFExt_FiltersRowVisibility/TFExt_FiltersRowVisibility.js';
+      ext$src[length(ext$src) + 1] = 'TFExt_FiltersRowVisibility/TFExt_FiltersRowVisibility.js';
       ext$description[length(ext$description) + 1] = 'Expand/Collapse filters row';
       ext$initialize[length(ext$initialize) + 1] = list(JS('function(o){o.SetFiltersRowVisibility();}'));
     } 

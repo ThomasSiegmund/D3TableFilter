@@ -5,6 +5,6 @@ library(D3TableFilter)
 shinyUI(fluidPage(
   title = 'Colourful tables',
   fluidRow(
-    column(width = 12, d3tfOutput('colours'))
+    column(width = 12, d3tfOutput('colours', height = "auto"))
   )
 ))

@@ -1,7 +1,7 @@
 ---
 title: "D3TableFilter Intro"
 author: "Thomas Siegmund"
-date: "2015-03-08"
+date: "2015-03-15"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
@@ -41,6 +41,15 @@ In addition to the impressive feature set of the *TableFilter* library the *D3Ta
     + ...
 
 * In-cell graphics. Can turn cell values into SVG graphics using D3.js functions.
+
+Thanks to the [shinyapps.io](https://www.shinyapps.io) service you can test various features of the D3TableFilter widget in a couple of demo apps online:
+
+* [Basic features](https://thomassiegmund.shinyapps.io/basic/)
+* [Advance TableFilter features](https://thomassiegmund.shinyapps.io/features/)
+* [Colorful tables](https://thomassiegmund.shinyapps.io/colour/)
+* [Interactive features](https://thomassiegmund.shinyapps.io/interaction/)
+* [Mixed sorting](https://thomassiegmund.shinyapps.io/mixedsort/)
+
 
 # Installation
 D3TableFilter is not yet on CRAN, but you can easily install it from Github using the devtools package:

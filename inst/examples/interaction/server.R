@@ -175,7 +175,10 @@ shinyServer(function(input, output, session) {
 
     # apply D3.js functions to a column,
     # e.g. to turn cell values into scaled SVG graphics
-    cellFunctions <- list(
+    
+    # This example generates an orange circle scaled to the cell value.
+    # The number is part of the svg graphic, but still allows for sorting and filtering.
+      cellFunctions <- list(
       col_2 = JS('function makeGraph(selection){
       
         // find out wich table and column
@@ -231,6 +234,9 @@ shinyServer(function(input, output, session) {
         window[tbl + "_" + col + "_init"] = true;
 
       }'),
+      
+      # This example creates a horizontal bar chart. The text is overlayed onto
+      # the graphic to enable editing.
       col_3 = JS('function makeGraph(selection){
 
         // find out wich table and column

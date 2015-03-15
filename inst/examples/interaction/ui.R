@@ -32,7 +32,7 @@ shinyUI(fluidPage(
               ),
   column(width = 5, 
            h4("mtcars"),
-         d3tfOutput('mtcars', height = "2000px")
+         d3tfOutput('mtcars', height = "auto")
            ),
    column(width = 5,
           h4("Last edits"),

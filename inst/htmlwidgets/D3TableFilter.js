@@ -39,14 +39,9 @@ HTMLWidgets.widget({
     // have a unique id for each edit
     var edit = data.edit;
     
-    window["selectableRows_" + outputID] = data.selectableRows;
-    window["selectableRowsClass_" + outputID] = data.selectableRowsClass;
-    
     var radioButtons = data.radioButtons;
     var checkBoxes = data.checkBoxes;
-    window["rowStyles_" + outputID] = data.rowStyles;
-    
-    
+
     var tableID = el.id + '_tbl';
     var tfName = 'tf_' + el.id;
     var inputID = outputID + '_edit';
@@ -489,9 +484,9 @@ HTMLWidgets.widget({
                   
             // radio button behavior: clear selectableRowsClass from all rows
             // restore previous class
-            if (window["selectableRows_" + tbl] == "single" && clss == window["selectableRowsClass_" + tbl] ) {
-                rows.classed(window["selectableRowsClass_" + tbl], false);
-                rows.classed(window["rowStyles_" + tbl], true);
+            if (data.selectTableRows == "single" && clss == data.selectTableRows ) {
+                rows.classed(data.selectableRowsClass, false);
+                rows.classed(data.rowStyles, true);
             }
 
             // current row
@@ -506,7 +501,7 @@ HTMLWidgets.widget({
             if(window.HTMLWidgets.shinyMode) {
               var selected = [];
               rows.each(function(d, i) {
-                if($(this).hasClass(window["selectableRowsClass_" + tbl])) {
+                if($(this).hasClass(data.selectableRowsClass)) {
                   selected.push(Number(this.id.replace('r', '')) + 1);
                 }
               })
@@ -532,18 +527,18 @@ HTMLWidgets.widget({
       var inputID = tbl + '_select';
       var sel = d3.select(this);
      if (!d3.event.ctrlKey || data.selectableRows == "single" ) {
-          rows.classed(window["selectableRowsClass_" + tbl], false);
+          rows.classed(data.selectableRowsClass, false);
       }
-      if($(this).hasClass(window["selectableRowsClass_" + tbl])) {
-        sel.classed(window["selectableRowsClass_" + tbl], false);
+      if($(this).hasClass(data.selectableRowsClass)) {
+        sel.classed(data.selectableRowsClass, false);
       } else {
-        sel.classed(window["selectableRowsClass_" + tbl], true);
+        sel.classed(data.selectableRowsClass, true);
       }
       
       if(window.HTMLWidgets.shinyMode) {
       var selected = [];
         rows.each(function(d, i) {
-          if($(this).hasClass(window["selectableRowsClass_" + tbl])) {
+          if($(this).hasClass(data.selectableRowsClass)) {
             selected.push(Number(this.id.replace('r', '')) + 1);
           }
         })
@@ -797,8 +792,6 @@ HTMLWidgets.widget({
       .classed({"active": true})
       .style("width", "auto");
     }
-
-    
     
   } // end of renderValue !!
 

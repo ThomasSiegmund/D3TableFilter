@@ -88,7 +88,7 @@ shinyServer(function(input, output, session) {
     
     d3tf(mtcars, tableProps = tableProps,
                 showRowNames = TRUE,
-                tableStyle = "table table-bordered table-striped",
+                tableStyle = "table table-bordered",
                 extensions = c('ColsVisibility', 'ColumnsResizer', 'FiltersRowVisibility'),
                 footData = footData);
   })

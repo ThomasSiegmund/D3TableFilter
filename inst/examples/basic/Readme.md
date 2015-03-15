@@ -1,5 +1,5 @@
-# D3TableFilter Basics
+# D3TableFilter - Basic
 
-This is a minimal Shiny app demonstrating the most basic features of the D3TableFilter library. It displays an R data frame as formatted html table using the [HTML Table Filter Generator](http://tablefilter.free.fr/)  (*TableFilter*) JavaScript library. TableFilter sorts the table on click on the column headers and can filter the data. See the question mark in the top row for help on filtering.
+D3TableFilter is a table widget for Shiny built on the [HTML Table Filter Generator](http://tablefilter.free.fr/)  (*TableFilter*) JavaScript library. This small app demonstrates some of the features of the *TableFilter* library embedded in a Shiny app. It displays an R data frame formatted as html table. TableFilter sorts the table on click on the column headers and can filter the data. 
 
-You can find more information about the D3TableFilter widget on [github](https://github.com/ThomasSiegmund/D3TableFilter).
+You can find more information about the D3TableFilter widget on [github](https://github.com/ThomasSiegmund/D3TableFilter).You can find more information about the D3TableFilter widget on [github](https://github.com/ThomasSiegmund/D3TableFilter).

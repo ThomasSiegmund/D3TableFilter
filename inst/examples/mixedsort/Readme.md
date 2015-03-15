@@ -4,4 +4,11 @@
 
 Click on the column headers to sort the table based on mixed character and numeric values.
 
+Please check also the other D3TableFilter demo apps:
+
+* [Basic features](https://thomassiegmund.shinyapps.io/basic/)
+* [Advance TableFilter features](https://thomassiegmund.shinyapps.io/features/)
+* [Colorful tables](https://thomassiegmund.shinyapps.io/colour/)
+* [Interactive features](https://thomassiegmund.shinyapps.io/interaction/)
+
 Learn more about the D3TableFilter widget on [github](https://github.com/ThomasSiegmund/D3TableFilter). 

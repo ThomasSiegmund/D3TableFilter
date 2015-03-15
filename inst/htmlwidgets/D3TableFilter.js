@@ -36,22 +36,14 @@ HTMLWidgets.widget({
       }
     }
 
-    window["table_Props_" + outputID] = data.tableProps;
-    
-    // need to access this from shiny custom message functions
-    // and to have it available for multiple tables in one document
-    window["bgColScales_" + outputID] = data.bgColScales;
-    window["fgColScales_" + outputID] = data.fgColScales;
-    window["cellFunctions_" + outputID] = data.cellFunctions;
-    window["footCellFunctions_" + outputID] = data.footCellFunctions;
     // have a unique id for each edit
     var edit = data.edit;
+    
     window["selectableRows_" + outputID] = data.selectableRows;
     window["selectableRowsClass_" + outputID] = data.selectableRowsClass;
     
     var radioButtons = data.radioButtons;
     var checkBoxes = data.checkBoxes;
-    window["showRowNames_" + outputID] = data.showRowNames;
     window["rowStyles_" + outputID] = data.rowStyles;
     
     
@@ -69,7 +61,7 @@ HTMLWidgets.widget({
     var sortKeys = data.sortKeys;
     
     // need to update colour after table sorting
-    window["table_Props_" + outputID]["on_after_sort"] = function(o) {colourCellsWrapper(o)};
+    data.tableProps["on_after_sort"] = function(o) {colourCellsWrapper(o)};
 
     // remove existing table including table filter objects
     var table = d3.select(el).select("table").remove();
@@ -146,8 +138,7 @@ HTMLWidgets.widget({
      }
 
     // apply row styles
-    log(data.rowStyles);
-    var rowStyles = window["rowStyles_" + outputID];
+    var rowStyles = data.rowStyles;
     if(rowStyles != null) {
       log("setting rowstyles")
       rows.each(
@@ -208,11 +199,10 @@ HTMLWidgets.widget({
       var row = Number(regex.exec(this.className)[1]) + 1;
       var regex = /tbl_(\S+)/;
       var tbl = regex.exec(this.className)[1];
-      var showRowNames = window["showRowNames_" + tbl];
       var inputID = tbl + '_edit';
       var editID = "edit_" + tbl + '_' + window["editCounter"]++;
       sel.attr('id', editID);
-      if(showRowNames) {
+      if(data.showRowNames) {
         col = col;
       } else {
         col = col + 1;
@@ -252,7 +242,6 @@ HTMLWidgets.widget({
       var col = name.replace(/.*_col/, 'col');
       var editID = "edit_" + window["editCounter"]++;;
       var inputID = tbl + '_edit';
-      var showRowNames = window["showRowNames_" + tbl];
       var radio = d3.selectAll('#' + tbl)
                        .selectAll('td.' + col)
                        .selectAll("input");
@@ -272,7 +261,7 @@ HTMLWidgets.widget({
                        .attr('id', editID);
       if(window.HTMLWidgets.shinyMode) {
         col = Number(col.replace(/col_/, ''));
-        if(!showRowNames) {
+        if(!data.showRowNames) {
           col = col + 1;
         }
         row = row + 1;
@@ -408,10 +397,10 @@ HTMLWidgets.widget({
     runCellFunctions = function(tbl, col, foot) {
       if(foot == true) {
         var selector = "tfoot";
-        var cellFunctions = window["footCellFunctions_" + tbl];
+        var cellFunctions =  data.footCellFunctions;
       } else {
         var selector = "tbody"
-        var cellFunctions = window["cellFunctions_" + tbl];
+        var cellFunctions = data.cellFunctions;
       }
       if(col == null) {
         // check whole table
@@ -542,7 +531,7 @@ HTMLWidgets.widget({
       
       var inputID = tbl + '_select';
       var sel = d3.select(this);
-     if (!d3.event.ctrlKey || window["selectableRows_" + tbl] == "single" ) {
+     if (!d3.event.ctrlKey || data.selectableRows == "single" ) {
           rows.classed(window["selectableRowsClass_" + tbl], false);
       }
       if($(this).hasClass(window["selectableRowsClass_" + tbl])) {
@@ -605,7 +594,7 @@ HTMLWidgets.widget({
     
     // apply fg and bg colour scales to column
     colourCol  = function(tbl, col) {  
-      var bgColScales = window["bgColScales_" + tbl];
+      var bgColScales = data.bgColScales;
       if (bgColScales.hasOwnProperty(col)) {
       table = tbl; 
        var col2Color = d3.selectAll('#' + tbl)
@@ -618,7 +607,7 @@ HTMLWidgets.widget({
         		return bgColScales[col](tbl, d.value);
   				});
        } 
-      var fgColScales = window["fgColScales_" + tbl];
+      var fgColScales =data.fgColScales;
       if (fgColScales.hasOwnProperty(col)) {
           table = tbl; 
           d3.selectAll('#' + tbl)
@@ -642,7 +631,7 @@ HTMLWidgets.widget({
     // set background color for whole table
     // does nothing if length(bgColScales) == 0 and length(fgColScales) == 0
     colourCells = function(tbl) {
-    var bgColScales = window["bgColScales_" + tbl];
+    var bgColScales = data.bgColScales;
     for (var key in bgColScales) {
        if (bgColScales.hasOwnProperty(key)) { 
          table = tbl; // strange. this makes it accessible inside of the select
@@ -657,7 +646,7 @@ HTMLWidgets.widget({
      };
 
     // set text color for whole table
-    var fgColScales = window["fgColScales_" + tbl];
+    var fgColScales = data.fgColScales;
     for (var key in fgColScales) { 
        if (fgColScales.hasOwnProperty(key)) { 
        table = tbl; // strange. this makes it accessible inside of the select
@@ -717,7 +706,7 @@ HTMLWidgets.widget({
     }
     
     // make table rows selectable
-    if(window["selectableRows_" + outputID] == "single" || window["selectableRows_" + outputID] == "multi") {
+    if(data.selectableRows == "single" || data.selectableRows == "multi") {
       table.classed({'table-hover': true})
       rows.attr({clickable: true})
         .on("click", shinyRowClickEvent);

@@ -5,6 +5,7 @@
 library(shiny)
 library(htmlwidgets)
 library(D3TableFilter)
+library(gtools)
 
 Treatment <- c("Control", "Asprin 10mg/day", "Asprin 50mg/day",
                "Asprin 100mg/day", "Acetomycin 100mg/day",

@@ -5,6 +5,6 @@
 shinyUI(fluidPage(
   title = 'Basic usage of D3TableFilter in Shiny',
   fluidRow(
-    column(width = 12, d3tfOutput('mtcars'))
+    column(width = 12, d3tfOutput('mtcars', height = 'auto'))
   )
 ))

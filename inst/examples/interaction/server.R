@@ -328,7 +328,7 @@ shinyServer(function(input, output, session) {
     );
     initialFilters = list(col_1 = ">20");
 
-    colNames = c(Rownames = "Model", mpg = "Miles per gallon",	cyl = "Cylinders",	disp = "Displacement",	candidates = "Candidates",	favorite = "My favorite");
+    colNames = list(Rownames = "Model", mpg = "Miles per gallon",	cyl = "Cylinders",	disp = "Displacement",	candidates = "Candidates",	favorite = "My favorite");
 
     # add a summary row. Can be used to set values statically, but also to 
     # make use of TableFilters "col_operation"

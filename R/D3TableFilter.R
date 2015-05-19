@@ -56,7 +56,7 @@
 #' @param tableProps A list object describing appearence and function of the 
 #'   table
 #' @param showRowNames Add the R row names as first column to the table
-#' @param colNames Named character vector to display as column names
+#' @param colNames Named character list to display as column names
 #' @param extensions Vector of table filter extensions to load. See
 #' @param selectableRows Enable row selection on (\code{cltr-}) mouse click. If 
 #'   \code{"multi"} multiple rows will be selectable using (\code{cltr click}), 

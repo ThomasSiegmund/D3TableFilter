@@ -22,7 +22,7 @@ table}
 
 \item{showRowNames}{Add the R row names as first column to the table}
 
-\item{colNames}{Named character vector to display as column names}
+\item{colNames}{Named character list to display as column names}
 
 \item{extensions}{Vector of table filter extensions to load. See}
 

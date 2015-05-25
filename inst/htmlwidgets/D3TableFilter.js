@@ -17,7 +17,7 @@ HTMLWidgets.widget({
     var outputID = el.id;
 
     var celldata = HTMLWidgets.dataframeToD3(data.data);
-    
+
     var footdata = HTMLWidgets.dataframeToD3(data.footData);
     
     var columns = Object.getOwnPropertyNames(celldata[0]);
@@ -96,7 +96,7 @@ HTMLWidgets.widget({
         })
         .enter()
         .append("td")
-        .text(function(d) { return d.value; })
+        .html(function(d) { return d.value; })
         // address columns table filter style
         .attr('class', function(d, i, j){ return "col_" + i + ' ' + 'row_' + j + ' ' + 'tbl_' + outputID; });
     
@@ -120,7 +120,7 @@ HTMLWidgets.widget({
         })
         .enter()
         .append("td")
-        .text(function(d) { return d.value; })
+        .html(function(d) { return d.value; })
         // set an id to use for tablefilter "col_operations"
         .attr('id', function(d, i, j){ return 'frow_' + j + '_fcol_' + i + '_' +  'tbl_' + outputID; })
         .attr('class', function(d, i, j){ return "col_" + i + ' ' + 'row_' + j + ' ' + 'tbl_' + outputID; });
@@ -283,11 +283,11 @@ HTMLWidgets.widget({
               if(cell.selectAll("text").empty()) {
                 // simple cell, update text directly
               cell = cell.attr('value', val)
-                         .text(val);
+                         .html(val);
               } else {
                 // cell styled using cellfunctions, look for text element within
               cell = cell.attr('value', val)
-                  .selectAll("text").text(val);
+                  .selectAll("text").html(val);
               }
             }
 

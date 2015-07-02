@@ -36,8 +36,10 @@ HTMLWidgets.widget({
       }
     }
 
-    // have a unique id for each edit
     var edit = data.edit;
+    
+    // have a unique id for each edit
+    var editCounter = 0;
     
     var radioButtons = data.radioButtons;
     var checkBoxes = data.checkBoxes;
@@ -195,7 +197,7 @@ HTMLWidgets.widget({
       var regex = /tbl_(\S+)/;
       var tbl = regex.exec(this.className)[1];
       var inputID = tbl + '_edit';
-      var editID = "edit_" + tbl + '_' + window["editCounter"]++;
+      var editID = "edit_" + tbl + '_' + editCounter++;
       sel.attr('id', editID);
       if(data.showRowNames) {
         col = col;
@@ -235,7 +237,7 @@ HTMLWidgets.widget({
     checkRadio = function(name) {
       var tbl = name.replace(/_.*/g, '');
       var col = name.replace(/.*_col/, 'col');
-      var editID = "edit_" + window["editCounter"]++;;
+      var editID = "edit_" + editCounter++;;
       var inputID = tbl + '_edit';
       var radio = d3.selectAll('#' + tbl)
                        .selectAll('td.' + col)
@@ -298,7 +300,11 @@ HTMLWidgets.widget({
       Shiny.addCustomMessageHandler("setCellValue",
           function(message) {
             var row = 'row_' + (Number(message["row"]) - 1);
-            var col = 'col_' + message["col"];
+            if(data.showRowNames) {
+              var col = 'col_' + message["col"];
+            } else  {
+              var col = 'col_' + (Number(message["col"]) - 1);
+            }
             var tbl = message["tbl"];
             var selector = '.' + row + '.' + col;
             if(message["foot"]) {
@@ -312,7 +318,6 @@ HTMLWidgets.widget({
             }
 
             if(message["action"] == "confirm" || message["action"] == "reject") {
-
               // only do something if cell id matches message
               cell = cell.filter('#' + message["id"]);
               if(cell.empty()) {
@@ -328,6 +333,7 @@ HTMLWidgets.widget({
                 // if sever sends value, reset input to it and transition
                 // color back to previous
                 if(message["value"] !== null) {
+                    log("running color transition")
                     cell.transition("textcolor")
                     .duration(1500)
                     .style("color", oldColor)
@@ -360,7 +366,6 @@ HTMLWidgets.widget({
             
 
             var val = message["value"];
-            
             setCellData(cell, val, tbl, col);
 
             colourCol(tbl, col);
@@ -376,7 +381,7 @@ HTMLWidgets.widget({
             // this way a confirmation or reject from the server will find
             // only the most recent edit
               if(message["feedback"]) {
-                var editID = "edit_" + tbl + '_' + window["editCounter"]++;
+                var editID = "edit_" + tbl + '_' + editCounter++;
                 var inputID = tbl + '_edit';
                 cell.attr('id', editID);
                 var edit = {id: editID, row: message["row"], col:  message["col"], val: val};

@@ -232,7 +232,7 @@ HTMLWidgets.widget({
     // generate shiny input from radio buttons
     // get event from button group, need to find out which
     // button is selected
-    checkRadio = function(name) {
+    function checkRadio (name) {
       var tbl = name.replace(/_.*/g, '');
       var col = name.replace(/.*_col/, 'col');
       var editID = "edit_" + window["editCounter"]++;;
@@ -266,7 +266,7 @@ HTMLWidgets.widget({
      }
     
     // update data for D3
-    setCellData = function(cell, val, tbl, col) {
+    function setCellData(cell, val, tbl, col) {
                   // todo: check if there is a d3 syntax to do this
             cell[0][0].__data__.value = val;
             
@@ -389,7 +389,7 @@ HTMLWidgets.widget({
     }
 
     // format cells or turn cell content in graphics
-    runCellFunctions = function(tbl, col, foot) {
+    function runCellFunctions(tbl, col, foot) {
       if(foot == true) {
         var selector = "tfoot";
         var cellFunctions =  data.footCellFunctions;
@@ -570,7 +570,7 @@ HTMLWidgets.widget({
       var colExtent = d3.extent(colVals, function(d) { return d.value; });
       return(colExtent);
     }
-    colMin = function(tbl, col) {
+    colMin = function (tbl, col){
       var colVals = d3.selectAll('#' + tbl)
                       .selectAll("tbody")
                       .selectAll('td.' + col)
@@ -588,7 +588,7 @@ HTMLWidgets.widget({
     }
     
     // apply fg and bg colour scales to column
-    colourCol  = function(tbl, col) {  
+    function colourCol(tbl, col) {  
       var bgColScales = data.bgColScales;
       if (bgColScales.hasOwnProperty(col)) {
       table = tbl; 
@@ -618,14 +618,14 @@ HTMLWidgets.widget({
     }
     
     // called from TableFilter. get table name from table filter object
-    colourCellsWrapper = function(o) {
+    function colourCellsWrapper(o) {
       tbl = o['id'].replace(/_tbl/, '');
       colourCells(tbl);
     }
     
     // set background color for whole table
     // does nothing if length(bgColScales) == 0 and length(fgColScales) == 0
-    colourCells = function(tbl) {
+    function colourCells(tbl) {
     var bgColScales = data.bgColScales;
     for (var key in bgColScales) {
        if (bgColScales.hasOwnProperty(key)) { 
@@ -658,7 +658,7 @@ HTMLWidgets.widget({
     
     // generate a shiny input listing the filter settings and
     // the displayed rows index
-    updateFilterInput = function(tbl) {
+    function updateFilterInput(tbl) {
       
       // only in shiny mode
       if(!window.HTMLWidgets.shinyMode) {

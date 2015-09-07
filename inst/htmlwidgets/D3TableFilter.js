@@ -20,7 +20,7 @@ HTMLWidgets.widget({
 
     var footdata = HTMLWidgets.dataframeToD3(data.footData);
     
-    var columns = Object.getOwnPropertyNames(celldata[0]);
+    var columns = data.columns;
     
     // set TF base path depending on mode
     var url = window.HTMLWidgets.getAttachmentUrl(id="tablefilter", key = 1);

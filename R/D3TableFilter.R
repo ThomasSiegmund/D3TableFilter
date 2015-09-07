@@ -228,6 +228,7 @@ d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, c
   
   x <- list(
     data = df,
+    columns = colnames(df),
     enableTf = enableTf,
     tableProps = tableProps,
     selectableRows = selectableRows,

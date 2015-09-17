@@ -1,4 +1,4 @@
-/*------------------------------------------------------------------------
+/*--------------------------------------------------------------------
 	- HTML Table Filter Generator
 	- Watermark feature v1.0
 	- By Max Guglielmi (tablefilter.free.fr)
@@ -9,7 +9,7 @@ TF.prototype.SetWatermark = function(set)
 /*====================================================
 	- inserts or removes input watermark
 	- Params:
-		- set: if true inserts watermark (boolean)
+	- set: if true inserts watermark (boolean)
 =====================================================*/
 {
 	if( !this.fltGrid ) return;

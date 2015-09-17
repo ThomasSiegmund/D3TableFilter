@@ -44,9 +44,9 @@ dependencies:
     - TFExt_ColsResizer/TFExt_ColsResizer.css
     - TFExt_ColsVisibility/TFExt_ColsVisibility.css
     - TFExt_FiltersRowVisibility/TFExt_FiltersRowVisibility.css
-#    - TF_Themes/Default/TF_Default.css
-#    - TF_Themes/MyTheme/MyTheme.css
-#    - TF_Themes/SkyBlue/TF_SkyBlue.css
+    - TF_Themes/Default/TF_Default.css
+    - TF_Themes/MyTheme/MyTheme.css
+    - TF_Themes/SkyBlue/TF_SkyBlue.css
     attachment:
     - TF_Themes/blank.png
     - TF_Themes/bg_mod_cell.png
@@ -94,7 +94,7 @@ dependencies:
     src: "lib/jquery/dist/"
     script: jquery-1.11.2.min.js
   - name: bootstrap
-    version: 3.3.2
+    version: 3.3.1
     src: "lib/bootstrap/dist/"
     script:
     - js/bootstrap.min.js

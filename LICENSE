@@ -27,6 +27,6 @@ THE SOFTWARE.
 Included Javascript Libraries
 =============================
 The S3TableFilter R library includes the "TableFilter", the the "colorbrewer",
-"jquery", "Bootstrap" and the "D3" javascript libraries. The TableFilter
+"jquery", "sparklines", "Bootstrap" and the "D3" javascript libraries. The TableFilter
 JavaScript library includes the "Sortable Table" library. For license information regarding these libraries see the license files in the lib/tablefilter,
-lib/colorbrewer, lib/jquery lib/bootstrap, and lib/d3 subdirectories. 
+lib/colorbrewer, lib/jquery, lib/sparklines, lib/bootstrap, and lib/d3 subdirectories. 

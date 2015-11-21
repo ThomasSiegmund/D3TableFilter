@@ -119,7 +119,7 @@
 #' @import htmlwidgets
 #' @export JS
 #' @export
-d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, colNames = NULL, extensions = c(), selectableRows = NULL, selectableRowsClass = "info", tableStyle = "table", rowStyles = NULL, bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), footData = NULL, footCellFunctions = list(), width = NULL, height = NULL) {
+d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, colNames = NULL, extensions = c(), selectableRows = NULL, selectableRowsClass = "info", tableStyle = "table", rowStyles = NULL, bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), footData = NULL, footCellFunctions = list(), sparklines = list(), width = NULL, height = NULL) {
   
   if(is.matrix(df)) {
     df <- as.data.frame(df);
@@ -208,11 +208,11 @@ d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, c
   
   # prepare mixed sort order. have already a rownames column if showRownames == TRUE
   sortKeys = NULL;
-  if(!is.null(tableProps)) {
-    if(!is.null(tableProps$sort_config)) {
-      if(!is.null(tableProps$sort_config$sort_types)) {
+  if (!is.null(tableProps)) {
+    if (!is.null(tableProps$sort_config)) {
+      if (!is.null(tableProps$sort_config$sort_types)) {
         mixedCols <- grep("mixed", tableProps$sort_config$sort_types, ignore.case = TRUE);
-        if(length(mixedCols) > 0) {
+        if (length(mixedCols) > 0) {
           sortKeys <- lapply(mixedCols, function(x) {
             index <- 1:nrow(df);
             order <- gtools::mixedorder(as.character(df[ , x]));
@@ -239,6 +239,7 @@ d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, c
     fgColScales = fgColScales,
     cellFunctions = cellFunctions,
     footCellFunctions = footCellFunctions,
+    sparklines = sparklines,
     edit = edit,
     radioButtons = radioButtons,
     checkBoxes = checkBoxes,

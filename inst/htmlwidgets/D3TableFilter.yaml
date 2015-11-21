@@ -104,3 +104,7 @@ dependencies:
     - css/bootstrap.min.css
 #    - css/bootstrap-theme.css.map
     - css/bootstrap-theme.min.css
+  - name: sparklines
+    version: 2.1.2
+    src: "lib/sparklines/dist"
+    script: "jquery.sparkline.min.js"

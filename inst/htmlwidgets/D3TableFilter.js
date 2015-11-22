@@ -269,18 +269,21 @@ HTMLWidgets.widget({
     
     // update data for D3
     function setCellData(cell, val, tbl, col) {
-                  // todo: check if there is a d3 syntax to do this
             cell[0][0].__data__.value = val;
-            
             if(cell[0][0].firstChild.type == "radio") {
               // uncheck other buttons in group
               var radio = d3.selectAll('#' + tbl)
                        .selectAll('td.' + col)
                        .selectAll("input")
                        .property("checked", false);
-            } 
-            if(cell[0][0].firstChild.type == "checkbox" || cell[0][0].firstChild.type == "radio") {
+            } else if (cell[0][0].firstChild.type == "checkbox" || cell[0][0].firstChild.type == "radio") {
               cell.selectAll("input").property("checked", val);
+            } else if (cell.classed("sparklines")) {
+              // sparklines
+              log("have sparkline");
+              cell = cell.attr('value', val)
+                         .html(val);
+              var $sparkCell = $(cell[0]).sparkline('html', data.sparklines[col])
             } else {
               if(cell.selectAll("text").empty()) {
                 // simple cell, update text directly
@@ -292,13 +295,34 @@ HTMLWidgets.widget({
                   .selectAll("text").html(val);
               }
             }
-
     }
+    
+    function setSparkline(cell, key) {
+      return cell.sparkline('html', data.sparklines[key]) ;
+    }
+    
+    // turn cell content into sparklines
+    function setSparklines(tbl) {
+      var sparklines = data.sparklines;
+      for (var key in sparklines) { 
+         if (sparklines.hasOwnProperty(key)) { 
+         table = tbl; // strange. this makes it accessible inside of the select
+         var sparkCell = d3.selectAll('#' + tbl)
+           .selectAll('tbody')
+           .selectAll('td.' + key)
+           .classed("sparklines", true)
+         var $sparkCells = $(sparkCell[0]).sparkline('html', sparklines[key])
+   			}
+       }  
+     };
+    
     
     // server side edit, confirm or reject
     try {
       Shiny.addCustomMessageHandler("setCellValue",
           function(message) {
+            log("message handler")
+            log(data.sparklines)
             var row = 'row_' + (Number(message["row"]) - 1);
             if(data.showRowNames) {
               var col = 'col_' + message["col"];
@@ -763,27 +787,6 @@ HTMLWidgets.widget({
     
     // set intial color. Has to run again after table sorting. 
     colourCells(outputID);
-    
-    
-    function setSparklines(tbl) {
-    var sparklines = data.sparklines;
-    log("sparklines")
-    log(sparklines)
-    for (var key in sparklines) { 
-      log("key")
-      log(key)
-       if (sparklines.hasOwnProperty(key)) { 
-       table = tbl; // strange. this makes it accessible inside of the select
-       var sparkCell = d3.selectAll('#' + tbl)
-         .selectAll('tbody')
-         .selectAll('td.' + key)
-         .classed("sparklines", true)
-         .attr("sparkType", "bar")
-       var $sparkCells = $(sparkCell[0]).sparkline()
-
-  				}
-       }  
-     };
     
     // apply sparkline 
     setSparklines(outputID);

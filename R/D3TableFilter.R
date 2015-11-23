@@ -52,11 +52,11 @@
 #'   inst/examples/ directory of this package for an example.
 #'   
 #' @section Sparklines: Table columns containing a comma separated series of 
-#'   numbers (\code{"1,3,5,7,11"}) can be turned into sparkline visualizations. 
-#'   \code{sparklines = list(col_0 = list(type = "line"))} will turn the cells 
-#'   of the first column into a minature line chart. See the "sparklines" shiny 
-#'   app in the inst/examples/sparklines directory of this package for an
-#'   example.
+#'   numbers (\code{"1,3,5,7,11"}) can be turned into sparkline visualizations.
+#'   For example, \code{sparklines = list(col_0 = list(type = "line"))} will
+#'   turn the cells of the first column into a minature line chart. See the
+#'   "sparklines" shiny app in the inst/examples/sparklines directory of this
+#'   package for an example.
 #'   
 #' @param df Data frame or matrix to display as html table
 #' @param enableTf Enable the features for the "HTML table filter generator"

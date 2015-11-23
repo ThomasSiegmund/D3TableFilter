@@ -44,7 +44,6 @@ shinyServer(function(input, output, session) {
                       )
 
     d3tf(tbl, 
-         tableProps = tableProps,
          sparklines = sparklines,
          enableTf = FALSE);
   })

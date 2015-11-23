@@ -1,6 +1,6 @@
 Package: D3TableFilter
 Title: A table widget based on D3.js and the "HTML Table Filter Generator"
-Version: 0.5
+Version: 0.6
 Authors@R: c(person("Thomas", "Siegmund", email = "thomas.siegmund@gmail.com",
     role = c("aut", "cre")),
         person("Max", "Guglielmi", role = c("aut", "cph")),
@@ -12,21 +12,27 @@ Authors@R: c(person("Thomas", "Siegmund", email = "thomas.siegmund@gmail.com",
         person(family = "jQuery contributors", role = c("ctb", "cph"),
           comment = "jQuery library; authors listed in inst/www/shared/jquery-AUTHORS.txt"),
         person(family = "Twitter Inc.", role = c("ctb", "cph"),
-          comment = "Bootstrap library and CSS; authors listed in https://github.com/orgs/twbs/people")
+          comment = "Bootstrap library and CSS; authors listed in https://github.com/orgs/twbs/people"),
+        person(family = "Splunk Inc.", role = c("cph"),
+          comment = "jQuery Sparklines library"),
+        person("Watts", "Gareth", role = c("aut"), 
+          comment = "jQuery Sparklines library")
         )
-Description: D3TableFilter provides a powerful and flexible HTML table widget for
-    use with the htmlwidgets R library. It allows R users to create HTML tables
+Description: D3TableFilter provides a powerful and flexible HTML table widget
+    for use with the htmlwidgets R library. It allows R users to create HTML tables
     with functions for advanced filtering and sorting. It also allows for advanced
     formatting of table cells using D3 functions.
-Depends: 
+Depends:
     R (>= 3.1.0)
-Imports: 
+Imports:
     htmlwidgets (>= 0.3),
     gtools
 License: MIT + file LICENSE
 LazyData: true
 Enhances: rmarkdown (>= 0.3.3), shiny (>= 0.10.2.1)
-Suggests: knitr
+Suggests:
+    knitr
 VignetteBuilder: knitr
 URL: https://github.com/ThomasSiegmund/D3TableFilter
 BugReports: https://github.com/ThomasSiegmund/D3TableFilter/issues
+RoxygenNote: 5.0.1

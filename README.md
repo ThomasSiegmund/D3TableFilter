@@ -1,7 +1,7 @@
 ---
 title: "D3TableFilter Intro"
 author: "Thomas Siegmund"
-date: "2015-03-15"
+date: "2015-11-22"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
@@ -40,7 +40,9 @@ In addition to the impressive feature set of the *TableFilter* library the *D3Ta
     + ColorBrewer
     + ...
 
-* In-cell graphics. Can turn cell values into SVG graphics using D3.js functions.
+* Cell styling and in-cell graphics. Can format text or turn cell values into SVG graphics using D3.js functions.
+
+* Sparklines. Small graphs in table cells can be generated using the integrated [jQuery Sparkline](http://omnipotent.net/jquery.sparkline) library. 
 
 Thanks to the [shinyapps.io](https://www.shinyapps.io) service you can test various features of the D3TableFilter widget in a couple of demo apps online:
 
@@ -536,6 +538,32 @@ The *examples/interaction* Shiny app also shows a second variation of in-cell gr
     );
 ```
 
+# Sparklines
+Defined by Edward Tufte as *data-intense, design-simple, word-sized graphs*, sparklines can convey a high amount of information in very little space. The [jQuery Sparklines](http://omnipotent.net/jquery.sparkline) library allows to generate beautiful sparlines in a web page with little effort. *D3TableFilter* includes *jQuery Sparklines*. Sparkline expects a comma separated series of numbers as input values, e.g. ```"1,3,5,7,11"```. To turn a column of such values into a column of small line charts in *D3TableFilter*, is as simple as to generate a sparklines configuration and to hand this over to the ```d3tf``` function:
+
+```r
+sparklines = list( col_0 = list(  type = "line",
+                                  width = "120px",
+                                  height = "24px"
+                                  ),
+                   col_1 = list(  type = "bar",
+                                  barColor = "#00BFC4",
+                                  negBarColor = "#F8766D",
+                                  width = "120px",
+                                  height = "24px"
+                                  )
+#                    ...
+                      )
+                      
+d3tf(tbl, sparklines = sparklines);
+
+```
+
+*jQuery sparkline* provides several different types of graphs (line graphs, bar graphs, pie charts, tristate graphs, boxplots...) and many configuration options. Examples of some different graph types can found in the *examples/colour* Shiny app.
+
+![](vignettes/images/sparklines.png)
+
+ 
 
 
 

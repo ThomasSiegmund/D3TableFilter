@@ -62,6 +62,8 @@ shinyServer(function(input, output, session) {
         revals$changes[i] <- changeVector
         newVal <-  paste(as.character(c(oldVals[-1], lastVal + change)), collapse = ',')
         revals$vector[i] <- newVal;
+        # could update the complete table in one go. performance would likely be better.
+        # this is to demonstrate the update of single cells.
         setCellValue(session, "sparks1", row = i, col = 1, value = newVal)
         setCellValue(session, "sparks1", row = i, col = 2, value = newVal)
         setCellValue(session, "sparks1", row = i, col = 3, value = newVal)

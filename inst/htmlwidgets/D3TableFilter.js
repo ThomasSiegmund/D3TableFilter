@@ -36,6 +36,14 @@ HTMLWidgets.widget({
       }
     }
 
+    // need these global variables for server side edits
+    window.D3TableFilter = window.D3TableFilter || {};
+    window.D3TableFilter["bgColScales_" + outputID] = data.bgColScales;
+    window.D3TableFilter["fgColScales_" + outputID] = data.fgColScales;
+    window.D3TableFilter["cellFunctions_" + outputID] = data.cellFunctions;
+    window.D3TableFilter["footCellFunctions_" + outputID] = data.footCellFunctions;
+    window.D3TableFilter["sparklines_" + outputID] = data.sparklines;
+
     var edit = data.edit;
     
     // have a unique id for each edit
@@ -137,7 +145,6 @@ HTMLWidgets.widget({
     // apply row styles
     var rowStyles = data.rowStyles;
     if(rowStyles != null) {
-      log("setting rowstyles")
       rows.each(
         function(d, i, j) {
             var elt = d3.select(this);
@@ -279,11 +286,9 @@ HTMLWidgets.widget({
             } else if (cell[0][0].firstChild.type == "checkbox" || cell[0][0].firstChild.type == "radio") {
               cell.selectAll("input").property("checked", val);
             } else if (cell.classed("sparklines")) {
-              // sparklines
-              log("have sparkline");
               cell = cell.attr('value', val)
                          .html(val);
-              var $sparkCell = $(cell[0]).sparkline('html', data.sparklines[col])
+              setSparkline(tbl, cell, col);
             } else {
               if(cell.selectAll("text").empty()) {
                 // simple cell, update text directly
@@ -292,37 +297,37 @@ HTMLWidgets.widget({
               } else {
                 // cell styled using cellfunctions, look for text element within
               cell = cell.attr('value', val)
-                  .selectAll("text").html(val);
+                  .selectAll("text")
+                  .html(val);
               }
             }
     }
     
-    function setSparkline(cell, key) {
-      return cell.sparkline('html', data.sparklines[key]) ;
-    }
     
     // turn cell content into sparklines
     function setSparklines(tbl) {
-      var sparklines = data.sparklines;
+      var sparklines = window.D3TableFilter["sparklines_" + tbl];
       for (var key in sparklines) { 
          if (sparklines.hasOwnProperty(key)) { 
-         table = tbl; // strange. this makes it accessible inside of the select
+         table = tbl; 
          var sparkCell = d3.selectAll('#' + tbl)
            .selectAll('tbody')
            .selectAll('td.' + key)
-           .classed("sparklines", true)
-         var $sparkCells = $(sparkCell[0]).sparkline('html', sparklines[key])
-   			}
+           .classed("sparklines", true);
+          setSparkline(tbl, sparkCell, key);
+  			}
        }  
      };
-    
-    
+
+    function setSparkline(tbl, cell, key) {
+      var sparklines = window.D3TableFilter["sparklines_" + tbl];
+      $(cell[0]).sparkline('html', sparklines[key])
+    }
+
     // server side edit, confirm or reject
     try {
       Shiny.addCustomMessageHandler("setCellValue",
           function(message) {
-            log("message handler")
-            log(data.sparklines)
             var row = 'row_' + (Number(message["row"]) - 1);
             if(data.showRowNames) {
               var col = 'col_' + message["col"];
@@ -357,7 +362,6 @@ HTMLWidgets.widget({
                 // if sever sends value, reset input to it and transition
                 // color back to previous
                 if(message["value"] !== null) {
-                    log("running color transition")
                     cell.transition("textcolor")
                     .duration(1500)
                     .style("color", oldColor)
@@ -387,7 +391,6 @@ HTMLWidgets.widget({
             if(message["value"] === null) {
               return(null)
             }
-            
 
             var val = message["value"];
             setCellData(cell, val, tbl, col);
@@ -421,10 +424,10 @@ HTMLWidgets.widget({
     function runCellFunctions(tbl, col, foot) {
       if(foot == true) {
         var selector = "tfoot";
-        var cellFunctions =  data.footCellFunctions;
+        var cellFunctions =  window.D3TableFilter["footCellFunctions_" + tbl];
       } else {
         var selector = "tbody"
-        var cellFunctions = data.cellFunctions;
+        var cellFunctions = window.D3TableFilter["cellFunctions_" + tbl] ;
       }
       if(col == null) {
         // check whole table
@@ -617,8 +620,8 @@ HTMLWidgets.widget({
     }
     
     // apply fg and bg colour scales to column
-    function colourCol(tbl, col) {  
-      var bgColScales = data.bgColScales;
+    function colourCol(tbl, col) { 
+      var bgColScales = window.D3TableFilter["bgColScales_" + tbl];
       if (bgColScales.hasOwnProperty(col)) {
       table = tbl; 
        var col2Color = d3.selectAll('#' + tbl)
@@ -631,7 +634,7 @@ HTMLWidgets.widget({
         		return bgColScales[col](tbl, d.value);
   				});
        } 
-      var fgColScales =data.fgColScales;
+      var fgColScales = window.D3TableFilter["fgColScales_" + tbl];
       if (fgColScales.hasOwnProperty(col)) {
           table = tbl; 
           d3.selectAll('#' + tbl)
@@ -655,7 +658,7 @@ HTMLWidgets.widget({
     // set background color for whole table
     // does nothing if length(bgColScales) == 0 and length(fgColScales) == 0
     function colourCells(tbl) {
-    var bgColScales = data.bgColScales;
+    var bgColScales = window.D3TableFilter["bgColScales_" + tbl];
     for (var key in bgColScales) {
        if (bgColScales.hasOwnProperty(key)) { 
          table = tbl; // strange. this makes it accessible inside of the select
@@ -670,7 +673,7 @@ HTMLWidgets.widget({
      };
 
     // set text color for whole table
-    var fgColScales = data.fgColScales;
+    var fgColScales = window.D3TableFilter["fgColScales_" + tbl];
     for (var key in fgColScales) { 
        if (fgColScales.hasOwnProperty(key)) { 
        table = tbl; // strange. this makes it accessible inside of the select

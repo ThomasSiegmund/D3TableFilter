@@ -1,34 +1,34 @@
-#' d3tf Generate a HTML table widget with advanced filtering, sorting and colouring.
-#'
+#' d3tf Generate a HTML table widget with advanced filtering, sorting and 
+#' colouring.
+#' 
 #' R interface to Max Guglielmi's \href{http://tablefilter.free.fr/ }{HTML Table
-#' Filter Generator} JavaScript library. Provides advanced filtering and
+#' Filter Generator} JavaScript library. Provides advanced filtering and 
 #' sorting. Columns can be formatted using D3 functions.
 #' 
-#' @section Configuration: The D3TableFilter widget can be highly customized. See 
-#'   the website of the JavaScript library
-#'   \href{http://tablefilter.free.fr/}{HTML Table Filter Generator}
-#'   for details. Configuration is passed as a
-#'   list of key value pairs to the JavaScript engine. A shiny app demonstrating
-#'   many useful features in one table can be found in the inst/examples/feature
-#'   directory of this package.
-#'
+#' @section Configuration: The D3TableFilter widget can be highly customized. 
+#'   See the website of the JavaScript library 
+#'   \href{http://tablefilter.free.fr/}{HTML Table Filter Generator} for 
+#'   details. Configuration is passed as a list of key value pairs to the 
+#'   JavaScript engine. A shiny app demonstrating many useful features in one 
+#'   table can be found in the inst/examples/feature directory of this package.
+#'   
 #' @section Extensions: Some of the TableFilter functions are beeing provided as
-#'   extensions, in particular \itemize{ \item ColsVisibility: Visibility of
-#'   columns can be adjusted by configuration or interactively \item
-#'   ColumnsResizer: Interactive resizing of column width \item
-#'   FiltersRowVisibility: Interactively show or hide the filter row. }
-#' To activate these extensions simply define them as a character vector in the 
-#' extensions parameter, e.g. \code{extensions = c("ColsVisibility", 
-#' "ColumnsResizer", "FiltersRowVisibility")}. This takes care of enabling and 
-#' basic configuration of the extensions. For further customization use the
-#' tableProps parameter.
-#'
-#' @section Editing: The whole table (\code{edit = TRUE}) or selected columns
-#'   (\code{edit = c("col_1", "col_3")}) can set to be editable. An editable
+#'   extensions, in particular \itemize{ \item ColsVisibility: Visibility of 
+#'   columns can be adjusted by configuration or interactively \item 
+#'   ColumnsResizer: Interactive resizing of column width \item 
+#'   FiltersRowVisibility: Interactively show or hide the filter row. } To 
+#'   activate these extensions simply define them as a character vector in the 
+#'   extensions parameter, e.g. \code{extensions = c("ColsVisibility", 
+#'   "ColumnsResizer", "FiltersRowVisibility")}. This takes care of enabling and
+#'   basic configuration of the extensions. For further customization use the 
+#'   tableProps parameter.
+#'   
+#' @section Editing: The whole table (\code{edit = TRUE}) or selected columns 
+#'   (\code{edit = c("col_1", "col_3")}) can set to be editable. An editable 
 #'   table provides an input element named like the corresponding output element
 #'   + "_edit". Here each (debounced) edit event in a table cell is visible as a
-#'   list of row (\code{row}), column (\code{col}) and new value (\code{val}). See
-#'   examples/interaction for a Shiny app demonstrating this feature.
+#'   list of row (\code{row}), column (\code{col}) and new value (\code{val}). 
+#'   See examples/interaction for a Shiny app demonstrating this feature.
 #'   
 #' @section Colouring: Table columns can be colored based on their cells value 
 #'   using D3.js colour scales. Table background and foreground (text) can be 
@@ -38,18 +38,25 @@
 #'   \href{https://github.com/mbostock/d3/wiki/Scales}{D3 scale documentation} 
 #'   and examples below for details. As a shortcut a linear scale over the full 
 #'   value range of a column can be defined as \code{col_n = 
-#' "auto:startcolour:endcolour"} (n is the column number, starting with 0). For
-#' better mapping from numeric values to perceived intensity a HCL colour 
-#' interpolation is used. An example Shiny app showing various colour scales can
-#' be found in the inst/examples/colour/ directory of this package.
-#' 
+#'   "auto:startcolour:endcolour"} (n is the column number, starting with 0).
+#'   For better mapping from numeric values to perceived intensity a HCL colour 
+#'   interpolation is used. An example Shiny app showing various colour scales
+#'   can be found in the inst/examples/colour/ directory of this package.
+#'   
 #' @section Row selection: If \code{selectableRows} is set to \code{"single"} or
 #'   to \code{"multi"}, the widget provides a shiny input named outputid + 
 #'   "_select". On (\code{ctrl-}) mouse click the input delivers an array of 1 
-#'   based row coordinates. Selected rows are highligthed using the "info"
-#'   Bootstrap class. \code{setRowClass} can be used to set or to unset this
-#'   class from the server. See the "interaction" shiny app in the
+#'   based row coordinates. Selected rows are highligthed using the "info" 
+#'   Bootstrap class. \code{setRowClass} can be used to set or to unset this 
+#'   class from the server. See the "interaction" shiny app in the 
 #'   inst/examples/ directory of this package for an example.
+#'   
+#' @section Sparklines: Table columns containing a comma separated series of 
+#'   numbers (\code{"1,3,5,7,11"}) can be turned into sparkline visualizations. 
+#'   \code{sparklines = list(col_0 = list(type = "line"))} will turn the cells 
+#'   of the first column into a minature line chart. See the "sparklines" shiny 
+#'   app in the inst/examples/sparklines directory of this package for an
+#'   example.
 #'   
 #' @param df Data frame or matrix to display as html table
 #' @param enableTf Enable the features for the "HTML table filter generator"
@@ -66,12 +73,12 @@
 #' @param tableStyle List css classes to apply to a table. Bootstrap3 provides 
 #'   \code{table}, \code{table-striped}, \code{table-bordered}, 
 #'   \code{table-hover}, and \code{table-condensed}. The \code{table-hover} 
-#' class is applied automatically if \code{selectableRows} is active. If 
-#' \code{tableStyle} is not NULL, the normal CSS styling of TableFilter is 
-#' automatically cut down by appending \code{stylesheet = 
-#' "tablefilter-2.5/filtergridBS.css"} to the tableProps.
-#' @param rowStyles Character vector of Bootstrap classes to apply to rows.
-#'   Could be used to pre-select rows when using the \code{selectableRows}
+#'   class is applied automatically if \code{selectableRows} is active. If 
+#'   \code{tableStyle} is not NULL, the normal CSS styling of TableFilter is 
+#'   automatically cut down by appending \code{stylesheet = 
+#'   "tablefilter-2.5/filtergridBS.css"} to the tableProps.
+#' @param rowStyles Character vector of Bootstrap classes to apply to rows. 
+#'   Could be used to pre-select rows when using the \code{selectableRows} 
 #'   interface.
 #' @param bgColScales List of background colour scales to apply to the columns
 #' @param fgColScales List of text colour scales to apply to the columns
@@ -82,17 +89,19 @@
 #'   "col_3"}).
 #' @param cellFunctions Run D3 functions to format a column. Can be used to 
 #'   generate D3 graphics in cells.
-#' @param filterInput Generate an input element named outputid + "_filter"
+#' @param filterInput Generate an input element named outputid + "_filter" 
 #'   listing filter settings and valid rows
-#' @param initialFilters List of initial filter settings filter settings and
+#' @param initialFilters List of initial filter settings filter settings and 
 #'   valid rows
 #' @param footData Data frame or matrix to append as footer to the table. Column
-#'   names must match the colnames of the main table. Cells in the footer will
-#'   get an id attribute (e.g. first footer row, second column in "mtcars"
-#'   output is named "frow_0_fcol_1_tbl_mtcars") allowing them to be used with
+#'   names must match the colnames of the main table. Cells in the footer will 
+#'   get an id attribute (e.g. first footer row, second column in "mtcars" 
+#'   output is named "frow_0_fcol_1_tbl_mtcars") allowing them to be used with 
 #'   the "col_operation" option of TableFilter.
-#' @param footCellFunctions Run D3 functions to format a footer column. Can be
+#' @param footCellFunctions Run D3 functions to format a footer column. Can be 
 #'   used to format table footer or to generate D3 graphics in cells.
+#' @param  sparklines List of per column options to turn cell values into 
+#'   sparkline visulizations.
 #' @example inst/examples/basic/server.R
 #' @seealso \code{\link[DT]{datatable}}.
 #' @examples

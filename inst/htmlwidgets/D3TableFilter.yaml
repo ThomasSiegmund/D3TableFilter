@@ -108,3 +108,4 @@ dependencies:
     version: 2.1.2
     src: "lib/sparklines/dist"
     script: "jquery.sparkline.min.js"
+    stylesheet: "tooltip.css"

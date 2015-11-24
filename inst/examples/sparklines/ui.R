@@ -10,7 +10,7 @@ library(D3TableFilter)
 shinyUI(fluidPage(
   title = 'Usage of Sparkline.js in D3TableFilter',
   fluidRow(
-    column(width = 12, d3tfOutput('sparks1'))
+    column(width = 12, d3tfOutput('sparks1', height = "auto"))
   )
 ))
 

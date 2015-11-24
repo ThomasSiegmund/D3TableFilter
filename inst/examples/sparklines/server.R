@@ -24,7 +24,17 @@ shinyServer(function(input, output, session) {
     # define four different sparklines for four columns
     sparklines = list(col_0 = list(  type = "line",
                                      width = "120px",
-                                     height = "24px"),
+                                     height = "24px",
+                                     lineColor = "black",
+                                     fillColor = FALSE,
+                                     spotColor = "#F8766D",
+                                     minSpotColor = "#00BFC4",
+                                     maxSpotColor = "#00BFC4",
+                                     spotRadius = 2,
+                                     normalRangeMax = 15,
+                                     normalRangeMin = -15,
+                                     normalRangeColor = "#E7E8EA"
+                                   ),
                       col_1 = list(  type = "bar",
                                      barColor = "#00BFC4",
                                      negBarColor = "#F8766D",

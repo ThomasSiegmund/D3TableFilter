@@ -383,7 +383,7 @@ Examples for different color scales can found in the *examples/colour* Shiny app
 
 # D3 cell styling
 
-While the *TableFilter* library provides many features to modify the appearance of various table elements using CSS, it does not support directly the styling and formatting of text in table cells. You can not, for example, generate right aligned numeric columns using *TableFilter* alone. *D3TableFilter* allows this, similar to the color mapping, by use of D3. The ```cellFunctions``` and ```footCellFunctions``` argument to ```d3tf()``` apply D3 JavaScript code to columns in the table body or footer. The code below will make the first column (```col_0```) in a table footer right aligned ```classed("text-right", true)```, bold ```.style("font-weight", "bold")```and formatted with one decimal point ```d3.format(".1f")```. D3 has formatters for [numbers](https://github.com/mbostock/d3/wiki/Formatting and [dates](https://github.com/mbostock/d3/wiki/Time-Formatting).
+While the *TableFilter* library provides many features to modify the appearance of various table elements using CSS, it does not support directly the styling and formatting of text in table cells. You can not, for example, generate right aligned numeric columns using *TableFilter* alone. *D3TableFilter* allows this, similar to the color mapping, by use of D3. The ```cellFunctions``` and ```footCellFunctions``` argument to ```d3tf()``` apply D3 JavaScript code to columns in the table body or footer. The code below will make the first column (```col_0```) in a table footer right aligned ```classed("text-right", true)```, bold ```.style("font-weight", "bold")```and formatted with one decimal point ```d3.format(".1f")```. D3 has formatters for [numbers](https://github.com/mbostock/d3/wiki/Formatting) and [dates](https://github.com/mbostock/d3/wiki/Time-Formatting).
 
 ```r
     # apply D3.js functions to footer columns,
@@ -403,7 +403,7 @@ While the *TableFilter* library provides many features to modify the appearance 
 
 While the example is an serious application of D3 to generate good looking an correctly formatted tables, the following section is on the border of eye candy (or maybe a little bit beyond).
 
-The ```cellFunctions``` argument can be used not only to format numbers, but to turn them into SVG graphics within a cell. The following code replaces numbers in the third column (```col_2```) into SVG filled circles. The area of the circles is scaled proportional to the numeric values. The finally the numbers are shown centered inside the circles.
+The ```cellFunctions``` argument can be used not only to format numbers, but to turn them into SVG graphics within a cell. The following code replaces numbers in the third column (```col_2```) into SVG filled circles. The area of the circles is scaled proportional to the numeric values. Finally the numbers are shown centered inside the circles.
 
 ```r
     cellFunctions <- list(

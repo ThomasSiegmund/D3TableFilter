@@ -542,24 +542,43 @@ The *examples/interaction* Shiny app also shows a second variation of in-cell gr
 Defined by Edward Tufte as *data-intense, design-simple, word-sized graphs*, sparklines can convey a high amount of information in very little space. The [jQuery Sparklines](http://omnipotent.net/jquery.sparkline) library allows to generate beautiful sparlines in a web page with little effort. *D3TableFilter* includes *jQuery Sparklines*. Sparkline expects a comma separated series of numbers as input values, e.g. ```"1,3,5,7,11"```. To turn a column of such values into a column of small line charts in *D3TableFilter*, is as simple as to generate a sparklines configuration and to hand this over to the ```d3tf``` function:
 
 ```r
-sparklines = list( col_0 = list(  type = "line",
-                                  width = "120px",
-                                  height = "24px"
+    # define four different sparklines for four columns
+    sparklines = list(col_0 = list(  type = "line",
+                                     width = "120px",
+                                     height = "24px",
+                                     lineColor = "black",
+                                     fillColor = FALSE,
+                                     spotColor = "#F8766D",
+                                     minSpotColor = "#00BFC4",
+                                     maxSpotColor = "#00BFC4",
+                                     spotRadius = 2,
+                                     normalRangeMax = 15,
+                                     normalRangeMin = -15,
+                                     normalRangeColor = "#E7E8EA"
+                                   ),
+                      col_1 = list(  type = "bar",
+                                     barColor = "#00BFC4",
+                                     negBarColor = "#F8766D",
+                                     width = "120px",
+                                     height = "24px"
+                                   ),
+                      col_2 = list(  type = "box",
+                                     width = "120px",
+                                     height = "24px"
                                   ),
-                   col_1 = list(  type = "bar",
-                                  barColor = "#00BFC4",
-                                  negBarColor = "#F8766D",
-                                  width = "120px",
-                                  height = "24px"
-                                  )
-#                    ...
+                      col_3 = list(type = "tristate",
+                                     posBarColor = "#00BA38",
+                                     negBarColor = "#F8766D",
+                                     width = "120px",
+                                     height = "24px"
+                                   )
                       )
                       
 d3tf(tbl, sparklines = sparklines);
 
 ```
 
-*jQuery sparkline* provides several different types of graphs (line graphs, bar graphs, pie charts, tristate graphs, boxplots...) and many configuration options. Examples of some different graph types can found in the *examples/colour* Shiny app.
+*jQuery Sparklines* provides several different types of graphs (line graphs, bar graphs, pie charts, tristate graphs, boxplots...) and many configuration options. Examples of some different graph types can found in the *examples/sparklines* Shiny app in this package. For a complete documentation of sparkline options see the [jQuery Sparklines documentation](http://omnipotent.net/jquery.sparkline/#s-docs).
 
 ![](vignettes/images/sparklines.png)
 

@@ -26,7 +26,8 @@ Depends:
     R (>= 3.1.0)
 Imports:
     htmlwidgets (>= 0.3),
-    gtools
+    gtools,
+    crosstalk
 License: MIT + file LICENSE
 LazyData: true
 Enhances: rmarkdown (>= 0.3.3), shiny (>= 0.10.2.1)

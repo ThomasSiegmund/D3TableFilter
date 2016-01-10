@@ -603,7 +603,7 @@ HTMLWidgets.widget({
                        return true;
                      }
                      });
-    });
+      });
   
 
     // clear filters from table

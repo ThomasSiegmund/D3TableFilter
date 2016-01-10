@@ -551,6 +551,8 @@ HTMLWidgets.widget({
     // handler for selectableRows
     // create a shiny input event, named like 
     //  the corresponding output element + "_select"
+    // also sends message to crosstalk
+    var ctgrp = crosstalk.group(data.group);
     function shinyRowClickEvent(d, i, j) {
       var regex = /tbl_(\w+)/;
       
@@ -571,18 +573,23 @@ HTMLWidgets.widget({
       }
       
       if(window.HTMLWidgets.shinyMode) {
-      var selected = [];
+        var selected = [];
+        var selectedKeys = [];
         rows.each(function(d, i) {
           if($(this).hasClass(data.selectableRowsClass)) {
             selected.push(Number(this.id.replace('r', '')) + 1);
+            selectedKeys.push((String($(this).attr("key"))));
           }
         })
+        ctgrp.var("selection").set(selectedKeys, {
+          // Attach a sender property to the event
+          sender: el
+        });
         Shiny.onInputChange(inputID, selected);
       }
     }
 
     // crosstalk selection handling
-    var ctgrp = crosstalk.group(data.group);
     ctgrp.var("selection").on("change", function(e) {
       if (e.sender === el) {
         return;

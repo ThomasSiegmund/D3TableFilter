@@ -96,6 +96,9 @@ HTMLWidgets.widget({
         .append("tr")
         .attr('id', function(d, i) {return 'r' + i})
         .attr('class', 'tbl_' + outputID);
+     if(data.key) {
+      rows.attr("key", function(d,i) { return (data.key[i]) ;});
+    }
 
     // create a cell in each row for each column
     var cells = rows.selectAll("td")
@@ -577,6 +580,24 @@ HTMLWidgets.widget({
         Shiny.onInputChange(inputID, selected);
       }
     }
+
+    // crosstalk selection handling
+    var ctgrp = crosstalk.group(data.group);
+    ctgrp.var("selection").on("change", function(e) {
+      if (e.sender === el) {
+        return;
+      }
+      var rows = d3.select(el).selectAll('tbody')
+                   .selectAll('tr')
+                   .classed(data.selectableRowsClass, function(d) {
+                      if($.inArray(String($(this).attr("key")), e.value) == -1) {
+                        return false;
+                     } else {
+                       return true;
+                     }
+                     });
+    });
+  
 
     // clear filters from table
     try {

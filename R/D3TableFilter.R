@@ -102,6 +102,8 @@
 #'   used to format table footer or to generate D3 graphics in cells.
 #' @param  sparklines List of per column options to turn cell values into 
 #'   sparkline visulizations.
+#' @param key Vector of unique row identifiers for crosstalk
+#' @param group Scoping group for crosstalk widget to widget communication
 #' @example inst/examples/basic/server.R
 #' @seealso \code{\link[DT]{datatable}}.
 #' @examples
@@ -126,9 +128,10 @@
 #' 
 #' @import gtools
 #' @import htmlwidgets
+#' @import crosstalk
 #' @export JS
 #' @export
-d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, colNames = NULL, extensions = c(), selectableRows = NULL, selectableRowsClass = "info", tableStyle = "table", rowStyles = NULL, bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), footData = NULL, footCellFunctions = list(), sparklines = list(), width = NULL, height = NULL) {
+d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, colNames = NULL, extensions = c(), selectableRows = NULL, selectableRowsClass = "info", tableStyle = "table", rowStyles = NULL, bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), footData = NULL, footCellFunctions = list(), sparklines = list(), key = row.names(df), group = NULL, width = NULL, height = NULL) {
   
   if(is.matrix(df)) {
     df <- as.data.frame(df);
@@ -257,7 +260,9 @@ d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, c
     filterInput = filterInput,
     initialFilters = initialFilters,
     footData = footData,
-    sortKeys = sortKeys
+    sortKeys = sortKeys,
+    key = key,
+    group = group
   )
   
   # create the widget

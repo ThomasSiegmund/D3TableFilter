@@ -11,8 +11,8 @@ d3tf(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE,
   bgColScales = list(), fgColScales = list(), edit = FALSE,
   radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(),
   filterInput = FALSE, initialFilters = list(), footData = NULL,
-  footCellFunctions = list(), sparklines = list(), width = NULL,
-  height = NULL)
+  footCellFunctions = list(), sparklines = list(), key = row.names(df),
+  group = NULL, width = NULL, height = NULL)
 }
 \arguments{
 \item{df}{Data frame or matrix to display as html table}
@@ -79,6 +79,10 @@ used to format table footer or to generate D3 graphics in cells.}
 
 \item{sparklines}{List of per column options to turn cell values into 
 sparkline visulizations.}
+
+\item{key}{Vector of unique row identifiers for crosstalk}
+
+\item{group}{Scoping group for crosstalk widget to widget communication}
 }
 \description{
 R interface to Max Guglielmi's \href{http://tablefilter.free.fr/ }{HTML Table

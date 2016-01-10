@@ -54,10 +54,13 @@ Thanks to the [shinyapps.io](https://www.shinyapps.io) service you can test vari
 
 
 # Installation
-D3TableFilter is not yet on CRAN, but you can easily install it from Github using the devtools package:
+D3TableFilter is not yet on CRAN, but you can easily install it from Github using
+the devtools package. It also needs the [crosstalk](https://github.com/rstudio/crosstalk/)
+library (not yet on CRAN) for widget to widget communication:
 
 ```r
 install.packages("devtools")
+devtools::install_github("rstudio/crosstalk")
 devtools::install_github("ThomasSiegmund/D3TableFilter")
 ```
 

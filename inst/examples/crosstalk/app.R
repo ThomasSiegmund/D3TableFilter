@@ -18,8 +18,8 @@ server <- function(input, output, session) {
       group = "A"
     )
   })
+  
   output$tbl1 <- renderD3tf({
-    
     tableProps <- list(
       btn_reset = TRUE,
       sort = TRUE,
@@ -27,7 +27,6 @@ server <- function(input, output, session) {
         sort_types = c(rep("Number", 4), "String")
       )
     )
-    
     d3tf(iris, tableProps = tableProps, enableTf = TRUE, selectableRows = "multi", group = "A")
   })
 }

@@ -1,6 +1,13 @@
+# This is a minimal app demonstrating the crosstalk  function of the D3TableFilter
+# widget.
+# Needs crosstalk (https://github.com/rstudio/crosstalk/)
+# and d3scatter (https://github.com/jcheng5/d3scatter/)
+
 library(shiny)
+library(crosstalk)
 library(d3scatter)
 library(D3TableFilter)
+
 
 ui <- fluidPage(
   d3scatterOutput("scatter1", height = 400),

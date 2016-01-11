@@ -552,7 +552,9 @@ HTMLWidgets.widget({
     // create a shiny input event, named like 
     //  the corresponding output element + "_select"
     // also sends message to crosstalk
-    var ctgrp = crosstalk.group(data.group);
+    if(typeof crosstalk != "undefined") {
+      var ctgrp = crosstalk.group(data.group);
+    }
     function shinyRowClickEvent(d, i, j) {
       var regex = /tbl_(\w+)/;
       
@@ -572,39 +574,42 @@ HTMLWidgets.widget({
         sel.classed(data.selectableRowsClass, true);
       }
       
-      if(window.HTMLWidgets.shinyMode) {
-        var selected = [];
-        var selectedKeys = [];
-        rows.each(function(d, i) {
-          if($(this).hasClass(data.selectableRowsClass)) {
-            selected.push(Number(this.id.replace('r', '')) + 1);
-            selectedKeys.push((String($(this).attr("key"))));
-          }
-        })
+      var selected = [];
+      var selectedKeys = [];
+      rows.each(function(d, i) {
+        if($(this).hasClass(data.selectableRowsClass)) {
+          selected.push(Number(this.id.replace('r', '')) + 1);
+          selectedKeys.push((String($(this).attr("key"))));
+        }
+      })
+      if(typeof crosstalk != "undefined") {
         ctgrp.var("selection").set(selectedKeys, {
           // Attach a sender property to the event
           sender: el
         });
+      }
+      if(window.HTMLWidgets.shinyMode) {
         Shiny.onInputChange(inputID, selected);
       }
     }
 
     // crosstalk selection handling
-    ctgrp.var("selection").on("change", function(e) {
-      if (e.sender === el) {
-        return;
-      }
-      var rows = d3.select(el).selectAll('tbody')
-                   .selectAll('tr')
-                   .classed(data.selectableRowsClass, function(d) {
-                      if($.inArray(String($(this).attr("key")), e.value) == -1) {
-                        return false;
-                     } else {
-                       return true;
-                     }
-                     });
-      });
-  
+    if(typeof crosstalk != "undefined") {
+      ctgrp.var("selection").on("change", function(e) {
+        if (e.sender === el) {
+          return;
+        }
+        var rows = d3.select(el).selectAll('tbody')
+                     .selectAll('tr')
+                     .classed(data.selectableRowsClass, function(d) {
+                        if($.inArray(String($(this).attr("key")), e.value) == -1) {
+                          return false;
+                       } else {
+                         return true;
+                       }
+                       });
+        });
+    }
 
     // clear filters from table
     try {

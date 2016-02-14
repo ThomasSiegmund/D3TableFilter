@@ -145,15 +145,25 @@ HTMLWidgets.widget({
       thead.classed(data.tableStyle, true);
      }
 
-    // apply row styles
+    // apply row styles and add rows with style "info" to preselected
     var rowStyles = data.rowStyles;
+    var selected = [];
     if(rowStyles != null) {
       rows.each(
         function(d, i, j) {
+          
             var elt = d3.select(this);
             elt.classed(rowStyles[i], true);
+            
+            if(rowStyles[i] == data.selectableRowsClass){
+              selected.push(i + 1)
+            }
         }
       ) 
+    }
+    var inputID = outputID + "_select";
+    if(window.HTMLWidgets.shinyMode) {
+        Shiny.onInputChange(inputID, selected);
     }
         
     // debounce from Underscore.js

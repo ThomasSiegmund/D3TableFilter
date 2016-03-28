@@ -125,6 +125,18 @@
 #'  col_0 = "auto:white:green"
 #' )
 #' 
+#' # ----------------------------------------------------------------------------    
+#' # to save widget as a freestanding html file
+#' # ----------------------------------------------------------------------------
+#' library(magrittr)
+#' library(htmlwidgets)
+#' library(D3TableFilter)
+#' mtcars %>% d3tf(tableProps = tableProps,
+#'                         showRowNames = TRUE,
+#'                         tableStyle = "table table-bordered") %>% 
+#'   saveWidget(file = "test.html", selfcontained = TRUE)
+#' 
+#' 
 #' 
 #' @import gtools
 #' @import htmlwidgets

@@ -134,7 +134,7 @@
 #' mtcars %>% d3tf(tableProps = tableProps,
 #'                         showRowNames = TRUE,
 #'                         tableStyle = "table table-bordered") %>% 
-#'   saveWidget(file = "test.html", selfcontained = TRUE)
+#'   saveWidget(file = "test.html", selfcontained = FALSE)
 #' 
 #' 
 #' 

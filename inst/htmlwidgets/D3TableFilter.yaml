@@ -90,11 +90,11 @@ dependencies:
     - TFExt_FiltersRowVisibility/icn_clp.png
     - TFExt_FiltersRowVisibility/icn_exp.png
   - name: jquery
-    version: 1.11.2
+    version: 1.11.3
     src: "lib/jquery/dist/"
-    script: jquery-1.11.2.min.js
+    script: jquery.min.js
   - name: bootstrap
-    version: 3.3.1
+    version: 3.3.5
     src: "lib/bootstrap/dist/"
     script:
     - js/bootstrap.min.js

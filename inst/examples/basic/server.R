@@ -15,15 +15,15 @@ shinyServer(function(input, output, session) {
     # for a complete reference
     tableProps <- list(
       btn_reset = TRUE,
-      sort = TRUE,
-      sort_config = list(
         # alphabetic sorting for the row names column, numeric for all other columns
-        sort_types = c("String", rep("Number", ncol(mtcars)))
-      )
+        col_types = c("string", rep("number", ncol(mtcars)))
     );
     
     d3tf(mtcars,
-          tableProps = tableProps,
+         tableProps = tableProps,
+         extensions = list(
+          list(name = "sort")
+         ),
          showRowNames = TRUE,
          tableStyle = "table table-bordered");
   })

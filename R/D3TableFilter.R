@@ -131,7 +131,7 @@
 #' @import crosstalk
 #' @export JS
 #' @export
-d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, colNames = NULL, extensions = c(), selectableRows = NULL, selectableRowsClass = "info", tableStyle = "table", rowStyles = NULL, bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), footData = NULL, footCellFunctions = list(), sparklines = list(), key = row.names(df), group = NULL, width = NULL, height = NULL) {
+d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, colNames = NULL, extensions = list(), selectableRows = NULL, selectableRowsClass = "info", tableStyle = "table", rowStyles = NULL, bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), footData = NULL, footCellFunctions = list(), sparklines = list(), key = row.names(df), group = NULL, width = NULL, height = NULL) {
   
   if(is.matrix(df)) {
     df <- as.data.frame(df);
@@ -153,7 +153,7 @@ d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, c
 #     tableProps <- c(tableProps, stylesheet = "tablefilter-2.5/filtergridBS.css");
 #   }
   if(!is.null(tableStyle)) {
-    tableProps <- c(tableProps, stylesheet = "filtergridBS.css");
+    tableProps <- c(tableProps, stylesheet = "style/tablefilter.css");
   }
   
   if(!is.null(height)) {
@@ -161,29 +161,7 @@ d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, c
   }
   
   if(length(extensions) > 0) {
-    ext <- list(name = list(), src = list(), description = list(), initialize = list());
-    if("ColsVisibility" %in% extensions) {
-      ext$name[length(ext$name) + 1] = 'ColsVisibility';
-#      ext$src[length(ext$src) + 1] = 'tablefilter-2.5/TFExt_ColsVisibility/TFExt_ColsVisibility.js';
-      ext$src[length(ext$src) + 1] = 'TFExt_ColsVisibility/TFExt_ColsVisibility.js';
-      ext$description[length(ext$description) + 1] = 'Columns visibility manager';
-      ext$initialize[length(ext$initialize) + 1] = list(JS('function(o){o.SetColsVisibility();}'));
-    } 
-    if("ColumnsResizer" %in% extensions) {
-      ext$name[length(ext$name) + 1] = 'ColumnsResizer';
-#      ext$src[length(ext$src) + 1] = 'tablefilter-2.5/TFExt_ColsResizer/TFExt_ColsResizer.js';
-      ext$src[length(ext$src) + 1] = 'TFExt_ColsResizer/TFExt_ColsResizer.js';
-      ext$description[length(ext$description) + 1] = 'Columns Resizing';
-      ext$initialize[length(ext$initialize) + 1] = list(JS('function(o){o.SetColsResizer();}'));
-    } 
-    if("FiltersRowVisibility" %in% extensions) {
-      ext$name[length(ext$name) + 1] = 'FiltersRowVisibility';
-#      ext$src[length(ext$src) + 1] = 'tablefilter-2.5/TFExt_FiltersRowVisibility/TFExt_FiltersRowVisibility.js';
-      ext$src[length(ext$src) + 1] = 'TFExt_FiltersRowVisibility/TFExt_FiltersRowVisibility.js';
-      ext$description[length(ext$description) + 1] = 'Expand/Collapse filters row';
-      ext$initialize[length(ext$initialize) + 1] = list(JS('function(o){o.SetFiltersRowVisibility();}'));
-    } 
-    tableProps$extensions <- ext;
+    tableProps$extensions <- extensions;
   }
   
   # turn "auto:white:red" in a linear d3 colour scale function
@@ -221,19 +199,17 @@ d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, c
   # prepare mixed sort order. have already a rownames column if showRownames == TRUE
   sortKeys = NULL;
   if (!is.null(tableProps)) {
-    if (!is.null(tableProps$sort_config)) {
-      if (!is.null(tableProps$sort_config$sort_types)) {
-        mixedCols <- grep("mixed", tableProps$sort_config$sort_types, ignore.case = TRUE);
-        if (length(mixedCols) > 0) {
-          sortKeys <- lapply(mixedCols, function(x) {
-            index <- 1:nrow(df);
-            order <- gtools::mixedorder(as.character(df[ , x]));
-            index[order] <- 1:length(order);
-            return(index);
-          });
-          names(sortKeys) <- paste0('col_', mixedCols - 1);
-          tableProps$sort_config$sort_types <- gsub('mixed', 'Number', tableProps$sort_config$sort_types, ignore.case = TRUE);
-        }
+    if (!is.null(tableProps$col_types)) {
+      mixedCols <- grep("mixed", tableProps$col_types, ignore.case = TRUE);
+      if (length(mixedCols) > 0) {
+        sortKeys <- lapply(mixedCols, function(x) {
+          index <- 1:nrow(df);
+          order <- gtools::mixedorder(as.character(df[ , x]));
+          index[order] <- 1:length(order);
+          return(index);
+        });
+        names(sortKeys) <- paste0('col_', mixedCols - 1);
+        tableProps$col_types <- gsub('mixed', 'number', tableProps$col_types, ignore.case = TRUE);
       }
     }
   }

@@ -26,14 +26,16 @@ shinyServer(function(input, output, session) {
     # for a complete reference
     tableProps <- list(
       btn_reset = TRUE,
-      sort = TRUE,
-      sort_config = list(
-         sort_types = c("Mixed", "Number", "Mixed", "Mixed")
-      )
-    );
+      col_types = c("Mixed", "number", "Mixed", "Mixed")
+     );
     
+    extensions <-  list(
+        list(name = "sort")
+    );
+
     d3tf(df,
          tableProps = tableProps,
+         extensions = extensions,
          showRowNames = TRUE,
          tableStyle = "table table-bordered");
   })

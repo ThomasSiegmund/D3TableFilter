@@ -4,7 +4,6 @@
 library(shiny)
 library(htmlwidgets)
 library(D3TableFilter)
-
 data(mtcars);
 mtcars <- mtcars[, 1:3];
 mtcars$candidates <- FALSE;
@@ -148,16 +147,12 @@ shinyServer(function(input, output, session) {
     # for a complete reference
     tableProps <- list(
       btn_reset = TRUE,
-      sort = TRUE,
       on_keyup = TRUE,  
       on_keyup_delay = 800,
       rows_counter = TRUE,  
       rows_counter_text = "Rows: ",
-      col_number_format= c(NULL, "US", "US", "US", NULL, NULL), 
-      sort_config = list(
       # alphabetic sorting for the row names column, numeric for all other columns
-      sort_types = c("String", "Number", "Number", "Number", "none", "none")
-      ),
+      col_types = c("string", "number", "number", "number", "none", "none"),
       col_4 = "none",
       col_5 = "none",
       # exclude the summary row from filtering
@@ -334,8 +329,13 @@ shinyServer(function(input, output, session) {
     # make use of TableFilters "col_operation"
     footData <- data.frame(Rownames = "Mean", mpg = mean(mtcars$mpg), cyl = mean(mtcars$cyl), disp = mean(mtcars$disp));
     
+    extensions <-  list(
+        list(name = "sort")
+    );
+
     # the mtcars table output
     d3tf(mtcars, tableProps = tableProps,
+                extensions = extensions,
                 showRowNames = TRUE,
                 colNames = colNames,
                 edit = c("col_1", "col_3"),
@@ -413,7 +413,6 @@ shinyServer(function(input, output, session) {
       btn_reset = TRUE,
       rows_counter = TRUE,  
       rows_counter_text = "Rows: ",
-      sort = TRUE,
       on_keyup = TRUE,  
       on_keyup_delay = 800,
       sort_config = list(
@@ -432,6 +431,11 @@ shinyServer(function(input, output, session) {
       )
     );
     
+    extensions <-  list(
+        list(name = "sort")
+    );
+
+    
     # add a summary row. Can be used to set values statically, but also to 
     # make use of TableFilters "col_operation"
     footData <- data.frame(Rownames = "Mean", mpg = 0, cyl = 0);
@@ -439,6 +443,7 @@ shinyServer(function(input, output, session) {
     d3tf(mtcars[ , 1:2],
                 enableTf = TRUE,
                 tableProps = tableProps,
+                extensions = extensions,
                 showRowNames = TRUE, 
                 selectableRows = "multi",
                 selectableRowsClass = "info",

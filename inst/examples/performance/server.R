@@ -60,7 +60,7 @@ shinyServer(function(input, output, session) {
     d3tf(diamonds, 
                 tableProps = tableProps,
                 showRowNames = FALSE,
-                extensions = c('ColsVisibility', 'ColumnsResizer', 'FiltersRowVisibility'),
+                extensions = list('Sort', 'ColsVisibility', 'ColumnsResizer', 'FiltersRowVisibility'),
                 tableStyle = "table table-bordered table-striped",
                 bgColScales = bgColScales);
   })  

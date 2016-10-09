@@ -508,7 +508,7 @@ HTMLWidgets.widget({
             var tfName = 'tf_' + message["tbl"];
             window[tfName].SetFilterValue(message["col"], message["filterString"]);
             if(message["doFilter"]) {
-              window[tfName].Filter();
+              window[tfName].filter();
             }
 
       });
@@ -628,7 +628,7 @@ HTMLWidgets.widget({
             var tfName = 'tf_' + message["tbl"];
             window[tfName].ClearFilters();
             if(message["doFilter"]) {
-              window[tfName].Filter();
+              window[tfName].filter();
             }
       });
     } catch (err) {
@@ -858,13 +858,15 @@ HTMLWidgets.widget({
            .selectAll('tbody')
            .selectAll('td.' + key)
            .data(sortKeys[key])
-           .attr("_sortKey", function(d) { return(d);})
+           .attr("data-tf-sortKey", function(d) { return(d);})
     }};
     
     // initialize table filter generator
     if(data.enableTf == true) {
-      window[tfName] = setFilterGrid(tableID, data.tableProps);
-      
+//      window[tfName] = setFilterGrid(tableID, data.tableProps);
+      window[tfName] = new TableFilter(tableID, data.tableProps);
+      window[tfName].init();
+       
       // initial filter settings
       for (var key in initialFilters) {
            if (initialFilters.hasOwnProperty(key)) {
@@ -872,7 +874,7 @@ HTMLWidgets.widget({
               window[tfName].SetFilterValue(col, initialFilters[key]);
             };
       };
-      window[tfName].Filter();
+      window[tfName].filter();
     }
     
     // make thead and info row bootstrap styled

@@ -29,12 +29,19 @@ server <- function(input, output, session) {
   output$tbl1 <- renderD3tf({
     tableProps <- list(
       btn_reset = TRUE,
-      sort = TRUE,
-      sort_config = list(
-        sort_types = c(rep("Number", 4), "String")
-      )
+      col_types = c(rep("number", 4), "string")
     )
-    d3tf(iris, tableProps = tableProps, enableTf = TRUE, selectableRows = "multi", group = "A")
+    
+    extensions <-  list(
+        list(name = "sort")
+    );
+    
+    d3tf(iris,
+         enableTf = TRUE,
+         tableProps = tableProps,
+         extensions = extensions,
+         selectableRows = "multi",
+         group = "A")
   })
 }
 

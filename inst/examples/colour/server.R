@@ -27,10 +27,7 @@ shinyServer(function(input, output, session) {
       loader = TRUE,  
       loader_text = "Filtering data...",
       # sorting
-      sort = TRUE,
-      sort_config = list(
-        sort_types = c("US", "US", "US","US", "US", "String", "String")
-      ),
+      col_types = c("number", "number", "number","number", "number", "string", "string"),
       # paging
       paging = FALSE
       );
@@ -93,9 +90,16 @@ shinyServer(function(input, output, session) {
         return color(i);
       }') 
     );
-        
+    
+    extensions <-  list(
+        list(name = "sort")
+    );
+    
     d3tf(tbl, table_Props, enableTf = TRUE,
                 showRowNames = FALSE, tableStyle = "table table-condensed", 
-                bgColScales = bgColScales,  fgColScales = fgColScales);
+                bgColScales = bgColScales,
+                fgColScales = fgColScales,
+                extensions = extensions)
+    ;
   })
 })

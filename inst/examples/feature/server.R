@@ -48,9 +48,13 @@ shinyServer(function(input, output, session) {
       col_10 = "multiple",
       col_11 = "multiple",
       # adding a summary row, showing the column means
-      rows_always_visible = list(nrow(mtcars) + 2, nrow(mtcars) + 3),
-      col_operation = list( 
-        id = list("frow_0_fcol_1_tbl_mtcars",
+      rows_always_visible = list(nrow(mtcars) + 2, nrow(mtcars) + 3)
+    );
+    
+    extensions <-  list(
+        list(name = "sort"),
+        list(name = "colOps",
+             id = list("frow_0_fcol_1_tbl_mtcars",
                   "frow_0_fcol_2_tbl_mtcars",
                   "frow_0_fcol_3_tbl_mtcars",
                   "frow_0_fcol_4_tbl_mtcars",
@@ -72,15 +76,22 @@ shinyServer(function(input, output, session) {
                   "frow_1_fcol_9_tbl_mtcars",
                   "frow_1_fcol_10_tbl_mtcars",
                   "frow_1_fcol_11_tbl_mtcars"
-        ),    
-        col = as.list(c(1:11, 1:11)),
-        operation = as.list(c(rep("mean",11), rep("median", 11))),
-        write_method = as.list(rep("innerhtml", 22)),
-        exclude_row = list(nrow(mtcars) + 2, nrow(mtcars) + 3),  
-        decimal_precision = as.list(rep(1, 22)),
-        tot_row_index = list(nrow(mtcars) + 2, nrow(mtcars) + 3)
-      )
-    );
+                ),    
+              col = as.list(c(1:11, 1:11)),
+              operation = as.list(c(rep("mean",11), rep("median", 11))),
+              write_method = as.list(rep("innerhtml", 22)),
+              exclude_row = list(nrow(mtcars) + 2, nrow(mtcars) + 3),  
+              decimal_precision = as.list(rep(1, 22)),
+              tot_row_index = list(nrow(mtcars) + 2, nrow(mtcars) + 3)
+             ),
+        list( name = "colsVisibility",
+              at_start =  c(8, 9, 10, 11),
+              text = 'Hide columns: ',
+              enable_tick_all =  TRUE
+             ),
+        list( name = "filtersVisibility",
+              visible_at_start =  TRUE)
+      );
     
     # add a summary row. Can be used to set values statically, but also to 
     # make use of TableFilters "col_operation"
@@ -89,7 +100,7 @@ shinyServer(function(input, output, session) {
     d3tf(mtcars, tableProps = tableProps,
                 showRowNames = TRUE,
                 tableStyle = "table table-bordered",
-                extensions = c('ColsVisibility', 'ColumnsResizer', 'FiltersRowVisibility'),
+                extensions = extensions,
                 footData = footData);
   })
 })

@@ -18,6 +18,7 @@ dependencies:
     - style/filtersVisibility.css
     - style/tablefilter.css
     attachment:
+    - style/themes/blank.pngstyle/themes/blank.png
     - style/themes/blank.png
     - style/themes/btn_clear_filters.png
     - style/themes/btn_filter.png
@@ -25,6 +26,12 @@ dependencies:
     - style/themes/btn_last_page.gif
     - style/themes/btn_next_page.gif
     - style/themes/btn_previous_page.gif
+    - style/themes/downsimple.png
+    - style/themes/upsimple.png
+    - style/themes/icn_clp.png
+    - style/themes/icn_exp.png
+    - style/themes/icn_filterActive.gif
+    - style/themes/icn_filter.gif
     - style/themes/default/default.css
     - style/themes/default/images/bg_infDiv.jpg
     - style/themes/default/images/bg_th.jpg
@@ -39,11 +46,6 @@ dependencies:
     - style/themes/default/images/btn_over_previous_page.gif
     - style/themes/default/images/btn_previous_page.gif
     - style/themes/default/images/img_loading.gif
-    - style/themes/downsimple.png
-    - style/themes/icn_clp.png
-    - style/themes/icn_exp.png
-    - style/themes/icn_filterActive.gif
-    - style/themes/icn_filter.gif
     - style/themes/mytheme/images/bg_headers.jpg
     - style/themes/mytheme/images/bg_infDiv.jpg
     - style/themes/mytheme/images/btn_filter.png
@@ -61,7 +63,6 @@ dependencies:
     - style/themes/skyblue/images/icn_clear_filters.png
     - style/themes/skyblue/images/img_loading.gif
     - style/themes/skyblue/skyblue.css
-    - style/themes/upsimple.png
   - name: jquery
     version: 1.11.3
     src: "lib/jquery/dist/"

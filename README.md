@@ -95,15 +95,15 @@ server <- shinyServer(function(input, output, session) {
     # for a complete reference
     tableProps <- list(
       btn_reset = TRUE,
-      sort = TRUE,
-      sort_config = list(
-        # alphabetic sorting for the row names column, numeric for all other columns
-        sort_types = c("String", rep("Number", ncol(mtcars)))
-      )
+      # alphabetic sorting for the row names column, numeric for all other columns
+      col_types = c("string", rep("number", ncol(mtcars)))
     );
     
     d3tf(mtcars,
          tableProps = tableProps,
+         extensions = list(
+           list(name = "sort")
+         ),
          showRowNames = TRUE,
          tableStyle = "table table-bordered");
   })
@@ -146,11 +146,8 @@ shinyServer(function(input, output, session) {
     # for a complete reference
     tableProps <- list(
       btn_reset = TRUE,
-      sort = TRUE,
-      sort_config = list(
-        # alphabetic sorting for the row names column, numeric for all other columns
-        sort_types = c("String", rep("Number", ncol(mtcars)))
-      )
+      # alphabetic sorting for the row names column, numeric for all other columns
+      col_types = c("string", rep("number", ncol(mtcars)))
     );
     
     observe({
@@ -173,6 +170,9 @@ shinyServer(function(input, output, session) {
     
     d3tf(mtcars,
          tableProps = tableProps,
+         extensions = list(
+           list(name = "sort")
+         ),
          showRowNames = TRUE,
          filterInput = TRUE,
          tableStyle = "table table-bordered");
@@ -196,25 +196,47 @@ The Table Filter JavaScript library provides a huge number of configuration opti
 
 ## TableFilter extensions
 Some of the TableFilter functions are beeing provided as separate modules, in particular
-
+* Sorting
 * ColsVisibility: Visibility of columns can be adjusted by configuration or interactively
-* ColumnsResizer: Interactive resizing of column width
 * FiltersRowVisibility: Interactively show or hide the filter row.
 
-To activate these extensions simply define them as a character vector in the extensions parameter, e.g. ```extensions = c("ColsVisibility", "ColumnsResizer", "FiltersRowVisibility")```. This takes care of enabling and basic configuration of the extensions. For further customization use the tableProps parameter.
+To activate these extensions simply define them as a list in the extensions parameter, e.g.
+```r
+    extensions <-  list(
+        list(name = "sort"),
+        list( name = "colsVisibility",
+              at_start =  c(8, 9, 10, 11),
+              text = 'Hide columns: ',
+              enable_tick_all =  TRUE
+             ),
+        list( name = "filtersVisibility",
+              visible_at_start =  TRUE)
+      );
+```
+This takes care of enabling and configuration of the extensions.
 
 ## Sorting
-On click on column headers *TableFilter* sorts the table. It can sort by ```String```, various number formats ```Number, eu, us```, different date formats ```dmydate, mdydate, ymddate, ddmmmyyyy'```, and by ```'ipaddress'```. Sorting of specific columns can be defined in the ```tableProps``` argument:
+On click on column headers *TableFilter* sorts the table. It can sorted by ```string```, various number formats ```number, eu, us```, different date formats ```dmydate, mdydate, ymddate, ddmmmyyyy'```, and by ```'ipaddress'```. Sorting of specific columns can be defined in the ```tableProps``` argument:
 
 ```r
   tableProps <- list(
-    sort = TRUE,
-    sort_config = list(
       # sort first column by character, second by US number format,
       # third column by date format 08/05/2010 
-      sort_types = c("String", "US", "mdydate") 
-    )
+      col_types = c("string", "number", "mdydate") 
   )
+```
+
+Additionally the sort extension has to be loaded:
+
+```r
+  extensions <- list(
+           list(name = "sort")
+         )
+  
+    d3tf(x,
+         tableProps = tableProps,
+         extensions = extensions
+         )
 
 ```
 

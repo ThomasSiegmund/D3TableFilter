@@ -64,7 +64,8 @@
 #'   table
 #' @param showRowNames Add the R row names as first column to the table
 #' @param colNames Named character list to display as column names
-#' @param extensions Vector of table filter extensions to load. See
+#' @param extensions List of table filter extensions to load. See
+#'   inst/examples/feature/server.R
 #' @param selectableRows Enable row selection on (\code{cltr-}) mouse click. If 
 #'   \code{"multi"} multiple rows will be selectable using (\code{cltr click}), 
 #'   if  \code{"single"}  only a single line will be selectable.
@@ -145,6 +146,7 @@ d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, c
   if(is.null(tableProps)) {
     tableProps <- list();
   }
+  
 #  if(is.null(tableProps$base_path)) {
 #    tableProps <- c(tableProps, base_path = 'tablefilter-2.5/');
 #  }
@@ -152,10 +154,10 @@ d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, c
 #   if(!is.null(tableStyle)) {
 #     tableProps <- c(tableProps, stylesheet = "tablefilter-2.5/filtergridBS.css");
 #   }
-  if(!is.null(tableStyle)) {
-    tableProps <- c(tableProps, stylesheet = "style/tablefilter.css");
-  }
-  
+  # if(!is.null(tableStyle)) {
+  #   tableProps <- c(tableProps, stylesheet = "style/tablefilter.css");
+  # }
+  # 
   if(!is.null(height)) {
     tableProps <- c(tableProps, grid_height = paste0(height, 'px' ), fixed_headers = TRUE);
   }

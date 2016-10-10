@@ -11,7 +11,7 @@ vignette: >
 
 # Overview
 
-[HTML Table Filter Generator](http://tablefilter.free.fr/) (*TableFilter*) by Max Guglielmi is a JavaScript library to enhance HTML tables. It it provides a number of useful features:
+[TableFilter](http://koalyptus.github.io/TableFilter/) (*TableFilter*) by Max Guglielmi is a JavaScript library to enhance HTML tables. It it provides a number of useful features:
 
 * Advanced filtering
     + numeric (```> 0```)
@@ -19,7 +19,6 @@ vignette: >
     + regular expressions
 * Sorting
 * Pagination
-* Column resizing
 * Column visibility
 
 The R package *D3TableFilter* packages the *TableFilter* JavaScript library as an easy to use widget for [Shiny](http://www.rstudio.com/products/shiny/). It can be used in [RStudio](http://www.rstudio.com/products/RStudio/) and in Shiny applications. The package is based on the [htmlwidgets](https://github.com/ramnathv/htmlwidgets) library which allows to integrate JavaScript libraries into R and Shiny.

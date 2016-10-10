@@ -35,7 +35,7 @@ shinyServer(function(input, output, session) {
         sort_types = c("String", rep("Number", 11))
       ),
       # paging
-      paging = FALSE,  # paging is incompatible with col_operations, at least here
+      paging = TRUE, 
       paging_length = 30,  
       results_per_page = JS("['Rows per page',[30, 60]]"),  
       #column visibility

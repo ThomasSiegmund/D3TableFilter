@@ -6,7 +6,7 @@
 colouring.}
 \usage{
 d3tf(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE,
-  colNames = NULL, extensions = c(), selectableRows = NULL,
+  colNames = NULL, extensions = list(), selectableRows = NULL,
   selectableRowsClass = "info", tableStyle = "table", rowStyles = NULL,
   bgColScales = list(), fgColScales = list(), edit = FALSE,
   radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(),
@@ -26,7 +26,8 @@ table}
 
 \item{colNames}{Named character list to display as column names}
 
-\item{extensions}{Vector of table filter extensions to load. See}
+\item{extensions}{List of table filter extensions to load. See
+inst/examples/feature/server.R}
 
 \item{selectableRows}{Enable row selection on (\code{cltr-}) mouse click. If 
 \code{"multi"} multiple rows will be selectable using (\code{cltr click}), 
@@ -190,15 +191,15 @@ shinyServer(function(input, output, session) {
     # for a complete reference
     tableProps <- list(
       btn_reset = TRUE,
-      sort = TRUE,
-      sort_config = list(
         # alphabetic sorting for the row names column, numeric for all other columns
-        sort_types = c("String", rep("Number", ncol(mtcars)))
-      )
+        col_types = c("string", rep("number", ncol(mtcars)))
     );
     
     d3tf(mtcars,
-          tableProps = tableProps,
+         tableProps = tableProps,
+         extensions = list(
+          list(name = "sort")
+         ),
          showRowNames = TRUE,
          tableStyle = "table table-bordered");
   })

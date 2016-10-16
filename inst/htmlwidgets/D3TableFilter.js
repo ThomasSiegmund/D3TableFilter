@@ -56,11 +56,6 @@ HTMLWidgets.widget({
     var tfName = 'tf_' + el.id;
     var inputID = outputID + '_edit';
         
-    // allow to reset an input value
-    Shiny.addCustomMessageHandler('resetValue', function(variableName) {
-      Shiny.onInputChange(variableName, null);
-    });
-
     //  generate a filter input?
     var filterInput = data.filterInput;
     if(filterInput) {
@@ -293,6 +288,15 @@ HTMLWidgets.widget({
       }
      }
     
+    // allow to reset an input value
+    try {
+      Shiny.addCustomMessageHandler('resetD3tfValue', function(variableName) {
+        Shiny.onInputChange(variableName, null);
+      });
+    } catch (err) {
+      ; // already installed
+    }
+
     // update data for D3
     function setCellData(cell, val, tbl, col) {
             cell[0][0].__data__.value = val;

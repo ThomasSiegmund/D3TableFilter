@@ -68,7 +68,7 @@ dependencies:
     src: "lib/jquery/dist/"
     script: jquery.min.js
   - name: bootstrap
-    version: 3.3.5
+    version: 3.3.7
     src: "lib/bootstrap/dist/"
     script:
     - js/bootstrap.min.js

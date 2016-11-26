@@ -9,7 +9,7 @@ library(crosstalk)
 library(d3scatter)
 library(htmlwidgets)
 library(D3TableFilter)
-
+library(dplyr)
 
 ui <- fluidPage(
   d3scatterOutput("scatter1", height = 400),

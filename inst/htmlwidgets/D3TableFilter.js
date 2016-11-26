@@ -289,13 +289,9 @@ HTMLWidgets.widget({
      }
     
     // allow to reset an input value
-    try {
-      Shiny.addCustomMessageHandler('resetD3tfValue', function(variableName) {
+   Shiny.addCustomMessageHandler('resetD3tfValue', function(variableName) {
         Shiny.onInputChange(variableName, null);
       });
-    } catch (err) {
-      ; // already installed
-    }
 
     // update data for D3
     function setCellData(cell, val, tbl, col) {
@@ -348,100 +344,96 @@ HTMLWidgets.widget({
     }
 
     // server side edit, confirm or reject
-    try {
-      Shiny.addCustomMessageHandler("setCellValue",
-          function(message) {
-            var row = 'row_' + (Number(message["row"]) - 1);
-            if(data.showRowNames) {
-              var col = 'col_' + message["col"];
-            } else  {
-              var col = 'col_' + (Number(message["col"]) - 1);
-            }
-            var tbl = message["tbl"];
-            var selector = '.' + row + '.' + col;
-            if(message["foot"]) {
-              var cell = d3.select('#' + tbl)
-                           .selectAll('tfoot')
-                           .select(selector);
-            } else {
-              var cell = d3.select('#' + tbl)
-                           .selectAll('tbody')
-                           .select(selector);
-            }
+    Shiny.addCustomMessageHandler("setCellValue",
+        function(message) {
+          var row = 'row_' + (Number(message["row"]) - 1);
+          if(data.showRowNames) {
+            var col = 'col_' + message["col"];
+          } else  {
+            var col = 'col_' + (Number(message["col"]) - 1);
+          }
+          var tbl = message["tbl"];
+          var selector = '.' + row + '.' + col;
+          if(message["foot"]) {
+            var cell = d3.select('#' + tbl)
+                         .selectAll('tfoot')
+                         .select(selector);
+          } else {
+            var cell = d3.select('#' + tbl)
+                         .selectAll('tbody')
+                         .select(selector);
+          }
 
-            if(message["action"] == "confirm" || message["action"] == "reject") {
-              // only do something if cell id matches message
-              cell = cell.filter('#' + message["id"]);
-              if(cell.empty()) {
-                return(null);
+          if(message["action"] == "confirm" || message["action"] == "reject") {
+            // only do something if cell id matches message
+            cell = cell.filter('#' + message["id"]);
+            if(cell.empty()) {
+              return(null);
+            }
+            
+            // signal reject by transient text colour change
+            if(message["action"] == "reject") {
+              // store color in attr so we can reset to it in subsequent edits
+              cell.attr("oldcolor", function() {return cell.style("color")});
+              var oldColor = cell.attr("oldcolor");
+              cell.style("color", message["color"]);
+              // if sever sends value, reset input to it and transition
+              // color back to previous
+              if(message["value"] !== null) {
+                  cell.transition("textcolor")
+                  .duration(1500)
+                  .style("color", oldColor)
+                  .attr('id', '')
+                  .attr('oldcolor', '');
               }
-              
-              // signal reject by transient text colour change
-              if(message["action"] == "reject") {
-                // store color in attr so we can reset to it in subsequent edits
-                cell.attr("oldcolor", function() {return cell.style("color")});
-                var oldColor = cell.attr("oldcolor");
-                cell.style("color", message["color"]);
-                // if sever sends value, reset input to it and transition
-                // color back to previous
-                if(message["value"] !== null) {
-                    cell.transition("textcolor")
+            } else if (message["action"] == "confirm") {
+              // confirm edit by transient colour change
+              if(cell.attr("oldcolor")) {
+              // previous validation failed
+              var oldColor = cell.attr("oldcolor");
+              } else {
+                var oldColor = cell.style("color");
+              }
+              if(message["color"]) {
+                cell.style("color", message["color"])
+                    .transition("textcolor")
                     .duration(1500)
                     .style("color", oldColor)
-                    .attr('id', '')
                     .attr('oldcolor', '');
-                }
-              } else if (message["action"] == "confirm") {
-                // confirm edit by transient colour change
-                if(cell.attr("oldcolor")) {
-                // previous validation failed
-                var oldColor = cell.attr("oldcolor");
-                } else {
-                  var oldColor = cell.style("color");
-                }
-                if(message["color"]) {
-                  cell.style("color", message["color"])
-                      .transition("textcolor")
-                      .duration(1500)
-                      .style("color", oldColor)
-                      .attr('oldcolor', '');
-                }
-              }
-              
-            } // confirm or reject
-            
-            // no new value, no further action
-            if(message["value"] === null) {
-              return(null)
-            }
-
-            var val = message["value"];
-            setCellData(cell, val, tbl, col);
-
-            colourCol(tbl, col);
-            if(message["foot"]) {
-              runCellFunctions(tbl, col, foot = true);
-            } else {
-              runCellFunctions(tbl, col);
-            }
-            
-            if(window.HTMLWidgets.shinyMode) {
-            // send confirmation back to server
-            // cell gets labeled with a unique edit id. 
-            // this way a confirmation or reject from the server will find
-            // only the most recent edit
-              if(message["feedback"]) {
-                var editID = "edit_" + tbl + '_' + editCounter++;
-                var inputID = tbl + '_edit';
-                cell.attr('id', editID);
-                var edit = {id: editID, row: message["row"], col:  message["col"], val: val};
-                Shiny.onInputChange(inputID, edit);
               }
             }
-      });
-    } catch (err) {
-      ; // already installed
-    }
+            
+          } // confirm or reject
+          
+          // no new value, no further action
+          if(message["value"] === null) {
+            return(null)
+          }
+
+          var val = message["value"];
+          setCellData(cell, val, tbl, col);
+
+          colourCol(tbl, col);
+          if(message["foot"]) {
+            runCellFunctions(tbl, col, foot = true);
+          } else {
+            runCellFunctions(tbl, col);
+          }
+          
+          if(window.HTMLWidgets.shinyMode) {
+          // send confirmation back to server
+          // cell gets labeled with a unique edit id. 
+          // this way a confirmation or reject from the server will find
+          // only the most recent edit
+            if(message["feedback"]) {
+              var editID = "edit_" + tbl + '_' + editCounter++;
+              var inputID = tbl + '_edit';
+              cell.attr('id', editID);
+              var edit = {id: editID, row: message["row"], col:  message["col"], val: val};
+              Shiny.onInputChange(inputID, edit);
+            }
+          }
+    });
 
     // format cells or turn cell content in graphics
     function runCellFunctions(tbl, col, foot) {
@@ -476,97 +468,81 @@ HTMLWidgets.widget({
 
 
     // enable editing of a table 
-    try {
-      Shiny.addCustomMessageHandler("enableEdit",
-          function(message) {
-              var cells = d3.selectAll('#' + message["tbl"])
-                            .selectAll('tbody');
-              if(message["cols"] !== null) {
-                  cells = cells.selectAll(message["cols"]);
-              } else {
-                  cells = cells.selectAll('td');
-              }
-              cells.attr({contenteditable: true})
-                      .on("input", debounce(shinyInputEvent, 800));
-      });
-    } catch (err) {
-       ; // already installed
-    }
+    Shiny.addCustomMessageHandler("enableEdit",
+        function(message) {
+            var cells = d3.selectAll('#' + message["tbl"])
+                          .selectAll('tbody');
+            if(message["cols"] !== null) {
+                cells = cells.selectAll(message["cols"]);
+            } else {
+                cells = cells.selectAll('td');
+            }
+            cells.attr({contenteditable: true})
+                    .on("input", debounce(shinyInputEvent, 800));
+    });
 
     // disable editing of a table
-    try {
-      Shiny.addCustomMessageHandler("disableEdit",
-          function(message) {
-              var cells = d3.selectAll('#' + message["tbl"])
-                            .selectAll('tbody');
-              if(message["cols"] !== null) {
-                  cells = cells.selectAll(message["cols"]);
-              } else {
-                  cells = cells.selectAll('td');
-              }
-              cells.attr({contenteditable: false})
-                      .on("input", null);
-      });
-    } catch (err) {
-       ; // already installed
-    }
-    
-    // set filter
-    try {
-      Shiny.addCustomMessageHandler("setFilter",
-          function(message) {
-            var tfName = 'tf_' + message["tbl"];
-            window[tfName].SetFilterValue(message["col"], message["filterString"]);
-            if(message["doFilter"]) {
-              window[tfName].filter();
+    Shiny.addCustomMessageHandler("disableEdit",
+        function(message) {
+            var cells = d3.selectAll('#' + message["tbl"])
+                          .selectAll('tbody');
+            if(message["cols"] !== null) {
+                cells = cells.selectAll(message["cols"]);
+            } else {
+                cells = cells.selectAll('td');
             }
+            cells.attr({contenteditable: false})
+                    .on("input", null);
+    });
 
-      });
-    } catch (err) {
-      ; // already installed
-    }
-    
+  // set filter
+    Shiny.addCustomMessageHandler("setFilter",
+        function(message) {
+          var tfName = 'tf_' + message["tbl"];
+          window[tfName].SetFilterValue(message["col"], message["filterString"]);
+          if(message["doFilter"]) {
+            window[tfName].filter();
+          }
+
+    });
+
     // highlight a table row
-    try {
-      Shiny.addCustomMessageHandler("rowClass",
-          function(message) {
-            var clss = message["class"];
-            var tbl = message["tbl"];
-            
-            var rows = d3.selectAll('#' + tbl)
-                  .selectAll('tbody')
-                  .selectAll('tr');
-                  
-            // radio button behavior: clear selectableRowsClass from all rows
-            // restore previous class
-            if (data.selectTableRows == "single" && clss == data.selectTableRows ) {
-                rows.classed(data.selectableRowsClass, false);
-                rows.classed(data.rowStyles, true);
-            }
+    Shiny.addCustomMessageHandler("rowClass",
+        function(message) {
+          var clss = message["class"];
+          var tbl = message["tbl"];
+          
+          var rows = d3.selectAll('#' + tbl)
+                .selectAll('tbody')
+                .selectAll('tr');
+                
+          // radio button behavior: clear selectableRowsClass from all rows
+          // restore previous class
+          if (data.selectTableRows == "single" && clss == data.selectTableRows ) {
+              rows.classed(data.selectableRowsClass, false);
+              rows.classed(data.rowStyles, true);
+          }
 
-            // current row
-            var row = d3.selectAll('#' +  tbl)
-                        .select('#r' + (Number(message["row"]) - 1));
-                row.classed({"active": false,  "success": false, "info": false, "warning": false, "danger": false});
-            if(clss != "none") {
-              row.classed(clss, true);
-            }
-            
-            // now update selected rows input
-            if(window.HTMLWidgets.shinyMode) {
-              var selected = [];
-              rows.each(function(d, i) {
-                if($(this).hasClass(data.selectableRowsClass)) {
-                  selected.push(Number(this.id.replace('r', '')) + 1);
-                }
-              })
-              var inputID = tbl + '_select';
-              Shiny.onInputChange(inputID, selected);
-            }
-        });
-    } catch (err) {
-      ; // already installed
-    }
+          // current row
+          var row = d3.selectAll('#' +  tbl)
+                      .select('#r' + (Number(message["row"]) - 1));
+              row.classed({"active": false,  "success": false, "info": false, "warning": false, "danger": false});
+          if(clss != "none") {
+            row.classed(clss, true);
+          }
+          
+          // now update selected rows input
+          if(window.HTMLWidgets.shinyMode) {
+            var selected = [];
+            rows.each(function(d, i) {
+              if($(this).hasClass(data.selectableRowsClass)) {
+                selected.push(Number(this.id.replace('r', '')) + 1);
+              }
+            })
+            var inputID = tbl + '_select';
+            Shiny.onInputChange(inputID, selected);
+          }
+      });
 
     // handler for selectableRows
     // create a shiny input event, named like 
@@ -632,18 +608,14 @@ HTMLWidgets.widget({
     }
 
     // clear filters from table
-    try {
-      Shiny.addCustomMessageHandler("clearFilters",
-          function(message) {
-            var tfName = 'tf_' + message["tbl"];
-            window[tfName].ClearFilters();
-            if(message["doFilter"]) {
-              window[tfName].filter();
-            }
-      });
-    } catch (err) {
-      ; // already installed
-    }
+    Shiny.addCustomMessageHandler("clearFilters",
+        function(message) {
+          var tfName = 'tf_' + message["tbl"];
+          window[tfName].ClearFilters();
+          if(message["doFilter"]) {
+            window[tfName].filter();
+          }
+    });
 
     // calculate min / max / extent per column. Can be used from R for
     // dynamic colour scale range  

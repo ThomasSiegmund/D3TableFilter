@@ -30,7 +30,7 @@ Imports:
     crosstalk
 License: MIT + file LICENSE
 LazyData: true
-Enhances: rmarkdown (>= 0.3.3), shiny (>= 0.10.2.1)
+Enhances: rmarkdown (>= 0.3.3), shiny (>= 0.14.2.9000)
 Suggests:
     knitr
 VignetteBuilder: knitr

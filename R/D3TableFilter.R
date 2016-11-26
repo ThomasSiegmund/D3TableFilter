@@ -58,7 +58,7 @@
 #'   "sparklines" shiny app in the inst/examples/sparklines directory of this
 #'   package for an example.
 #'   
-#' @param df Data frame or matrix to display as html table
+#' @param df Data frame, matrix or or \link[crosstalk]{SharedData} object to display as html table
 #' @param enableTf Enable the features for the "HTML table filter generator"
 #' @param tableProps A list object describing appearence and function of the 
 #'   table
@@ -103,8 +103,6 @@
 #'   used to format table footer or to generate D3 graphics in cells.
 #' @param  sparklines List of per column options to turn cell values into 
 #'   sparkline visulizations.
-#' @param key Vector of unique row identifiers for crosstalk
-#' @param group Scoping group for crosstalk widget to widget communication
 #' @example inst/examples/basic/server.R
 #' @seealso \code{\link[DT]{datatable}}.
 #' @examples
@@ -132,8 +130,17 @@
 #' @import crosstalk
 #' @export JS
 #' @export
-d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, colNames = NULL, extensions = list(), selectableRows = NULL, selectableRowsClass = "info", tableStyle = "table", rowStyles = NULL, bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), footData = NULL, footCellFunctions = list(), sparklines = list(), key = row.names(df), group = NULL, width = NULL, height = NULL) {
-  
+d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, colNames = NULL, extensions = list(), selectableRows = NULL, selectableRowsClass = "info", tableStyle = "table", rowStyles = NULL, bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), footData = NULL, footCellFunctions = list(), sparklines = list(), width = NULL, height = NULL) {
+
+   if (is.SharedData(df)) {
+    key <- df$key()
+    group <- df$groupName()
+    df <- df$origData()
+  } else {
+    key <- NULL
+    group <- NULL
+  }
+
   if(is.matrix(df)) {
     df <- as.data.frame(df);
   }

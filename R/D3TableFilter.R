@@ -432,3 +432,17 @@ setRowClass <- function(session, tbl, row, class) {
   message <- list(tbl = tbl, row = row, class = class);
   session$sendCustomMessage(type = "rowClass", message);
 }
+
+
+#' Reset a D3tf input element
+#' @param Session Shiny session object.
+#' @param tbl Name of the input (output name  + "_edit").
+#' 
+#' @examples
+#' resetInput(session, "mtcars_edit")
+#' @export 
+resetInput <- function(session, input) {
+      session$sendCustomMessage(type = "resetD3tfValue",
+                                message = input)
+}
+

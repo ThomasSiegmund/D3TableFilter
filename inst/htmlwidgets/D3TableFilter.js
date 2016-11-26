@@ -45,7 +45,7 @@ HTMLWidgets.widget({
     window.D3TableFilter["sparklines_" + outputID] = data.sparklines;
 
     var edit = data.edit;
-    
+
     // have a unique id for each edit
     var editCounter = 0;
     
@@ -55,7 +55,7 @@ HTMLWidgets.widget({
     var tableID = el.id + '_tbl';
     var tfName = 'tf_' + el.id;
     var inputID = outputID + '_edit';
-
+        
     //  generate a filter input?
     var filterInput = data.filterInput;
     if(filterInput) {
@@ -251,6 +251,7 @@ HTMLWidgets.widget({
       }
     }
     
+    
     // generate shiny input from radio buttons
     // get event from button group, need to find out which
     // button is selected
@@ -287,6 +288,15 @@ HTMLWidgets.widget({
       }
      }
     
+    // allow to reset an input value
+    try {
+      Shiny.addCustomMessageHandler('resetD3tfValue', function(variableName) {
+        Shiny.onInputChange(variableName, null);
+      });
+    } catch (err) {
+      ; // already installed
+    }
+
     // update data for D3
     function setCellData(cell, val, tbl, col) {
             cell[0][0].__data__.value = val;

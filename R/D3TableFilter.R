@@ -251,12 +251,15 @@ d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, c
   )
   
   # create the widget
-  htmlwidgets::createWidget("D3TableFilter", x, width = width, 
-                            height = height, sizingPolicy = htmlwidgets::sizingPolicy(
+  htmlwidgets::createWidget("D3TableFilter",
+                             x,
+                             width = width, 
+                             height = height, sizingPolicy = htmlwidgets::sizingPolicy(
                               viewer.padding = 0,
                               viewer.paneHeight = 800,
                               browser.fill = TRUE
-                            ))
+                            ),
+                            dependencies = crosstalk::crosstalkLibs())
   }
 
 #' Shiny bindings for tableFilter

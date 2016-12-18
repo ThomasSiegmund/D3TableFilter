@@ -548,8 +548,10 @@ HTMLWidgets.widget({
     // create a shiny input event, named like 
     //  the corresponding output element + "_select"
     // also sends message to crosstalk
+    
+    
     if(typeof crosstalk != "undefined") {
-      var ctgrp = crosstalk.group(data.group);
+      var ct_sel = new crosstalk.SelectionHandle(data.group);
     }
     function shinyRowClickEvent(d, i, j) {
       var regex = /tbl_(\w+)/;
@@ -579,7 +581,7 @@ HTMLWidgets.widget({
         }
       })
       if(typeof crosstalk != "undefined") {
-        ctgrp.var("selection").set(selectedKeys, {
+        ct_sel.set(selectedKeys, {
           // Attach a sender property to the event
           sender: el
         });
@@ -591,7 +593,7 @@ HTMLWidgets.widget({
 
     // crosstalk selection handling
     if(typeof crosstalk != "undefined") {
-      ctgrp.var("selection").on("change", function(e) {
+      ct_sel.on("change", function(e) {
         if (e.sender === el) {
           return;
         }

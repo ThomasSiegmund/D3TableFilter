@@ -499,7 +499,7 @@ HTMLWidgets.widget({
     Shiny.addCustomMessageHandler("setFilter",
         function(message) {
           var tfName = 'tf_' + message["tbl"];
-          window[tfName].SetFilterValue(message["col"], message["filterString"]);
+          window[tfName].setFilterValue(message["col"], message["filterString"]);
           if(message["doFilter"]) {
             window[tfName].filter();
           }
@@ -873,12 +873,12 @@ HTMLWidgets.widget({
 //      window[tfName] = setFilterGrid(tableID, data.tableProps);
       window[tfName] = new TableFilter(tableID, data.tableProps);
       window[tfName].init();
-       
+
       // initial filter settings
       for (var key in initialFilters) {
            if (initialFilters.hasOwnProperty(key)) {
               var col = Number(key.replace(/col_/, ''));
-              window[tfName].SetFilterValue(col, initialFilters[key]);
+              window[tfName].setFilterValue(col, initialFilters[key]);
             };
       };
       window[tfName].filter();

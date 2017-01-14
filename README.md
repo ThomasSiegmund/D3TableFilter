@@ -1,7 +1,7 @@
 ---
 title: "D3TableFilter Intro"
 author: "Thomas Siegmund"
-date: "2016-11-26"
+date: "2017-01-14"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
@@ -53,6 +53,8 @@ In addition to the impressive feature set of the *TableFilter* library the *D3Ta
 
 * Sparklines. Small graphs in table cells can be generated using the integrated [jQuery Sparkline](http://omnipotent.net/jquery.sparkline) library. 
 
+* Cross-widget interactions (linked selection and filtering) via [crosstalk](http://rstudio.github.io/crosstalk/index.html).
+
 Thanks to the [shinyapps.io](https://www.shinyapps.io) service you can test various features of the D3TableFilter widget in a couple of demo apps online:
 
 * [Basic features](https://thomassiegmund.shinyapps.io/basic/)
@@ -64,12 +66,10 @@ Thanks to the [shinyapps.io](https://www.shinyapps.io) service you can test vari
 
 # Installation
 D3TableFilter is not yet on CRAN, but you can easily install it from Github using
-the devtools package. It also needs the [crosstalk](https://github.com/rstudio/crosstalk/)
-library (not yet on CRAN) for widget to widget communication:
+the devtools package:
 
 ```r
 install.packages("devtools")
-devtools::install_github("rstudio/crosstalk")
 devtools::install_github("ThomasSiegmund/D3TableFilter")
 ```
 

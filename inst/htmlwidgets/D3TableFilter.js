@@ -548,8 +548,6 @@ HTMLWidgets.widget({
     // create a shiny input event, named like 
     //  the corresponding output element + "_select"
     // also sends message to crosstalk
-    
-    
     if(typeof crosstalk != "undefined") {
       var ct_sel = new crosstalk.SelectionHandle(data.group);
       var ct_filter = new crosstalk.FilterHandle(data.group);
@@ -774,7 +772,8 @@ HTMLWidgets.widget({
       filters.forEach(function(x) {
         var column = 'col_' + i;
         var value = x;
-        filterSettings.push({column: column, value: value});         
+        filterSettings.push({column: column, value: value}); 
+        i++;
       });
 
       var filterInputID = tblID + '_filter';
@@ -782,10 +781,6 @@ HTMLWidgets.widget({
       filters = {filterSettings: filterSettings, validRows: validRows};
       Shiny.onInputChange(filterInputID, filters);
     }
-    
-    
-    
-    
     
     // make table rows selectable
     if(data.selectableRows == "single" || data.selectableRows == "multi") {

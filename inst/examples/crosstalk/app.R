@@ -13,7 +13,8 @@ library(dplyr)
 
 ui <- fluidPage(
   d3scatterOutput("scatter1", height = 400),
-  d3tfOutput("tbl1", height = "auto")
+  d3tfOutput("tbl1", height = "auto"),
+  d3tfOutput("tbl2", height = "auto")
 )
 
 server <- function(input, output, session) {
@@ -45,6 +46,25 @@ server <- function(input, output, session) {
          extensions = extensions,
          selectableRows = "multi")
   })
+  output$tbl2 <- renderD3tf({
+    tableProps <- list(
+      btn_reset = TRUE,
+      col_types = c(rep("number", 4), "string")
+    )
+
+    extensions <-  list(
+        list(name = "sort")
+    );
+
+    d3tf(sd,
+         enableTf = TRUE,
+         tableProps = tableProps,
+         extensions = extensions,
+         selectableRows = "multi")
+  })
+  
+  
+  
 }
 
 shinyApp(ui, server)

@@ -6,7 +6,7 @@
 colouring.}
 \usage{
 d3tf(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE,
-  colNames = NULL, extensions = list(), selectableRows = NULL,
+  colNames = NULL, extensions = NULL, selectableRows = NULL,
   selectableRowsClass = "info", tableStyle = "table", rowStyles = NULL,
   bgColScales = list(), fgColScales = list(), edit = FALSE,
   radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(),

@@ -1,7 +1,7 @@
 ---
 title: "D3TableFilter Intro"
 author: "Thomas Siegmund"
-date: "2017-01-14"
+date: "2017-01-15"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
@@ -16,7 +16,7 @@ Update of included libraries:
 This is a major update of [TableFilter](http://koalyptus.github.io/TableFilter/), resulting in an API change in D3TableFilter. <span style="color:#DF0101">TableFilter extensions now have to be specified as lists</span> - see the [feature](https://github.com/ThomasSiegmund/D3TableFilter/blob/master/inst/examples/feature/server.R) app for a complete example.
 <span style="color:#DF0101">[Sorting](http://koalyptus.github.io/TableFilter/sort.html) and [column operations](http://koalyptus.github.io/TableFilter/column-calculations.html) now also are TableFilter extensions.</span> Interactive column resizing is [currently not supported](https://github.com/koalyptus/TableFilter/issues/311) in TableFilter.
 
-* jquery update to version 1.12.3 to match the version included in Shiny
+* jquery update to version 1.12.4 to match the version included in Shiny
 * Bootstrap update to match the version included in Shiny 
 
 # Overview

@@ -194,18 +194,20 @@ d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, c
   }
   
   # sort is now an extension
-  if (tableProps$sort) {
-    sort <-  list(list( "name" = "sort"))
-    if(length(tableProps$extensions) > 0) {
-      tableProps$extensions <- c(tableProps$extensions, sort);
-    } else  {
-      tableProps$extensions <- sort;
-    }
-    tableProps$sort <- NULL;
-    if (!is.null(tableProps$sort_config$sort_types)) {
-      colTypes <- tolower(tableProps$sort_config$sort_types);
-      tableProps$col_types <- gsub('us|eu', 'number', colTypes);
-      tableProps$sort_config$sort_types <- NULL;
+  if (!is.null(tableProps$sort)) {
+    if (tableProps$sort) {
+      sort <-  list(list( "name" = "sort"))
+      if (length(tableProps$extensions) > 0) {
+        tableProps$extensions <- c(tableProps$extensions, sort);
+      } else  {
+        tableProps$extensions <- sort;
+      }
+      tableProps$sort <- NULL;
+      if (!is.null(tableProps$sort_config$sort_types)) {
+        colTypes <- tolower(tableProps$sort_config$sort_types);
+        tableProps$col_types <- gsub('us|eu', 'number', colTypes);
+        tableProps$sort_config$sort_types <- NULL;
+      }
     }
   }
 

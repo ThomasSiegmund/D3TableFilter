@@ -130,7 +130,7 @@
 #' @import crosstalk
 #' @export JS
 #' @export
-d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, colNames = NULL, extensions = list(), selectableRows = NULL, selectableRowsClass = "info", tableStyle = "table", rowStyles = NULL, bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), footData = NULL, footCellFunctions = list(), sparklines = list(), width = NULL, height = NULL) {
+d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, colNames = NULL, extensions = NULL, selectableRows = NULL, selectableRowsClass = "info", tableStyle = "table", rowStyles = NULL, bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), footData = NULL, footCellFunctions = list(), sparklines = list(), width = NULL, height = NULL) {
 
    if (is.SharedData(df)) {
     key <- df$key()
@@ -165,14 +165,50 @@ d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, c
   #   tableProps <- c(tableProps, stylesheet = "style/tablefilter.css");
   # }
   # 
-  if(!is.null(height)) {
+  if (!is.null(height)) {
     tableProps <- c(tableProps, grid_height = paste0(height, 'px' ), fixed_headers = TRUE);
   }
-  
-  if(length(extensions) > 0) {
-    tableProps$extensions <- extensions;
+
+  if (!is.null(extensions)) {
+    # compatibility: was a character vector: extensions <- c("ColsVisibility", "ColumnsResizer", "FiltersRowVisibility")
+    # columns resizer currently not supported in TableFilter
+    if (!is.list(extensions)) {
+      if (is.vector(extensions)) {
+        ext <- list();
+        i = 1;
+        for (e in extensions) {
+          if (e == "ColsVisibility") {
+                 ext[i] <-  list(list( "name" = "colsVisibility"));
+                 i <- i + 1;
+          } else if (e == "FiltersRowVisibility") {
+                 ext[i] <-  list(list( "name" = "filtersVisibility"));
+                 i <- i + 1;
+          }
+        }
+        extensions <- ext;
+      }
+    }
+    if (length(extensions) > 0) {
+      tableProps$extensions <- extensions;
+    }
   }
   
+  # sort is now an extension
+  if (tableProps$sort) {
+    sort <-  list(list( "name" = "sort"))
+    if(length(tableProps$extensions) > 0) {
+      tableProps$extensions <- c(tableProps$extensions, sort);
+    } else  {
+      tableProps$extensions <- sort;
+    }
+    tableProps$sort <- NULL;
+    if (!is.null(tableProps$sort_config$sort_types)) {
+      colTypes <- tolower(tableProps$sort_config$sort_types);
+      tableProps$col_types <- gsub('us|eu', 'number', colTypes);
+      tableProps$sort_config$sort_types <- NULL;
+    }
+  }
+
   # turn "auto:white:red" in a linear d3 colour scale function
   autoColScale <- function(colScales) {
     if(length(colScales) == 0) {

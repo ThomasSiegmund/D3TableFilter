@@ -30,10 +30,7 @@ shinyServer(function(input, output, session) {
       loader = TRUE,  
       loader_text = "Filtering data...",
       # sorting
-      sort = TRUE,
-      sort_config = list(
-        sort_types = c("String", rep("Number", 11))
-      ),
+      col_types = c("String", rep("Number", 11)),
       # paging
       paging = TRUE, 
       paging_length = 30,  

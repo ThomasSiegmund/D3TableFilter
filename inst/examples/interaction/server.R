@@ -108,15 +108,18 @@ shinyServer(function(input, output, session) {
   
   # update summary row. calculate mean/median of displayed row for cols 1:3
   observe({
-    for (col in c(1, 2, 3)) {
-      if(input$summaryRow == "mean") {
-        setFootCellValue(session, tbl = "mtcars", row = 1, col = 0, value = "Mean");
-        value = round(mean(revals$mtcars[revals$rowIndex, col]), 1);
-      } else {
-        setFootCellValue(session, tbl = "mtcars", row = 1, col = 0, value = "Median");
-        value = round(median(revals$mtcars[revals$rowIndex, col]), 1);
+    if(input$summaryRow == "mean") {
+      setFootCellValue(session, tbl = "mtcars", row = 1, col = 0, value = "Mean");
+      for (col in c(1, 2, 3)) {
+       value = round(mean(revals$mtcars[revals$rowIndex, col]), 1);
+       setFootCellValue(session, tbl = "mtcars", row = 1, col = col, value = value);
       }
-      setFootCellValue(session, tbl = "mtcars", row = 1, col = col, value = value);
+    } else {
+      setFootCellValue(session, tbl = "mtcars", row = 1, col = 0, value = "Median");
+      for (col in c(1, 2, 3)) {
+        value = round(median(revals$mtcars[revals$rowIndex, col]), 1);
+        setFootCellValue(session, tbl = "mtcars", row = 1, col = col, value = value);
+      }
     }
   })
   
@@ -174,17 +177,11 @@ shinyServer(function(input, output, session) {
     # This example generates an orange circle scaled to the cell value.
     # The number is part of the svg graphic, but still allows for sorting and filtering.
       cellFunctions <- list(
-      col_2 = JS('function makeGraph(selection){
-      
-        // find out wich table and column
-        var regex = /(col_\\d+)/;
-        var col = regex.exec(this[0][0].className)[0];
-        var regex = /tbl_(\\S+)/;
-        var tbl = regex.exec(this[0][0].className)[1];
-  
+      col_2 = JS('function makeGraph(selection, tbl, col){
+ 
         // create a scaling function
         var domain = colExtent(tbl, col);
-        var rScale = d3.scale.sqrt()
+        var rScale = d3tf.scaleSqrt()
                        .domain(domain)
                        .range([8, 14]);
 
@@ -232,25 +229,19 @@ shinyServer(function(input, output, session) {
       
       # This example creates a horizontal bar chart. The text is overlayed onto
       # the graphic to enable editing.
-      col_3 = JS('function makeGraph(selection){
-
-        // find out wich table and column
-        var regex = /(col_\\d+)/;
-        var col = regex.exec(this[0][0].className)[0];
-        var regex = /tbl_(\\S+)/;
-        var tbl = regex.exec(this[0][0].className)[1];
+      col_3 = JS('function makeGraph(selection, tbl, col){
         var innerWidth = 117;
         var innerHeight = 14;
-        
+
         // create a scaling function
         var max = colMax(tbl, col);
         var min = colMin(tbl, col);
-        var wScale = d3.scale.linear()
+        var wScale = d3tf.scaleLinear()
                        .domain([0, max])
                        .range([0, innerWidth]);
 
         // text formatting function
-        var textformat = d3.format(".1f");
+        var textformat = d3tf.format(".1f");
 
         // column has been initialized before, update function
         if(tbl + "_" + col + "_init" in window) {
@@ -265,7 +256,7 @@ shinyServer(function(input, output, session) {
         }
         
         // can remove padding here, but still cant position text and box independently
-        this.style("padding", "5px 5px 5px 5px");
+        selection.style("padding", "5px 5px 5px 5px");
 
         // remove text. will be added back later
         selection.text(null);
@@ -300,21 +291,21 @@ shinyServer(function(input, output, session) {
       col_0 = JS('function makeGraph(selection){
                 selection.style("font-weight", "bold")
             }'),
-      col_1 = JS('function makeGraph(selection){
+      col_1 = JS('function makeGraph(selection, tbl, col){
                 // text formatting function
-                var textformat = d3.format(".1f");
+                var textformat = d3tf.format(".1f");
                 selection.style("font-weight", "bold")
                           .text(function(d) { return textformat(d.value); });
             }'),
-      col_2 = JS('function makeGraph(selection){
+      col_2 = JS('function makeGraph(selection, tbl, col){
                 // text formatting function
-                var textformat = d3.format(".1f");
+                var textformat = d3tf.format(".1f");
                 selection.style("font-weight", "bold")
                           .text(function(d) { return textformat(d.value); });
             }'),
-      col_3 = JS('function makeGraph(selection){
+      col_3 = JS('function makeGraph(selection, tbl, col){
                 // text formatting function
-                var textformat = d3.format(".1f");
+                var textformat = d3tf.format(".1f");
                 // make cell text right aligned
                 selection.classed("text-right", true)
                          .style("font-weight", "bold")
@@ -415,9 +406,6 @@ shinyServer(function(input, output, session) {
       rows_counter_text = "Rows: ",
       on_keyup = TRUE,  
       on_keyup_delay = 800,
-      sort_config = list(
-        sort_types = c("Number", "Number")
-      ),
       filters_row_index = 1,
       # adding a summary row, showing the column means
       rows_always_visible = list(nrow(mtcars) + 2),
@@ -459,7 +447,7 @@ shinyServer(function(input, output, session) {
   output$mtcars2Output <- renderTable({
     if(is.null(input$mtcars2_select)) return(NULL);
     mtcars[input$mtcars2_select, 1:2];
-  })
+  }, rownames = TRUE)
   
   # set class on a row
   observe({

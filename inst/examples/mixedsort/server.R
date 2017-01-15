@@ -26,7 +26,7 @@ shinyServer(function(input, output, session) {
     # for a complete reference
     tableProps <- list(
       btn_reset = TRUE,
-      col_types = c("Mixed", "number", "Mixed", "Mixed")
+      col_types = c("mixed", "mixed", "mixed", "mixed")
      );
     
     extensions <-  list(

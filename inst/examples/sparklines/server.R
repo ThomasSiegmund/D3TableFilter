@@ -57,7 +57,7 @@ shinyServer(function(input, output, session) {
          sparklines = sparklines,
          enableTf = FALSE);
   })
-  
+
   # generate a pseudo-ticker by appending a new random value per second into each table cell
   observe({
     invalidateLater(1000, session);

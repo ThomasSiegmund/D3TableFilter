@@ -12,9 +12,10 @@ shinyUI(fluidPage(
                      wellPanel(
                        radioButtons("editingCol0", "Rownames editing", choices = c("Enable" = TRUE, "Disable" = FALSE), selected = FALSE)
                      ),
-                     wellPanel(
-                       actionButton("clearfilter", "Clear filters")
-                     ),
+                     # clear filters seems to be not availalbe in current tablefilter
+                     # wellPanel(
+                     #   actionButton("clearfilter", "Clear filters")
+                     # ),
                      wellPanel(
                        textInput("filterString", "Filter rownames", value = "rgx:^D"),
                        actionButton("dofilter", "Set filter")

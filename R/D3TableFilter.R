@@ -194,18 +194,20 @@ d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, c
   }
   
   # sort is now an extension
-  if (tableProps$sort) {
-    sort <-  list(list( "name" = "sort"))
-    if(length(tableProps$extensions) > 0) {
-      tableProps$extensions <- c(tableProps$extensions, sort);
-    } else  {
-      tableProps$extensions <- sort;
-    }
-    tableProps$sort <- NULL;
-    if (!is.null(tableProps$sort_config$sort_types)) {
-      colTypes <- tolower(tableProps$sort_config$sort_types);
-      tableProps$col_types <- gsub('us|eu', 'number', colTypes);
-      tableProps$sort_config$sort_types <- NULL;
+  if (!is.null(tableProps$sort)) {
+    if (tableProps$sort) {
+      sort <-  list(list( "name" = "sort"))
+      if (length(tableProps$extensions) > 0) {
+        tableProps$extensions <- c(tableProps$extensions, sort);
+      } else  {
+        tableProps$extensions <- sort;
+      }
+      tableProps$sort <- NULL;
+      if (!is.null(tableProps$sort_config$sort_types)) {
+        colTypes <- tolower(tableProps$sort_config$sort_types);
+        tableProps$col_types <- gsub('us|eu', 'number', colTypes);
+        tableProps$sort_config$sort_types <- NULL;
+      }
     }
   }
 
@@ -221,10 +223,10 @@ d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, c
         startColour <- clrs[2];
         endColour <- clrs[3];
         scale <- JS(paste0('function colorScale(tbl, i){
-                           var color = d3.scale.linear()
+                           var color = d3tf.scaleLinear()
                            .domain(colExtent(tbl, "', cols[i] ,'"))
                            .range(["', startColour, '", "', endColour, '"])
-                           .interpolate(d3.interpolateHcl);
+                           .interpolate(d3tf.interpolateHcl);
                            return color(i);
       }'));
      colScales[cols[i]] <- list(scale);
@@ -254,7 +256,24 @@ d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, c
           return(index);
         });
         names(sortKeys) <- paste0('col_', mixedCols - 1);
-        tableProps$col_types <- gsub('mixed', 'number', tableProps$col_types, ignore.case = TRUE);
+        tableProps$col_types <- gsub('mixed', 'string', tableProps$col_types, ignore.case = TRUE)
+        
+        # change sort type for mixed columns
+        if (!is.null(tableProps$extensions)) {
+        	# find sort extension
+        	for (i in seq_along(tableProps$extensions)) {
+        		if (!is.null(tableProps$extensions[[i]]$name)) {
+        			if (tolower(tableProps$extensions[[i]]$name) == "sort") {
+        				sortTypes <- rep("string", length(tableProps$col_types))
+        				sortTypes[tolower(tableProps$col_types) == "number"] <- "number"
+        				sortTypes[mixedCols] <- "number"
+        				tableProps$extensions[[i]]$types <- sortTypes
+        				break
+        			}
+        		}
+        	}
+        }
+        
       }
     }
   }

@@ -64,7 +64,7 @@ dependencies:
     - style/themes/skyblue/images/img_loading.gif
     - style/themes/skyblue/skyblue.css
   - name: jquery
-    version: 1.12.3
+    version: 1.12.4
     src: "lib/jquery/dist/"
     script: jquery.min.js
   - name: bootstrap

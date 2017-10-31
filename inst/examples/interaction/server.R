@@ -178,7 +178,6 @@ shinyServer(function(input, output, session) {
     # The number is part of the svg graphic, but still allows for sorting and filtering.
       cellFunctions <- list(
       col_2 = JS('function makeGraph(selection, tbl, col){
- 
         // create a scaling function
         var domain = colExtent(tbl, col);
         var rScale = d3tf.scaleSqrt()
@@ -187,10 +186,12 @@ shinyServer(function(input, output, session) {
 
         // column has been initialized before, update function
         if(tbl + "_" + col + "_init" in window) {
-            var sel = selection.selectAll("svg")
-                     .selectAll("circle")
-                     .transition().duration(500)
-                     .attr("r", function(d) { return rScale(d.value)});
+            console.log("running update");
+            // use select here to make circle inherit data from selection
+            var sel = selection.select("svg")
+                     .select("circle");
+                sel.transition().duration(500)
+                     .attr("r", function(d) { console.log(d), console.log(d.value) ;  return rScale(d.value)});
                      return(null);
         }
 
@@ -245,8 +246,9 @@ shinyServer(function(input, output, session) {
 
         // column has been initialized before, update function
         if(tbl + "_" + col + "_init" in window) {
-            var sel = selection.selectAll("svg")
-                     .selectAll("rect")
+           // use select here to make circle inherit data from selection
+           var sel = selection.select("svg")
+                     .select("rect")
                      .transition().duration(500)
                      .attr("width", function(d) { return wScale(d.value)});
             var txt = selection

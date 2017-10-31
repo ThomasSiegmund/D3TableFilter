@@ -307,8 +307,13 @@ HTMLWidgets.widget({
    }
     // update data for D3
     function setCellData(cell, val, tbl, col) {
-     var child = cell.select(":first-child");
-     if(child.empty()) {
+      var child = cell.select(":first-child");
+      var regex = /.col_(\d+)/;
+      var coln = columns[Number(regex.exec(col)[1])];
+
+      cell.datum({column: coln, value: val});
+      
+      if(child.empty()) {
        var type = "other";
      } else {
        var type = child.attr("type");
@@ -333,8 +338,7 @@ HTMLWidgets.widget({
                          .html(val);
               } else {
               // cell styled using cellfunctions, look for text element within
-              cell = cell.attr('value', val)
-                  .selectAll("text")
+              cell = cell.selectAll("text")
                   .html(val);
               }
             }
@@ -435,7 +439,7 @@ HTMLWidgets.widget({
   
             var val = message["value"];
             setCellData(cell, val, tbl, col);
-  
+
             colourCol(tbl, col);
             if(message["foot"]) {
               runCellFunctions(tbl, col, foot = true);
@@ -460,6 +464,7 @@ HTMLWidgets.widget({
     }
     // format cells or turn cell content in graphics
     function runCellFunctions(tbl, col, foot) {
+      
       if(foot == true) {
         var selector = "tfoot";
         var cellFunctions =  window.D3TableFilter["footCellFunctions_" + tbl];
@@ -480,11 +485,13 @@ HTMLWidgets.widget({
         }
       } else {
         // only selected column
+        col = col.substr(1);
+
         if (cellFunctions.hasOwnProperty(col)) {
           var cells = d3tf.selectAll('#' + tbl)
                         .selectAll(selector)
                         .selectAll('td.' + col);
-              cells.call(cellFunctions[col], tbl, col);
+               cells.call(cellFunctions[col], tbl, col);
         }
       }
     };
@@ -583,8 +590,7 @@ HTMLWidgets.widget({
     }
     function shinyRowClickEvent(d, i, j) {
       
-      log("rowclickevent");
-      var regex = /tbl_(\w+)/;
+       var regex = /tbl_(\w+)/;
       
       var tbl = regex.exec(this.className)[1];
       var rows = d3tf.selectAll('#' + tbl)
@@ -700,14 +706,17 @@ HTMLWidgets.widget({
     
     // apply fg and bg colour scales to column
     function colourCol(tbl, col) { 
+    
+      col = col.substr(1);
+      
       var bgColScales = window.D3TableFilter["bgColScales_" + tbl];
+
       if (bgColScales.hasOwnProperty(col)) {
       table = tbl; 
        var col2Color = d3tf.selectAll('#' + tbl)
                          .selectAll("tbody")
                          .selectAll('td.' + col)
                          .transition("bgcolor") 
-
           // run the d3 colour scale function defined in the bgColScales list on the R side
           col2Color.style("background-color", function(d, i){
         		return bgColScales[col](tbl, d.value);
@@ -921,7 +930,6 @@ HTMLWidgets.widget({
       
       // crosstalk filter handling
       window[tfName].emitter.on(['after-filtering'], function(tf){ 
-        console.log(tf.getValidRows());
         updateFilterInput(tf);
       });
 

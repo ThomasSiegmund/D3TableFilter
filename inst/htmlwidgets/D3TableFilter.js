@@ -124,7 +124,7 @@ HTMLWidgets.widget({
         .data(footdata)
         .enter()
         .append("tr")
-        .attr('id', function(d, i) {return 'row_' + i})
+        .attr('id', function(d, i) {return 'frow_' + i})
         .attr('class', 'tbl_' + outputID);
     
     // create a cell in each row for each column of the footer
@@ -140,12 +140,12 @@ HTMLWidgets.widget({
         // set an id to use for tablefilter "col_operations"
         .attr('id', function(d, i){ 
           var j = this.parentNode.getAttribute("id");
-          return j + '_col_' + i + '_' +  'tbl_' + outputID;
+          return j + '_fcol_' + i + '_' +  'tbl_' + outputID;
           
         })
         .attr('class', function(d, i){
           var j = this.parentNode.getAttribute("id");
-          return "col_" + i + ' ' +  j + ' ' + 'tbl_' + outputID;
+          return "fcol_" + i + ' ' +  j + ' ' + 'tbl_' + outputID;
         });
     
     // make table bootstrap styled

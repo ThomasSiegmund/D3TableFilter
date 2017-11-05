@@ -57,10 +57,24 @@ shinyServer(function(input, output, session) {
         bgColScales <- list();
       }
      
+    
+    extensions <-  list(
+        list(name = "sort"),
+        list( name = "colsVisibility",
+              text = 'Hide columns: ',
+              enable_tick_all =  TRUE
+             ),
+        list( name = "filtersVisibility",
+              visible_at_start =  TRUE)
+    );
+
+    
+    
+    
     d3tf(diamonds, 
                 tableProps = tableProps,
                 showRowNames = FALSE,
-                extensions = list('Sort', 'ColsVisibility', 'ColumnsResizer', 'FiltersRowVisibility'),
+                extensions = extensions,
                 tableStyle = "table table-bordered table-striped",
                 bgColScales = bgColScales);
   })  

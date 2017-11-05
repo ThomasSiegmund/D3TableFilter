@@ -1,13 +1,12 @@
 #' d3tf Generate a HTML table widget with advanced filtering, sorting and 
 #' colouring.
 #' 
-#' R interface to Max Guglielmi's \href{http://tablefilter.free.fr/ }{HTML Table
-#' Filter Generator} JavaScript library. Provides advanced filtering and 
+#' R interface to Max Guglielmi's \href{http://koalyptus.github.io/TableFilter/}{TableFilter} JavaScript library. Provides advanced filtering and 
 #' sorting. Columns can be formatted using D3 functions.
 #' 
 #' @section Configuration: The D3TableFilter widget can be highly customized. 
 #'   See the website of the JavaScript library 
-#'   \href{http://tablefilter.free.fr/}{HTML Table Filter Generator} for 
+#'   \href{http://koalyptus.github.io/TableFilter/}{TableFilter} for 
 #'   details. Configuration is passed as a list of key value pairs to the 
 #'   JavaScript engine. A shiny app demonstrating many useful features in one 
 #'   table can be found in the inst/examples/feature directory of this package.
@@ -15,7 +14,7 @@
 #' @section Extensions: Some of the TableFilter functions are beeing provided as
 #'   extensions, in particular \itemize{ \item ColsVisibility: Visibility of 
 #'   columns can be adjusted by configuration or interactively \item 
-#'   ColumnsResizer: Interactive resizing of column width \item 
+#'   Sorting: Sort table by click on column headers \item 
 #'   FiltersRowVisibility: Interactively show or hide the filter row. } To 
 #'   activate these extensions simply define them as a character vector in the 
 #'   extensions parameter, e.g. \code{extensions = c("ColsVisibility", 
@@ -112,7 +111,7 @@
 #' # ------------------------------------------------------------------------------ 
 #' bgColScales <- list(
 #' col_0 = JS('function colorScale(i){
-#'         var color = d3.scale.linear()
+#'         var color = d3tf.scaleLinear()
 #'         .domain([0, 200])
 #'         .range(["white", "blue"]);
 #'         return color(i);

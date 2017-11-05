@@ -575,7 +575,7 @@ HTMLWidgets.widget({
               }
             })
             var inputID = tbl + '_select';
-            Shiny.onInputChange(inputID, selected);
+           Shiny.onInputChange(inputID, selected);
           }
       });
     }
@@ -590,8 +590,7 @@ HTMLWidgets.widget({
     }
     function shinyRowClickEvent(d, i, j) {
       
-       var regex = /tbl_(\w+)/;
-      
+      var regex = /tbl_(\S+)/;
       var tbl = regex.exec(this.className)[1];
       var rows = d3tf.selectAll('#' + tbl)
                   .selectAll('tbody')
@@ -623,7 +622,7 @@ HTMLWidgets.widget({
         });
       }
       if(window.HTMLWidgets.shinyMode) {
-        Shiny.onInputChange(inputID, selected);
+       Shiny.onInputChange(inputID, selected);
       }
     }
 

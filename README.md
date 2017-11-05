@@ -10,7 +10,14 @@ vignette: >
 ---
 
 # News
-Update of included libraries:
+
+## 2017-11-05 Switch to D3 version 4.
+
+To allow for compatibility with widgets using different versions of D3, the included D3 libraries have been upgraded to version 4 in an own namespace  ```d3tf```. As a result this widget can be combined with any other widget using D3 again, at the cost of some code changes. <span style="color:#DF0101">D3 code used for coloring and styling of table columns need to call d3 functions as ```d3tf```. It may also need to be ported to v.4 syntax. ```d3.scale.linear``` for example has to be changed into ```d3tf.scaleLinear```.</span> See [Changes in D3 4.0](https://github.com/d3/d3/blob/master/CHANGES.md) for more information.
+
+* TableFilter v0.6.2
+
+## 2016-11-27 Update of included libraries:
 
 * TableFilter v0.4.15
 This is a major update of [TableFilter](http://koalyptus.github.io/TableFilter/), resulting in an API change in D3TableFilter. <span style="color:#DF0101">TableFilter extensions now have to be specified as lists</span> - see the [feature](https://github.com/ThomasSiegmund/D3TableFilter/blob/master/inst/examples/feature/server.R) app for a complete example.
@@ -250,7 +257,7 @@ Additionally the sort extension has to be loaded:
 
 ```
 
-The [TableFilter documentation](http://tablefilter.free.fr/doc.php]) has some more details about sorting.  *D3TableFilter* extends the list of sort types by the ```Mixed```. This function is based on the [mixedorder](http://www.inside-r.org/packages/cran/gtools/docs/mixedorder) function from the gtools package. It allows to sort character strings containing numbers in a logical order. See the *examples/mixedsort* Shiny app for an example.
+The [TableFilter documentation](http://koalyptus.github.io/TableFilter/sort-custom-type.html]) has some more details about sorting.  *D3TableFilter* extends the list of sort types by the ```Mixed``` type. This function is based on the [mixedorder](http://www.inside-r.org/packages/cran/gtools/docs/mixedorder) function from the gtools package. It allows to sort character strings containing numbers in a logical order. See the *examples/mixedsort* Shiny app for an example.
 
 
 ## Bootstrap styling
@@ -361,13 +368,13 @@ Technically ```selectableRows``` can be combined with other D3TableFilter featur
 
 # Coloring
 
-Color can greatly enhance the perception especially of numerical values in tables. One of the driving forces in the development of D3TableFilter was the need for smooth, heatmap-like colors in tables. The D3.js library provides powerful mechanisms to map data to colors. I has support for simple linear color scales, but also logarithmic scales and ordinal scales (including the famous [ColorBrewer](http://colorbrewer2.org/) scales). D3TableFilter allows to make use of this for cell backgrounds as well as for the text color. *D3TableFilter* tries to provide the full D3.js tool set for colour scales, at the cost of exposing R programmers to the D3 javascript code. The following code sniplet for example could be used to colour cell the second column (```col_1```) in a table. Given a range of cell values between 0 and 200 (```.domain([0, 200])```) the cell background would be colored in white to blue (```.range(["white", "blue"])```) according to the cells numeric value.
+Color can greatly enhance the perception especially of numerical values in tables. One of the driving forces in the development of D3TableFilter was the need for smooth, heatmap-like colors in tables. The D3.js library provides powerful mechanisms to map data to colors. I has support for simple linear color scales, but also logarithmic scales and ordinal scales (including the famous [ColorBrewer](http://colorbrewer2.org/) scales). D3TableFilter allows to make use of this for cell backgrounds as well as for the text color. *D3TableFilter* tries to provide the full D3.js tool set for colour scales, at the cost of exposing R programmers to the D3 javascript code. The following code sniplet for example could be used to colour cell the second column (```col_1```) in a table. Given a range of cell values between 0 and 200 (```.domain([0, 200])```) the cell background would be colored in white to blue (```.range(["white", "blue"])```) according to the cells numeric value. To enable compatibiltiy wiht widgets using other versions of D3, the bundled package has it's own namespace (```d3tf```). 
 
 
 ```r
     bgColScales <- list(
        col_1 = JS('function colorScale(tbl, i){
-        var color = d3.scale.linear()
+        var color = d3tf.scale.linear()
                       .domain([0, 200])
                       .range(["white", "blue"]);
         return color(i);
@@ -375,12 +382,12 @@ Color can greatly enhance the perception especially of numerical values in table
       )
 ```
 
-In this example the background color may get to dark to read the cell text. One solution obviously is to use a lighter background color. Another option is to modify the text color accordingly. The next code sniplet achives this by using a threshold function (```d3.scale.threshold()```) to switch the text color from black to white on a dark background.
+In this example the background color may get to dark to read the cell text. One solution obviously is to use a lighter background color. Another option is to modify the text color accordingly. The next code sniplet achives this by using a threshold function (```d3tf.scale.threshold()```) to switch the text color from black to white on a dark background.
 
 ```r
    fgColScales <- list(
       col_1 = JS('function colorScale(tbl, i){
-        var color = d3.scale.threshold()
+        var color = d3tf.scale.threshold()
         .domain([130, 130, 200.1])
         .range(["black", "black", "white"]);
         return color(i);
@@ -397,10 +404,10 @@ Color perception is a complex issue. If you wish for a perceptionally correct ma
 ```r
     bgColScales <- list(
        col_2 = JS('function colorScale(tbl, i){
-        var color = d3.scale.linear()
+        var color = d3tf.scale.linear()
         .domain([0, 200])
         .range(["white", "blue"])
-        .interpolate(d3.interpolateHcl);
+        .interpolate(d3tf.interpolateHcl);
         return color(i);
       }')
       )
@@ -417,7 +424,7 @@ Examples for different color scales can found in the *examples/colour* Shiny app
 
 # D3 cell styling
 
-While the *TableFilter* library provides many features to modify the appearance of various table elements using CSS, it does not support directly the styling and formatting of text in table cells. You can not, for example, generate right aligned numeric columns using *TableFilter* alone. *D3TableFilter* allows this, similar to the color mapping, by use of D3. The ```cellFunctions``` and ```footCellFunctions``` argument to ```d3tf()``` apply D3 JavaScript code to columns in the table body or footer. The code below will make the first column (```col_0```) in a table footer right aligned ```classed("text-right", true)```, bold ```.style("font-weight", "bold")```and formatted with one decimal point ```d3.format(".1f")```. D3 has formatters for [numbers](https://github.com/mbostock/d3/wiki/Formatting) and [dates](https://github.com/mbostock/d3/wiki/Time-Formatting).
+While the *TableFilter* library provides many features to modify the appearance of various table elements using CSS, it does not support directly the styling and formatting of text in table cells. You can not, for example, generate right aligned numeric columns using *TableFilter* alone. *D3TableFilter* allows this, similar to the color mapping, by use of D3. The ```cellFunctions``` and ```footCellFunctions``` argument to ```d3tf()``` apply D3 JavaScript code to columns in the table body or footer. The code below will make the first column (```col_0```) in a table footer right aligned ```classed("text-right", true)```, bold ```.style("font-weight", "bold")```and formatted with one decimal point ```d3tf.format(".1f")```. D3 has formatters for [numbers](https://github.com/mbostock/d3/wiki/Formatting) and [dates](https://github.com/mbostock/d3/wiki/Time-Formatting).
 
 ```r
     # apply D3.js functions to footer columns,
@@ -425,7 +432,7 @@ While the *TableFilter* library provides many features to modify the appearance 
     footCellFunctions <- list(
       col_0 = JS('function makeGraph(selection){
                 // text formatting function
-                var textformat = d3.format(".1f");
+                var textformat = d3tf.format(".1f");
                 // make cell text right aligned
                 selection.classed("text-right", true)
                          .style("font-weight", "bold")
@@ -451,7 +458,7 @@ The ```cellFunctions``` argument can be used not only to format numbers, but to 
   
         // create a scaling function
         var domain = colExtent(tbl, col);
-        var rScale = d3.scale.sqrt()
+        var rScale = d3tf.scale.sqrt()
                        .domain(domain)
                        .range([8, 14]);
 
@@ -522,12 +529,12 @@ The *examples/interaction* Shiny app also shows a second variation of in-cell gr
         // create a scaling function
         var max = colMax(tbl, col);
         var min = colMin(tbl, col);
-        var wScale = d3.scale.linear()
+        var wScale = d3tf.scale.linear()
                        .domain([0, max])
                        .range([0, innerWidth]);
 
         // text formatting function
-        var textformat = d3.format(".1f");
+        var textformat = d3tf.format(".1f");
 
         // column has been initialized before, update function
         if(tbl + "_" + col + "_init" in window) {

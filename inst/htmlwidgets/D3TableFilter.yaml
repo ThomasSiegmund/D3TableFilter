@@ -67,6 +67,10 @@ dependencies:
     version: 1.12.4
     src: "lib/jquery/dist/"
     script: jquery.min.js
+  - name: colsresizable
+    version: 1.6
+    src: "lib/colsresizable/dist/"
+    script: colResizable-1.6.min.js
   - name: bootstrap
     version: 3.3.7
     src: "lib/bootstrap/dist/"

@@ -441,6 +441,7 @@ shinyServer(function(input, output, session) {
                 rowStyles = c(rep("", 7), rep("info", 7)),
                 filterInput = TRUE,
                 footData = footData,
+                colsResizable = TRUE,
                 height = 500);
   })
   

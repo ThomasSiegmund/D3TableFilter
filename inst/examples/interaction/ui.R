@@ -52,7 +52,9 @@ shinyUI(fluidPage(
       fluidRow(
         column(width = 2,
                
-               HTML("Click on the table to select a row. <code>Ctrl</code>  click for multiple selection."),
+               HTML("Click on the table to select a row. <code>Ctrl</code>
+                    click for multiple selection. The columns in this table
+                    are resizable."),
                wellPanel(
                  helpText("This demonstrates the setRowClass to highlight a specific row using contextual classes from bootstrap. Can also be used to unselect a row"),
                  selectInput("hornetClass", "Set row class on 'Hornet Sportabout'", choices = c("none", "active", "success", "info", 'warning', "danger"), selected = "none")

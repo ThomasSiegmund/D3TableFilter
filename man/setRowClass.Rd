@@ -21,4 +21,3 @@ Highlight a row using bootstrap classes
 \examples{
 setRowClass(session, "mtcars", 3, "success")
 }
-

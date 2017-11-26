@@ -102,6 +102,12 @@
 #'   used to format table footer or to generate D3 graphics in cells.
 #' @param  sparklines List of per column options to turn cell values into 
 #'   sparkline visulizations.
+#' @param  colsResizable Enable interactive column resizing using the jquery
+#' \href{https://github.com/alvaro-prieto/colResizable}{colResizable} plugin. 
+#' @param  colsResizableOptions List of options for column resizing.
+#' See the "colsresizable" shiny app in the #'   inst/examples/ directory of
+#'  this package for an example.
+#' Set to NULL to disable.
 #' @example inst/examples/basic/server.R
 #' @seealso \code{\link[DT]{datatable}}.
 #' @examples
@@ -129,7 +135,7 @@
 #' @import crosstalk
 #' @export JS
 #' @export
-d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, colNames = NULL, extensions = NULL, selectableRows = NULL, selectableRowsClass = "info", tableStyle = "table", rowStyles = NULL, bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), footData = NULL, footCellFunctions = list(), sparklines = list(), width = NULL, height = NULL) {
+d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, colNames = NULL, extensions = NULL, selectableRows = NULL, selectableRowsClass = "info", tableStyle = "table", rowStyles = NULL, bgColScales = list(), fgColScales = list(), edit = FALSE, radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(), filterInput = FALSE, initialFilters = list(), footData = NULL, footCellFunctions = list(), sparklines = list(), colsResizable = FALSE, colsResizableOptions = list(), width = NULL, height = NULL) {
 
    if (is.SharedData(df)) {
     key <- df$key()
@@ -140,17 +146,21 @@ d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, c
     group <- NULL
   }
 
-  if(is.matrix(df)) {
+  if (is.matrix(df)) {
     df <- as.data.frame(df);
   }
   
-  if(showRowNames) {
+  if (showRowNames) {
     df <- cbind(rownames(df), df);
     colnames(df)[1] <- "Rownames";  
   }
   
-  if(is.null(tableProps)) {
+  if (is.null(tableProps)) {
     tableProps <- list();
+  }
+  
+  if (colsResizable & length(colsResizableOptions) == 0) {
+    colsResizableOptions <- list(list(resizeMode = "flex")) 
   }
   
 #  if(is.null(tableProps$base_path)) {
@@ -299,6 +309,8 @@ d3tf <- function(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE, c
     filterInput = filterInput,
     initialFilters = initialFilters,
     footData = footData,
+    colsResizable = colsResizable,
+    colsResizableOptions = colsResizableOptions,
     sortKeys = sortKeys,
     key = key,
     group = group

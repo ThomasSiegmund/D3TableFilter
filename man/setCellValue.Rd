@@ -25,4 +25,3 @@ Set cell value
 \examples{
 setCellValue(session, "mtcars", row = 8, col = 3, val = 8)
 }
-

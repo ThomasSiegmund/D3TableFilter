@@ -19,4 +19,3 @@ Disable editing of a tableFilter widget
 \examples{
 disableEdit(session, "mtcars", c("col_1", "col_2"))
 }
-

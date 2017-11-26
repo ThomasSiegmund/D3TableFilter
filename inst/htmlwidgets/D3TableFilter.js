@@ -15,7 +15,6 @@ HTMLWidgets.widget({
     var $el = $(el);
     // name ouf the output widget
     var outputID = el.id;
-
     var celldata = HTMLWidgets.dataframeToD3(data.data);
 
     var footdata = HTMLWidgets.dataframeToD3(data.footData);
@@ -154,6 +153,13 @@ HTMLWidgets.widget({
       tfoot.classed(data.tableStyle, true);
       thead.classed(data.tableStyle, true);
      }
+
+    // disable colResizable, needed for reload
+    if(data.colsResizable) {
+      $(function(){
+        $('#' + tableID).colResizable({disable:true});
+      });
+    }
 
     // apply row styles and add rows with style "info" to preselected
     var rowStyles = data.rowStyles;
@@ -939,6 +945,17 @@ HTMLWidgets.widget({
     if(data.tableStyle != null) {
       thead.selectAll("tr").classed("active", true);
     }
+    log(data.colsResizableOptions);
+    // enable colum resizing using jquery colsResizable
+    if(data.colsResizable) {
+      $(function(){
+        $('#' + tableID).colResizable(data.colsResizableOptions);
+        $('#' + tableID).colResizable({disable:false});
+      });
+    }
+
+    
+    
     
   } // end of renderValue !!
 

@@ -19,4 +19,3 @@ Clear all filters from a table
 \examples{
 clearFilters(session, "mtcars")
 }
-

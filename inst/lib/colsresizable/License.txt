@@ -1,0 +1,6 @@
+License
+You can use or distribute colResizable for free for both personal or commercial purposes. Source code is also released in order to allow custom modifications to adjust it to your own personal needs. In both cases, my full name must remain intact in the script file.	
+
+colResizable was released under the MIT and GPL licenses
+Credits
+colResizable was developed by Alvaro Prieto Lauroba in 2011. Feel free to contact me for further information. 

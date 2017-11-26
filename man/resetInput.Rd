@@ -17,4 +17,3 @@ Reset a D3tf input element
 \examples{
 resetInput(session, "mtcars_edit")
 }
-

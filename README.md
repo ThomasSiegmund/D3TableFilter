@@ -1,7 +1,7 @@
 ---
 title: "D3TableFilter Intro"
 author: "Thomas Siegmund"
-date: "2017-01-15"
+date: "2017-11-17"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
@@ -10,6 +10,10 @@ vignette: >
 ---
 
 # News
+
+## 2017-11-17 Resizable columns
+As the current version of TableFilter does not allow interactive resizing of columns, this functionality has been restored using the jQuery plugin [colResizable](https://github.com/alvaro-prieto/colResizable).
+![](vignettes/images/resize.png). There are many options to configure this behaviour. See [below](#resizing) and in the [resizing test app](https://github.com/ThomasSiegmund/D3TableFilter/tree/master/inst/examples/resizing) for details.
 
 ## 2017-11-05 Switch to D3 version 4.
 
@@ -259,6 +263,23 @@ Additionally the sort extension has to be loaded:
 
 The [TableFilter documentation](http://koalyptus.github.io/TableFilter/sort-custom-type.html]) has some more details about sorting.  *D3TableFilter* extends the list of sort types by the ```Mixed``` type. This function is based on the [mixedorder](http://www.inside-r.org/packages/cran/gtools/docs/mixedorder) function from the gtools package. It allows to sort character strings containing numbers in a logical order. See the *examples/mixedsort* Shiny app for an example.
 
+## Interactive column resizing {#resizing}
+In previous versions TableFilter had a pluging for column resizing using mouse interaction. Currently this is not supported in TableFilter. D3TableFilter now includes the jQuery [colResizable](http://www.bacubacu.com/colresizable/) plugin to support this feature. *colResizable* supports all modern browsers and has many [options](http://www.bacubacu.com/colresizable/#attributes) to modify the look and feel. It can for example work within a given table width, or extend the table if needed. It can also do a live update of the table layout while dragging column anchors.  A basic example might look like this.
+
+```r
+    colsResizableOpts <- list(resizeMode = "flex",
+                              liveDrag = TRUE,
+                              postbackSafe = TRUE,
+                              partialRefresh = TRUE
+                               )
+    
+    d3tf(mtcars,
+         showRowNames = TRUE,
+          colsResizable = TRUE,
+         colsResizableOptions = colsResizableOpts)
+```
+
+A more full featured example can be found in the *examples/colsResizable* Shiny app. This app can also be used to find a good set of options for a particular application. 
 
 ## Bootstrap styling
 TableFilter comes with its own CSS based default styling which is compact and efficient, but can look a little bit out of place within Bootstrap styled Shiny apps. Per default D3TableFilter applies the basic Bootstrap table class (```table```). This behaviour can be modified using the ```tableStyle``` argument. Bootstrap provides the classes ```table```, ```table-striped```, ```table-bordered```, and ```table-condensed```. These classes can be combined, e.g. ```tableStyle = "table table-striped table-bordered"```. ```tableStyle = NULL``` reverts to the original TableFilter CSS. 

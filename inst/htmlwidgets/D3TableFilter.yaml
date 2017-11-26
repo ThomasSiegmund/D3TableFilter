@@ -8,10 +8,9 @@ dependencies:
     src: "lib/colorbrewer/dist"
     script: colorbrewer.js
   - name: tablefilter
-    version: 0.5.5
+    version: 0.6.2
     src: "lib/tablefilter/dist"
-    script:
-    - tablefilter.js
+    script: tablefilter.js
     stylesheet: 
     - style/colsVisibility.css
     - style/filtersVisibility.css

@@ -12,7 +12,6 @@ dependencies:
     src: "lib/tablefilter/dist"
     script:
     - tablefilter.js
-    - tf-0-c1bb3067cb705b019e3b.js
     stylesheet: 
     - style/colsVisibility.css
     - style/filtersVisibility.css

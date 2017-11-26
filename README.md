@@ -16,7 +16,7 @@ As the current version of TableFilter does not allow interactive resizing of col
 
 ![](vignettes/images/resize.png)
 
-There are many options to configure this behaviour. See [below](#resizing) and in the [resizing test app](https://github.com/ThomasSiegmund/D3TableFilter/tree/master/inst/examples/resizing) for details.
+There are many options to configure this behaviour. See [below](#resizing) and in the [resizing test app](https://github.com/ThomasSiegmund/D3TableFilter/tree/master/inst/examples/colsResizable) for details.
 
 ## 2017-11-05 Switch to D3 version 4.
 

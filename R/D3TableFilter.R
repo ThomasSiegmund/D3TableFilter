@@ -105,6 +105,8 @@
 #' @param  colsResizable Enable interactive column resizing using the jquery
 #' \href{https://github.com/alvaro-prieto/colResizable}{colResizable} plugin. 
 #' @param  colsResizableOptions List of options for column resizing.
+#' See the "colsresizable" shiny app in the #'   inst/examples/ directory of
+#'  this package for an example.
 #' Set to NULL to disable.
 #' @example inst/examples/basic/server.R
 #' @seealso \code{\link[DT]{datatable}}.

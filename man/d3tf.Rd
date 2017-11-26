@@ -85,6 +85,8 @@ sparkline visulizations.}
 \href{https://github.com/alvaro-prieto/colResizable}{colResizable} plugin.}
 
 \item{colsResizableOptions}{List of options for column resizing.
+See the "colsresizable" shiny app in the #'   inst/examples/ directory of
+ this package for an example.
 Set to NULL to disable.}
 }
 \description{

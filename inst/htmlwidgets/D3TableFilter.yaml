@@ -12,7 +12,6 @@ dependencies:
     src: "lib/tablefilter/dist"
     script:
     - tablefilter.js
-    - tf-0-c1bb3067cb705b019e3b.js
     stylesheet: 
     - style/colsVisibility.css
     - style/filtersVisibility.css
@@ -71,6 +70,11 @@ dependencies:
     version: 1.6
     src: "lib/colsresizable/dist/"
     script: colResizable-1.6.min.js
+    stylesheet:
+      colsResizable.css
+    attachment:
+      grip.png
+      slider.png
   - name: bootstrap
     version: 3.3.7
     src: "lib/bootstrap/dist/"

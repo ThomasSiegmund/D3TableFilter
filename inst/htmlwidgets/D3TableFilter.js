@@ -148,6 +148,14 @@ HTMLWidgets.widget({
           return "fcol_" + i + ' ' +  j + ' ' + 'tbl_' + outputID;
         });
     
+        // enable colum resizing
+    $(function(){
+      $("table").colResizable({resizeMode:'overflow', liveDrag: true,
+       postbackSafe: true});
+    });
+
+    
+    
     // make table bootstrap styled
     if(data.tableStyle !== null) {
       table.classed(data.tableStyle, true);
@@ -939,6 +947,10 @@ HTMLWidgets.widget({
     if(data.tableStyle != null) {
       thead.selectAll("tr").classed("active", true);
     }
+    
+    
+    
+    
     
   } // end of renderValue !!
 

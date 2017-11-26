@@ -13,7 +13,9 @@ vignette: >
 
 ## 2017-11-17 Resizable columns
 As the current version of TableFilter does not allow interactive resizing of columns, this functionality has been restored using the jQuery plugin [colResizable](https://github.com/alvaro-prieto/colResizable).
+
 ![](vignettes/images/resize.png)
+
 There are many options to configure this behaviour. See [below](#resizing) and in the [resizing test app](https://github.com/ThomasSiegmund/D3TableFilter/tree/master/inst/examples/resizing) for details.
 
 ## 2017-11-05 Switch to D3 version 4.

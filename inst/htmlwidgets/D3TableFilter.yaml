@@ -10,7 +10,9 @@ dependencies:
   - name: tablefilter
     version: 0.6.2
     src: "lib/tablefilter/dist"
-    script: tablefilter.js
+    script:
+    - tablefilter.js
+    - tf-0-9f35c43ee2b90b920298.js
     stylesheet:
     - tablefilter.css
     - style/colsVisibility.css

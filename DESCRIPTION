@@ -16,7 +16,9 @@ Authors@R: c(person("Thomas", "Siegmund", email = "thomas.siegmund@gmail.com",
         person(family = "Splunk Inc.", role = c("cph"),
           comment = "jQuery Sparklines library"),
         person("Watts", "Gareth", role = c("aut"), 
-          comment = "jQuery Sparklines library")
+          comment = "jQuery Sparklines library"),
+        person("Lauroba", "Alvaro Prieto", role = c("aut"), 
+          comment = "jQuery colResizable library")
         )
 Description: D3TableFilter provides a powerful and flexible HTML table widget
     for use with the htmlwidgets R library. It allows R users to create HTML tables
@@ -36,4 +38,4 @@ Suggests:
 VignetteBuilder: knitr
 URL: https://github.com/ThomasSiegmund/D3TableFilter
 BugReports: https://github.com/ThomasSiegmund/D3TableFilter/issues
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

@@ -15,7 +15,6 @@ HTMLWidgets.widget({
     var $el = $(el);
     // name ouf the output widget
     var outputID = el.id;
-
     var celldata = HTMLWidgets.dataframeToD3(data.data);
 
     var footdata = HTMLWidgets.dataframeToD3(data.footData);
@@ -148,20 +147,19 @@ HTMLWidgets.widget({
           return "fcol_" + i + ' ' +  j + ' ' + 'tbl_' + outputID;
         });
     
-        // enable colum resizing
-    $(function(){
-      $("table").colResizable({resizeMode:'overflow', liveDrag: true,
-       postbackSafe: true});
-    });
-
-    
-    
     // make table bootstrap styled
     if(data.tableStyle !== null) {
       table.classed(data.tableStyle, true);
       tfoot.classed(data.tableStyle, true);
       thead.classed(data.tableStyle, true);
      }
+
+    // disable colResizable, needed for reload
+    if(data.colsResizable) {
+      $(function(){
+        $('#' + tableID).colResizable({disable:true});
+      });
+    }
 
     // apply row styles and add rows with style "info" to preselected
     var rowStyles = data.rowStyles;
@@ -947,8 +945,15 @@ HTMLWidgets.widget({
     if(data.tableStyle != null) {
       thead.selectAll("tr").classed("active", true);
     }
-    
-    
+    log(data.colsResizableOptions);
+    // enable colum resizing using jquery colsResizable
+    if(data.colsResizable) {
+      $(function(){
+        $('#' + tableID).colResizable(data.colsResizableOptions);
+        $('#' + tableID).colResizable({disable:false});
+      });
+    }
+
     
     
     

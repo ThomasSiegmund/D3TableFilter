@@ -1,0 +1,34 @@
+
+.grip{
+	width:20px;
+	height:15px;
+	margin-top:-3px;
+	background-image:url('grip.png');
+	margin-left:-5px;
+	position:relative;
+	z-index:88;
+	cursor:e-resize;
+}
+
+.grip:hover{
+	background-position-x:-20px;
+}
+.JCLRLastGrip .grip{
+    background-position-y:-18px;
+    left:-2px;
+}
+
+.dragging .grip{
+	background-position-x:-40px;
+}
+
+.rangeGrip{
+	width:10px;
+	height:19px;
+	cursor:e-resize;
+	background-image: url('slider.png');
+	z-index:8;
+}
+.rangeDrag .rangeGrip, .rangeGrip:hover{
+	background-position:right;
+}

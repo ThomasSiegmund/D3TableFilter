@@ -35,4 +35,3 @@ giving a unique ID of the edit event ("id"), the row ("row"), the column
 R coordinates. If \code{showRowNames} is \code{TRUE}, the column number of 
 the rownames is 0.
 }
-

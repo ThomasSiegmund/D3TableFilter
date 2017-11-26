@@ -19,4 +19,3 @@ Enable editing of a tableFilter widget
 \examples{
 enableEdit(session, "mtcars", c("col_1", "col_2"))
 }
-

@@ -21,4 +21,3 @@ Set filter on a column
 \examples{
 setFilter(session, "mtcars", col = "col_1", filter = ">20")
 }
-

@@ -11,8 +11,8 @@ d3tf(df, enableTf = TRUE, tableProps = NULL, showRowNames = FALSE,
   bgColScales = list(), fgColScales = list(), edit = FALSE,
   radioButtons = NULL, checkBoxes = NULL, cellFunctions = list(),
   filterInput = FALSE, initialFilters = list(), footData = NULL,
-  footCellFunctions = list(), sparklines = list(), width = NULL,
-  height = NULL)
+  footCellFunctions = list(), sparklines = list(), colsResizable = FALSE,
+  colsResizableOptions = list(), width = NULL, height = NULL)
 }
 \arguments{
 \item{df}{Data frame, matrix or or \link[crosstalk]{SharedData} object to display as html table}
@@ -80,6 +80,12 @@ used to format table footer or to generate D3 graphics in cells.}
 
 \item{sparklines}{List of per column options to turn cell values into 
 sparkline visulizations.}
+
+\item{colsResizable}{Enable interactive column resizing using the jquery
+\href{https://github.com/alvaro-prieto/colResizable}{colResizable} plugin.}
+
+\item{colsResizableOptions}{List of options for column resizing.
+Set to NULL to disable.}
 }
 \description{
 R interface to Max Guglielmi's \href{http://koalyptus.github.io/TableFilter/}{TableFilter} JavaScript library. Provides advanced filtering and 
@@ -149,6 +155,7 @@ sorting. Columns can be formatted using D3 functions.
   "sparklines" shiny app in the inst/examples/sparklines directory of this
   package for an example.
 }
+
 \examples{
 # ------------------------------------------------------------------------------
 # colour definition: apply a white to blue linear scale to the background of the 
@@ -203,4 +210,3 @@ shinyServer(function(input, output, session) {
 \seealso{
 \code{\link[DT]{datatable}}.
 }
-

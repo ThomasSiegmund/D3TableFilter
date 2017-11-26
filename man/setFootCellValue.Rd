@@ -23,4 +23,3 @@ Set foot cell value
 \examples{
 setFootCellValue(session, "mtcars", row = 1, col = 1, val = 8)
 }
-

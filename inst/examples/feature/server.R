@@ -17,6 +17,9 @@ shinyServer(function(input, output, session) {
       mark_active_columns = TRUE,
       rows_counter = TRUE,  
       rows_counter_text = "Rows: ",
+      themes = list(
+            name = 'transparent'
+      ),
       # behaviour
       on_change = TRUE,  
       btn = FALSE,  
@@ -45,7 +48,7 @@ shinyServer(function(input, output, session) {
       col_10 = "multiple",
       col_11 = "multiple",
       # adding a summary row, showing the column means
-      rows_always_visible = list(nrow(mtcars) + 2, nrow(mtcars) + 3)
+      excludedRows = list(nrow(mtcars) + 2, nrow(mtcars) + 3)
     );
     
     extensions <-  list(

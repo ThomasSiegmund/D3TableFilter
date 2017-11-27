@@ -154,6 +154,9 @@ shinyServer(function(input, output, session) {
       on_keyup_delay = 800,
       rows_counter = TRUE,  
       rows_counter_text = "Rows: ",
+      themes = list(
+            name = 'transparent'
+      ),
       # alphabetic sorting for the row names column, numeric for all other columns
       col_types = c("string", "number", "number", "number", "none", "none"),
       col_4 = "none",

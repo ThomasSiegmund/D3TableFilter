@@ -16,7 +16,7 @@ As the current version of TableFilter does not allow interactive resizing of col
 
 ![](vignettes/images/resize.png)
 
-There are many options to configure this behaviour. See [below](#resizing) and in the [resizing test app](https://github.com/ThomasSiegmund/D3TableFilter/tree/master/inst/examples/colsResizable) for details.
+There are many options to configure this behaviour. See [below](#Interactive-column-resizing) and in the [resizing test app](https://github.com/ThomasSiegmund/D3TableFilter/tree/master/inst/examples/colsResizable) for details.
 
 ## 2017-11-05 Switch to D3 version 4.
 
@@ -266,7 +266,7 @@ Additionally the sort extension has to be loaded:
 
 The [TableFilter documentation](http://koalyptus.github.io/TableFilter/sort-custom-type.html]) has some more details about sorting.  *D3TableFilter* extends the list of sort types by the ```Mixed``` type. This function is based on the [mixedorder](http://www.inside-r.org/packages/cran/gtools/docs/mixedorder) function from the gtools package. It allows to sort character strings containing numbers in a logical order. See the *examples/mixedsort* Shiny app for an example.
 
-## Interactive column resizing {#resizing}
+## Interactive column resizing
 In previous versions TableFilter had a pluging for column resizing using mouse interaction. Currently this is not supported in TableFilter. D3TableFilter now includes the jQuery [colResizable](http://www.bacubacu.com/colresizable/) plugin to support this feature. *colResizable* supports all modern browsers and has many [options](http://www.bacubacu.com/colresizable/#attributes) to modify the look and feel. It can for example work within a given table width, or extend the table if needed. It can also do a live update of the table layout while dragging column anchors.  A basic example might look like this.
 
 ```r

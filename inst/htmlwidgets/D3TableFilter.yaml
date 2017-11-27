@@ -15,9 +15,9 @@ dependencies:
     - tf-0-9f35c43ee2b90b920298.js
     stylesheet:
     - tablefilter.css
+    - style/tablefilter.css
     - style/colsVisibility.css
     - style/filtersVisibility.css
-    - style/tablefilter.css
     attachment:
     - ''
     - style/themes/blank.png

@@ -316,14 +316,13 @@ HTMLWidgets.widget({
       var child = cell.select(":first-child");
       var regex = /.col_(\d+)/;
       var coln = columns[Number(regex.exec(col)[1])];
-
       cell.datum({column: coln, value: val});
-      
       if(child.empty()) {
        var type = "other";
      } else {
        var type = child.attr("type");
      }
+
           if(type == "radio") {
               // uncheck other buttons in group
               var radio = d3tf.selectAll('#' + tbl)
@@ -340,15 +339,15 @@ HTMLWidgets.widget({
             } else {
               if(cell.selectAll("text").empty()) {
               // simple cell, update text directly
-              cell = cell.attr('value', val)
-                         .html(val);
+              //  log("simple cell");
+                cell = cell.attr('value', val)
+                           .html(val);
               } else {
               // cell styled using cellfunctions, look for text element within
               cell = cell.selectAll("text")
                   .html(val);
               }
             }
-
     }
     
     
@@ -376,15 +375,23 @@ HTMLWidgets.widget({
     if(window.HTMLWidgets.shinyMode) {
       Shiny.addCustomMessageHandler("setCellValue",
           function(message) {
-  
-            var row = '#row_' + (Number(message["row"]) - 1);
-            if(data.showRowNames) {
-              var col = '.col_' + message["col"];
-            } else  {
-              var col = '.col_' + (message["col"] - 1);
+            if(message["foot"]) {
+              var row = '#frow_' + (Number(message["row"]) - 1);
+            } else {
+              var row = '#row_' + (Number(message["row"]) - 1);
             }
+            if(data.showRowNames) {
+              var col = 'col_' + message["col"];
+            } else  {
+              var col = 'col_' + (message["col"] - 1);
+            }
+            if(message["foot"]) {
+              col = '.f' + col;
+            } else {
+              col = '.' + col;
+            }
+
             var tbl = message["tbl"];
-  
             if(message["foot"]) {
               var cell = d3tf.select('#' + tbl)
                            .selectAll('tfoot')

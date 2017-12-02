@@ -98,7 +98,7 @@ shinyServer(function(input, output, session) {
         revals$mtcars[row, col] <- val;
       }
       # confirm edits
-      confirmEdit(session, tbl = "mtcars", row = row, col = col, id = id, value = val);
+      confirmEdit(session, tbl = "mtcars", row = row, col = col, id = id);
       revals$edits["Success", "Row"] <- row;
       revals$edits["Success", "Column"] <- col;
       revals$edits["Success", "Value"] <- val;

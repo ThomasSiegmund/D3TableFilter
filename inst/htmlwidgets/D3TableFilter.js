@@ -952,7 +952,6 @@ HTMLWidgets.widget({
     if(data.tableStyle != null) {
       thead.selectAll("tr").classed("active", true);
     }
-    log(data.colsResizableOptions);
     // enable colum resizing using jquery colsResizable
     if(data.colsResizable) {
       $(function(){

@@ -1,6 +1,6 @@
 Package: D3TableFilter
 Title: A table widget based on D3.js and the "HTML Table Filter Generator"
-Version: 0.7
+Version: 0.7.1
 Authors@R: c(person("Thomas", "Siegmund", email = "thomas.siegmund@gmail.com",
     role = c("aut", "cre")),
         person("Max", "Guglielmi", role = c("aut", "cph")),
